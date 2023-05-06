@@ -2,6 +2,7 @@ package server;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Word {
 
@@ -54,11 +55,13 @@ public class Word {
         return col == other.col && row == other.row && Arrays.equals(tiles, other.tiles) && vertical == other.vertical;
     }
 
+    public String getWordAsString() {
+        return Arrays.stream(tiles).map(tile -> String.valueOf(tile.letter)).collect(Collectors.joining());
+    }
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (Tile t : tiles)
-            sb.append(t.letter);
+        StringBuilder sb = new StringBuilder(this.getWordAsString());
         sb.append(" (" + row + "," + col + ") " + (vertical ? "vertical" : "horizontal"));
         return sb.toString();
     }
