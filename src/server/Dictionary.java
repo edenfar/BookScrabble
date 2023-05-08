@@ -44,7 +44,7 @@ public class Dictionary {
     }
 
     public boolean challenge(String word) {
-        boolean doesExist = bf.contains(word);
+        boolean doesExist = searcher.search(word, fileNames);
         if (doesExist)
             exists.add(word);
         else

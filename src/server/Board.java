@@ -1,6 +1,8 @@
 package server;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Board {
 
@@ -29,12 +31,13 @@ public class Board {
     };
 
     Tile[][] tiles;
-
     boolean isEmpty;
+    String[] fileNames;
 
-    public Board() {
+    public Board(String[] fileNames) {
         tiles = new Tile[15][15];
         isEmpty = true;
+        this.fileNames = fileNames;
     }
 
     public Tile[][] getTiles() {
@@ -119,9 +122,11 @@ public class Board {
     }
 
     public boolean dictionaryLegal(Word w) {
-        return true;
+        DictionaryManager dictionaryManager = DictionaryManager.get();
+        List<String> list = new ArrayList<>(Arrays.asList(fileNames));
+        list.add(w.getWordAsString());
+        return dictionaryManager.query(list.toArray(new String[0]));
     }
-
 
     private ArrayList<Word> getAllWords(Tile[][] ts) {
         ArrayList<Word> ws = new ArrayList<>();
