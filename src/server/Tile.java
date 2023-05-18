@@ -83,6 +83,10 @@ public class Tile {
             return null;
         }
 
+        public Tile[] getRandomTiles(int count) {
+            throw new UnsupportedOperationException();
+        }
+
         public Tile getTile(char c) {
             if (c >= 'A' && c <= 'Z' && quantities[c - 'A'] > 0) {
                 quantities[c - 'A'] -= 1;
