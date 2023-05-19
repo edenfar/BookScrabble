@@ -1,5 +1,7 @@
 package server;
 
+import org.graalvm.compiler.graph.Node;
+import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import server.Tile.Bag;
@@ -8,6 +10,7 @@ public class BoardTest {
 
     final String DICTIONARY_1 = "test/resources/dictionary_1.txt";
     final String DICTIONARY_2 = "test/resources/dictionary_2.txt";
+
 
     public Tile[] stringToTiles(String string) {
         Bag bag = new Bag();
