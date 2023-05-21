@@ -2,14 +2,15 @@ package server;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class GamesManager {
 
-    private Map<String, Game> games;
+    public Map<String, Game> games;
     private static GamesManager manager;
     public static final int ROUNDS = 30;
 
-    private GamesManager() {
+    public GamesManager() {
         this.games = new HashMap<>();
     }
 
@@ -31,6 +32,12 @@ public class GamesManager {
     }
 
     private String getRandomName() {
-        throw new UnsupportedOperationException();
+        if (games.isEmpty()) {
+            throw new IllegalStateException("No games available.");
+        }
+
+        Random random = new Random();
+        int index = random.nextInt(games.size());
+        return (String) games.keySet().toArray()[index];
     }
 }
