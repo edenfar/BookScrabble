@@ -1,7 +1,6 @@
 package server;
 
-import org.graalvm.compiler.graph.Node;
-import org.junit.Test;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import server.Tile.Bag;
@@ -40,4 +39,11 @@ public class BoardTest {
         Word word = new Word(tiles, 0, 0, false);
         Assertions.assertTrue(board.dictionaryLegal(word));
     }
+
+    @Test
+    public void testServer(){
+
+
+    }
+
 }

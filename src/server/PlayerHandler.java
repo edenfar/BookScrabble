@@ -39,10 +39,11 @@ public class PlayerHandler implements ClientHandler {
         out.flush();
     }
 
+
     //Test of the server
 /*
     @Override
-    public void handleClient(InputStream inFromclient, OutputStream outToClient) throws InterruptedException {
+    public void handleClient(InputStream inFromclient, OutputStream outToClient) {
         PrintWriter out=new PrintWriter(outToClient);
         Scanner in=new Scanner(inFromclient);
         try {
@@ -52,41 +53,41 @@ public class PlayerHandler implements ClientHandler {
             Thread.sleep(2000);
             out.println(text);
             out.flush();
-        }finally {
+        }catch (InterruptedException e) {
+            e.printStackTrace();
+        }        finally {
             out.close();
             in.close();
         }
     }
 
-    */
+
 
     //Test of the server
     public static void client1(int port) {
-        new Thread(()->{
-            try{
-                Socket server=new Socket("localhost", port);
+        new Thread(() -> {
+            try {
+                Socket server = new Socket("localhost", port);
                 String text = "Hello from client !";
-                PrintWriter outToServer=new PrintWriter(server.getOutputStream());
-                Scanner in=new Scanner(server.getInputStream());
+                PrintWriter outToServer = new PrintWriter(server.getOutputStream());
+                Scanner in = new Scanner(server.getInputStream());
 
                 outToServer.println(text);
                 outToServer.flush();
                 System.out.println(in.nextLine());
-
                 if (in.hasNext()) {
                     String response = in.next();
                     if (response == null)
                         System.out.println("problem getting the right response from your server, cannot continue the test (-25)");
-                }
-                in.close();
-                outToServer.close();
-            }catch (Exception e){
-                //e.printStackTrace();
-                System.out.println("Exception was thrown when running a client (-25)");
+                    in.close();
+                    outToServer.close();}
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }).start();
     }
 
+ */
 
 
     public record HostRequest(String name, String[] fileNames) {
@@ -128,8 +129,7 @@ public class PlayerHandler implements ClientHandler {
 
     @Override
     public void close() {
-       in.close();
-       out.close();
+
     }
 }
 

@@ -1,13 +1,11 @@
 package server;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import java.util.concurrent.*;
 
 public class MyServer {
 
@@ -16,46 +14,39 @@ public class MyServer {
     ClientHandler ch;
     int maxThreadCount;
     ServerSocket server;
-    ExecutorService threadPool;
+    ExecutorService threadPoolClient;
+    Thread serverThread;
 
     public MyServer(int port, ClientHandler ch, int maxThreadCount) {
         this.port = port;
         this.ch = ch;
         this.maxThreadCount = maxThreadCount;
-        this.threadPool = Executors.newFixedThreadPool(maxThreadCount);
+        this.threadPoolClient = new ThreadPoolExecutor(1, maxThreadCount, 1L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
     }
 
     public void start() {
         stop = false;
-        threadPool.execute(this::startServer);
+        serverThread = new Thread(this::startServer);
+        serverThread.start();
     }
 
     public void startServer() {
-        AtomicInteger activeThreads = new AtomicInteger(0);
 
         try {
             server = new ServerSocket(port);
             System.out.println("Server started on port " + port);
 
             while (!stop) {
-                if (activeThreads.get() >= maxThreadCount) {
-                    // Maximum thread count reached, send "Can't connect" message to the client
+
                     Socket clientSocket = server.accept();
-                    PrintWriter out = new PrintWriter(clientSocket.getOutputStream());
-                    out.println("Can't connect: Maximum thread count reached.");
-                    out.flush();
-                    out.close();
-                    clientSocket.close();
-                    continue; // Skip handling this client and continue accepting new clients
+                    System.out.println("Client connected: " + clientSocket);
+                try {  threadPoolClient.execute(() -> {
+                        handleClient(clientSocket);
+                    });
+                }catch (RejectedExecutionException e) {
+                        System.out.println("Max thread count reached. Cannot accept more clients at the moment.\n");
+                    }
                 }
-                Socket clientSocket = server.accept();
-                System.out.println("Client connected: " + clientSocket);
-                activeThreads.incrementAndGet();
-                threadPool.execute(() -> {
-                    handleClient(clientSocket);
-                    activeThreads.decrementAndGet();
-                });
-            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -67,7 +58,7 @@ public class MyServer {
     private void handleClient(Socket client) {
         try {
             ch.handleClient(client.getInputStream(), client.getOutputStream());
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
@@ -82,13 +73,11 @@ public class MyServer {
 
     public void close() {
         stop = true;
-        threadPool.shutdown();
         try {
-            if (server.isClosed())
+                threadPoolClient.shutdown();
                 server.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }
