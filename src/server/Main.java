@@ -2,8 +2,6 @@ package server;
 
 import java.util.Scanner;
 
-//import static server.PlayerHandler.client1;
-
 public class Main {
 
     public static final int PORT = 6123;
@@ -22,19 +20,8 @@ public class Main {
             e.printStackTrace();
         }
 
-        //Test of the server
-/*
-        // Create and start clients
-        client1(PORT);
-        client1(PORT);
-        client1(PORT);
 
-        client1(PORT);
 
-        client1(PORT);
-        client1(PORT);
-        client1(PORT);
- */
 
         while (true) {
             input = scanner.nextLine();

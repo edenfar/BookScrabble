@@ -61,6 +61,8 @@ public class PlayerHandler implements ClientHandler {
         }
     }
 
+ */
+
 
 
     //Test of the server
@@ -87,7 +89,7 @@ public class PlayerHandler implements ClientHandler {
         }).start();
     }
 
- */
+
 
 
     public record HostRequest(String name, String[] fileNames) {
