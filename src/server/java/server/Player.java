@@ -41,21 +41,19 @@ public class Player {
         return Arrays.asList(this.tiles).containsAll(Arrays.asList(tiles));
     }
 
-    public boolean replaceTiles(Tile[] currentTiles, Tile[] newTiles) {
+    public void replaceTiles(Tile[] currentTiles, Tile[] newTiles) {
         if (currentTiles.length != newTiles.length) {
             throw new IllegalArgumentException("The number of current tiles and new tiles must be the same.");
         }
 
         if (!hasTiles(currentTiles)) {
-            return false;
+            throw new IllegalArgumentException("You don't have the tiles you try to replace.");
         }
 
         for (int i = 0; i < currentTiles.length; i++) {
             int index = Arrays.asList(this.tiles).indexOf(currentTiles[i]);
             this.tiles[index] = newTiles[i];
         }
-
-        return true;
     }
 
     public void notifyMissingTilesForWord(Word word) {

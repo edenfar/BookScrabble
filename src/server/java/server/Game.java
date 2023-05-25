@@ -45,16 +45,13 @@ public class Game {
         Tile tile;
         char letter;
 
-        for (int i = 0; i < playersInt.length; i++) {
-            playersInt[i] = 0;
+        if (NumOfPlayers == 1) {
+            return;
         }
 
-        if (NumOfPlayers != 1) {
+        else{
             for (int i = 0; i < players.length; i++) {
-                if (players[i] == null) {
-                    playersInt[i] = 0;
-                }
-                else {
+                if (players[i] != null) {
                     tile = this.bag.getRand();
                     letter = tile.letter;
                     playersInt[i] = letterToInt(letter);
@@ -77,6 +74,7 @@ public class Game {
             }
             this.players = NewPlayersList;
         }
+        return;
     }
 
     public void setup() {
@@ -90,23 +88,14 @@ public class Game {
     }
 
     public void addPlayer(Player player) {
-        if (players == null) {
-            players = new Player[MAX_PLAYERS];
-        }
 
         if (NumOfPlayers >= MAX_PLAYERS) {
             throw new UnsupportedOperationException("Maximum number of players reached.");
         }
-        for (int i = 0; i < players.length; i++) {
-            if (players[i] == null) {
-                players[i] = player;
-                break;
-            }
-        }
+
+        players[NumOfPlayers] = player;
         NumOfPlayers++;
 
-        // if (NumOfPlayers == MAX_PLAYERS) {
-        //     startGame();
     }
 
     public void playTurn(Player player, Word word) {

@@ -6,11 +6,11 @@ import java.util.Random;
 
 public class GamesManager {
 
-    public Map<String, Game> games;
+    private Map<String, Game> games;
     private static GamesManager manager;
     public static final int ROUNDS = 30;
 
-    public GamesManager() {
+    private GamesManager() {
         this.games = new HashMap<>();
     }
 
@@ -33,7 +33,7 @@ public class GamesManager {
 
     private String getRandomName() {
         if (games.isEmpty()) {
-            throw new IllegalStateException("No games available.");
+            System.out.println("No games available\n");
         }
 
         Random random = new Random();
