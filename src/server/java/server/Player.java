@@ -38,7 +38,7 @@ public class Player {
     }
 
     public boolean hasTiles(Tile[] tiles) {
-        return Arrays.asList(this.tiles).containsAll(Arrays.asList(tiles));
+        return new HashSet<>(Arrays.asList(this.tiles)).containsAll(Arrays.asList(tiles));
     }
 
     public void replaceTiles(Tile[] currentTiles, Tile[] newTiles) {

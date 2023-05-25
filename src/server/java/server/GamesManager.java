@@ -21,7 +21,7 @@ public class GamesManager {
     }
 
     public Game createGame(String[] fileNames, Player host) {
-        String name = this.getRandomName();
+        String name = getNewRandomName();
         Game game = new Game(name, fileNames, host, ROUNDS);
         games.put(name, new Game(name, fileNames, host, ROUNDS));
         return game;
@@ -31,13 +31,14 @@ public class GamesManager {
         return games.get(gameName);
     }
 
-    private String getRandomName() {
-        if (games.isEmpty()) {
-            System.out.println("No games available\n");
-        }
-
+    private static String getNewRandomName() {
+        String ALPHA_NUMERICS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder salt = new StringBuilder();
         Random random = new Random();
-        int index = random.nextInt(games.size());
-        return (String) games.keySet().toArray()[index];
+        while (salt.length() < 6) {
+            int index = (int) (random.nextFloat() * ALPHA_NUMERICS.length());
+            salt.append(ALPHA_NUMERICS.charAt(index));
+        }
+        return salt.toString();
     }
 }

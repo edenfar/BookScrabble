@@ -1,7 +1,11 @@
 package server;
 
 import server.Tile.Bag;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Comparator;
 
 public class Game {
 
@@ -11,7 +15,7 @@ public class Game {
     Board board;
     Bag bag;
     Player[] players;
-    int NumOfPlayers;
+    int numOfPlayers;
     Player currentPlayer;
     int rounds;
     int currentRound;
@@ -23,7 +27,7 @@ public class Game {
         this.players = new Player[MAX_PLAYERS];
         this.players[0] = host;
         this.rounds = rounds;
-        this.NumOfPlayers = 1;
+        this.numOfPlayers = 1;
     }
 
     public int letterToInt(char letter) {
@@ -38,43 +42,32 @@ public class Game {
     }
 
     public void orderPlayers() {
-        int [] playersInt = new int [MAX_PLAYERS];
-        Integer[] indices = new Integer[playersInt.length];
-        Player [] NewPlayersList = new Player[MAX_PLAYERS];
+        int[] playersInt = new int[MAX_PLAYERS];
 
         Tile tile;
         char letter;
 
-        if (NumOfPlayers == 1) {
+        if (numOfPlayers == 1) {
             return;
         }
 
-        else{
-            for (int i = 0; i < players.length; i++) {
-                if (players[i] != null) {
-                    tile = this.bag.getRand();
-                    letter = tile.letter;
-                    playersInt[i] = letterToInt(letter);
-                    this.bag.put(tile);
-                }
-
+        for (int i = 0; i < players.length; i++) {
+            if (players[i] != null) {
+                tile = this.bag.getRand();
+                letter = tile.letter;
+                playersInt[i] = letterToInt(letter);
+                this.bag.put(tile);
             }
-
-            // Create an array of indices
-            for (int i = 0; i < indices.length; i++) {
-                indices[i] = i;
-            }
-
-            // Sort the indices based on the values in playersInt array in descending order
-            Arrays.sort(indices, (a, b) -> Integer.compare(playersInt[b], playersInt[a]));
-
-            // Populate the Order array with the sorted indices
-            for (int i = 0; i < indices.length; i++) {
-                NewPlayersList[i] = this.players[indices[i]];
-            }
-            this.players = NewPlayersList;
         }
-        return;
+
+        players = orderPlayersByArray(players, playersInt);
+    }
+
+    public static Player[] orderPlayersByArray(Player[] players, int[] values) {
+        final List<Player> playersListCopy = Arrays.asList(players);
+        ArrayList<Player> sortedPlayers = new ArrayList(playersListCopy);
+        sortedPlayers.sort(Comparator.comparing(player -> values[playersListCopy.indexOf(player)]));
+        return sortedPlayers.toArray(Player[]::new);
     }
 
     public void setup() {
@@ -88,14 +81,12 @@ public class Game {
     }
 
     public void addPlayer(Player player) {
-
-        if (NumOfPlayers >= MAX_PLAYERS) {
+        if (numOfPlayers >= MAX_PLAYERS) {
             throw new UnsupportedOperationException("Maximum number of players reached.");
         }
 
-        players[NumOfPlayers] = player;
-        NumOfPlayers++;
-
+        players[numOfPlayers] = player;
+        numOfPlayers++;
     }
 
     public void playTurn(Player player, Word word) {
