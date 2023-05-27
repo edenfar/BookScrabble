@@ -5,46 +5,36 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class PlayerHandler_test implements ClientHandler {
-    PrintWriter out;
-    Scanner in;
-    Player player;
-    Game game;
+    public record Connection(PrintWriter out, Scanner in) {
+    }
 
-    /*
-    All the communication with the player should happen here, and not in Player class
-    We assume that the player has a thread listening to messages from the server (i.e., this class)
-     */
+    public Set<Connection> connections;
 
-
-    //Test of the server
+    public PlayerHandler_test() {
+        this.connections = new HashSet<>();
+    }
 
     @Override
     public void handleClient(InputStream inFromclient, OutputStream outToClient) {
-        PrintWriter out = new PrintWriter(outToClient);
-        Scanner in = new Scanner(inFromclient);
+        Connection connection = new Connection(new PrintWriter(outToClient), new Scanner(inFromclient));
+        connections.add(connection);
         try {
             Thread.sleep(5000);
-            System.out.println(in.nextLine());
+            System.out.println(connection.in.nextLine());
             String text = "Hello from Server !";
             Thread.sleep(2000);
-            out.println(text);
-            out.flush();
-        }catch (InterruptedException e) {
+            connection.out.println(text);
+            connection.out.flush();
+        } catch (Exception e) {
             e.printStackTrace();
-        }        finally {
-            out.close();
-            in.close();
         }
     }
 
-
-
-
-
-    //Test of the server
     public static void client1(int port) {
         new Thread(() -> {
             try {
@@ -58,10 +48,10 @@ public class PlayerHandler_test implements ClientHandler {
                 System.out.println(in.nextLine());
                 if (in.hasNext()) {
                     String response = in.next();
-                    if (response == null)
-                        System.out.println("problem getting the right response from your server, cannot continue the test (-25)");
-                    in.close();
-                    outToServer.close();}
+                    System.out.println("Got unexpected message from server: " + response);
+                }
+                in.close();
+                outToServer.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -70,6 +60,10 @@ public class PlayerHandler_test implements ClientHandler {
 
     @Override
     public void close() {
+        for (Connection connection: connections) {
+            connection.out.close();
+            connection.in.close();
+        }
     }
 }
 
