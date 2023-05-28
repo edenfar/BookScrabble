@@ -1,13 +1,16 @@
 package server;
 
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import server.Tile.Bag;
 
 public class BoardTest {
 
+
     final String DICTIONARY_1 = "test/resources/dictionary_1.txt";
     final String DICTIONARY_2 = "test/resources/dictionary_2.txt";
+
 
     public Tile[] stringToTiles(String string) {
         Bag bag = new Bag();
@@ -37,4 +40,6 @@ public class BoardTest {
         Word word = new Word(tiles, 0, 0, false);
         Assertions.assertTrue(board.dictionaryLegal(word));
     }
+
+
 }
