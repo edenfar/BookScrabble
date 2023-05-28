@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import viewmodel.ViewModel;
 
 import java.io.IOException;
 
@@ -15,6 +16,10 @@ public class HelloApplication extends Application {
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
+        HelloController mwc = fxmlLoader.getController();
+        ViewModel vm = new ViewModel();
+        mwc.setViewModel(vm);
+        vm.addObserver(mwc);
     }
 
     public static void main(String[] args) {
