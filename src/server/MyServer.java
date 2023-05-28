@@ -2,31 +2,30 @@ package server;
 
 import java.io.IOException;
 
-import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class MyServer {
 
     int port;
     boolean stop;
-    ClientHandler ch;
+    ClientHandler clientHandler;
     int maxThreadCount;
     ServerSocket server;
     ExecutorService threadPoolClient;
     Thread serverThread;
-    private AtomicInteger activeClients = new AtomicInteger(0);
 
-    public MyServer(int port, ClientHandler ch, int maxThreadCount) {
+    public MyServer(int port, ClientHandler clientHandler, int maxThreadCount) {
         this.port = port;
-        this.ch = ch;
+        this.clientHandler = clientHandler;
         this.maxThreadCount = maxThreadCount;
         this.threadPoolClient = new ThreadPoolExecutor(1, maxThreadCount, 1L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
     }
@@ -37,8 +36,7 @@ public class MyServer {
         serverThread.start();
     }
 
-    public void startServer() {
-
+    private void startServer() {
         try {
             server = new ServerSocket(port);
             System.out.println("Server started on port " + port);
@@ -46,21 +44,16 @@ public class MyServer {
                 Socket clientSocket = server.accept();
                 System.out.println("Client connected: " + clientSocket);
                 try {
-                        threadPoolClient.execute(() -> {
-                            activeClients.incrementAndGet();
-                            handleClient(clientSocket);
-                            activeClients.decrementAndGet();
-                        });
-                    }catch (RejectedExecutionException e) {
-                        try {
-                            OutputStream outputStream = clientSocket.getOutputStream();
-                            outputStream.write("Max thread count reached. Cannot accept more clients at the moment.\n".getBytes());
-                            outputStream.flush();
-                        } catch (IOException ioException) {
-                        ioException.printStackTrace();
-                        }
-                    }
+                    threadPoolClient.execute(() -> handleClient(clientSocket));
+                } catch (RejectedExecutionException e) {
+                    PrintWriter outToClient = new PrintWriter(clientSocket.getOutputStream());
+                    outToClient.println("Max thread count reached. Cannot accept more clients at the moment.");
+                    outToClient.flush();
+                    outToClient.close();
                 }
+            }
+        } catch (SocketException e) {
+            System.out.println("Server stopped successfully");
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -71,7 +64,7 @@ public class MyServer {
 
     private void handleClient(Socket client) {
         try {
-            ch.handleClient(client.getInputStream(), client.getOutputStream());
+            clientHandler.handleClient(client.getInputStream(), client.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -80,21 +73,15 @@ public class MyServer {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            ch.close();
-
+            clientHandler.close();
         }
     }
 
     public void close() {
-
-        while (activeClients.get() > 0) {
-            //Wait
-            //Not sure if a thread.sleep is necessary here
-        }
         stop = true;
         try {
-                threadPoolClient.shutdown();
-                server.close();
+            threadPoolClient.shutdown();
+            server.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
