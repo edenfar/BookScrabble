@@ -1,6 +1,11 @@
-package model;
+package client.java.model;
 
+import server.java.server.Board;
+import server.java.server.Tile;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Objects;
@@ -15,6 +20,7 @@ public class Model extends Observable {
     private PrintWriter outToServer;
     private Scanner inFromServer;
     private Thread serverListener;
+    boolean Bag, Board, Round = false; //still ongoing
 
     public void connect(String host, int port) {
         try {
@@ -36,7 +42,42 @@ public class Model extends Observable {
     public void listen() {
         String response = inFromServer.next();
         while (!Objects.equals(response, "end")) {
+
             // Handle the response - when it is the game data (board, bag, players) we need to de-serialize it
+
+            if(Board){
+                try {
+                    // Convert the received board string back to a byte array
+                    byte[] boardBytes = response.getBytes();
+
+                    // Create an ObjectInputStream to read the byte array and deserialize the board object
+                    ObjectInputStream objectIn = new ObjectInputStream(new ByteArrayInputStream(boardBytes));
+                    Board receivedBoard = (Board) objectIn.readObject();
+
+                    System.out.println("Board received and deserialized");
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (Bag){
+                try {
+                    // Convert the received board string back to a byte array
+                    byte[] bagBytes = response.getBytes();
+
+                    // Create an ObjectInputStream to read the byte array and deserialize the board object
+                    ObjectInputStream objectIn = new ObjectInputStream(new ByteArrayInputStream(bagBytes));
+                    Tile.Bag receivedBag = (Tile.Bag) objectIn.readObject();
+
+                    System.out.println("Bag received and deserialized");
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (Round){
+                int round = Integer.parseInt(response);
+            }
+
+
             this.setChanged();
             this.notifyObservers();
             response = inFromServer.next();

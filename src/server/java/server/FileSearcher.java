@@ -1,4 +1,4 @@
-package server;
+package server.java.server;
 
 interface FileSearcher {
     boolean search(String word, String... fileNames);

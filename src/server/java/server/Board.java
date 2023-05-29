@@ -1,11 +1,11 @@
-package server;
+package server.java.server;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.io.Serializable;
 import java.util.List;
 
-public class Board {
-
+public class Board implements Serializable {
     // indexes
     final byte dl = 2;    // double letter
     final byte tl = 3;    // triple letter
