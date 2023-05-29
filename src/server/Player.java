@@ -83,15 +83,15 @@ public class Player implements Serializable {
 
     public void sendBag(Bag bag) {
         try {
-            // Serialize the Board object to a byte array
+            // Serialize the Bag object to a byte array
             ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
             ObjectOutputStream objectOut = new ObjectOutputStream(byteOut);
             objectOut.writeObject(bag);
             objectOut.flush();
 
             // Convert the byte array to a string and send it using the sendToPlayer consumer
-            String boardString = byteOut.toString();
-            sendToPlayer.accept(boardString);
+            String bagString = byteOut.toString();
+            sendToPlayer.accept(bagString);
 
             System.out.println("Bag sent to the player");
         } catch (IOException e) {
