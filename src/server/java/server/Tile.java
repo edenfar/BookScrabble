@@ -32,12 +32,6 @@ public class Tile implements Serializable {
         return letter == other.letter && score == other.score;
     }
 
-    public static Tile fromString(String tileString) {
-        char letter = tileString.charAt(0);
-        int score = Integer.parseInt(tileString.substring(1));
-        return new Tile(letter, score);
-    }
-
     @Override
     public String toString() {
         return letter + Integer.toString(score);

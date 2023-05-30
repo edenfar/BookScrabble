@@ -36,9 +36,6 @@ public class Player implements Serializable {
     }
 
     public void notifyMissingTilesForWord(Word word) {
-
-        String message = "You don't have the required tiles for the word \"" + word + "\"";
-        sendToPlayer.accept(message);
     }
 
     public void notifyIllegalWord(Word word) {
@@ -48,14 +45,8 @@ public class Player implements Serializable {
 
     public void sendBoard(Board board) {
         try {
-            // Serialize the Board object to a byte array
-            ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-            ObjectOutputStream objectOut = new ObjectOutputStream(byteOut);
-            objectOut.writeObject(board);
-            objectOut.flush();
-
-            // Convert the byte array to a string and send it using the sendToPlayer consumer
-            String boardString = byteOut.toString();
+            //Serialize and Convert the byte array to a string and send it using the sendToPlayer consumer
+            String boardString = seriallizeObject(board).toString();
             sendToPlayer.accept(boardString);
 
             System.out.println("Board sent to the player");
@@ -66,20 +57,23 @@ public class Player implements Serializable {
 
     public void sendBag(Bag bag) {
         try {
-            // Serialize the Board object to a byte array
-            ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-            ObjectOutputStream objectOut = new ObjectOutputStream(byteOut);
-            objectOut.writeObject(bag);
-            objectOut.flush();
-
-            // Convert the byte array to a string and send it using the sendToPlayer consumer
-            String boardString = byteOut.toString();
+            // Serialize and Convert the object to a string and send it using the sendToPlayer consumer
+            String boardString = seriallizeObject(bag).toString();
             sendToPlayer.accept(boardString);
 
             System.out.println("Bag sent to the player");
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public ByteArrayOutputStream seriallizeObject(Object o) throws IOException {
+        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        ObjectOutputStream objectOut = new ObjectOutputStream(byteOut);
+        objectOut.writeObject(o);
+        objectOut.flush();
+
+        return byteOut;
     }
 
     public void sendPlayers(Player[] players) {
