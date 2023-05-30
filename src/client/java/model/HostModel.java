@@ -1,4 +1,4 @@
-package client.java.model;
+package model;
 
 public class HostModel extends Model {
     public void createGame(String playerName, String[] fileNames) {

@@ -1,4 +1,4 @@
-package client.java.model;
+package model;
 
 public class GuestModel extends Model {
     public void join(String playerName, String gameName) {

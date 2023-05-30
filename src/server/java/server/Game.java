@@ -1,6 +1,6 @@
-package server.java.server;
+package server;
 
-import server.java.server.Tile.Bag;
+import server.Tile.Bag;
 
 public class Game {
 

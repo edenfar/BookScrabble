@@ -1,4 +1,4 @@
-package server.java.server;
+package server;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;

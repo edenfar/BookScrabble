@@ -1,11 +1,12 @@
-package server.java.server;
+package server;
 
 import java.util.function.Consumer;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import server.java.server.Tile.Bag;
+
+import server.Tile.Bag;
 
 public class Player implements Serializable {
     String name;
@@ -27,36 +28,18 @@ public class Player implements Serializable {
     }
 
     public boolean hasTiles(Tile[] tiles) {
-        for (Tile tile : tiles) {
-            boolean found = false;
-            for (Tile playerTile : this.tiles) {
-                if (playerTile.equals(tile)) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                return false;
-            }
-        }
-        return true;
+        throw new UnsupportedOperationException();
     }
 
     public void replaceTiles(Tile[] currentTiles, Tile[] newTiles) {
-        //Look for currentTiles in player.tile and replace it with newTiles
-        for (int i = 0; i < this.tiles.length; i++) {
-            if (this.tiles[i].equals(currentTiles[i])) {
-                this.tiles[i] = newTiles[i];
-            }
-        }
-
-
+        throw new UnsupportedOperationException();
     }
 
     public void notifyMissingTilesForWord(Word word) {
 
         String message = "You don't have the required tiles for the word \"" + word + "\"";
-        sendToPlayer.accept(message);    }
+        sendToPlayer.accept(message);
+    }
 
     public void notifyIllegalWord(Word word) {
         String message = "The word \"" + word + "\" can't fit";
@@ -113,5 +96,6 @@ public class Player implements Serializable {
     }
 
     public void sendGameName(String name) {
-        sendToPlayer.accept(name);    }
+        sendToPlayer.accept(name);
+    }
 }

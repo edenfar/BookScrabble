@@ -1,7 +1,7 @@
-package client.java.model;
+package model;
 
-import server.java.server.Board;
-import server.java.server.Tile;
+import server.Board;
+import server.Tile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class Model extends Observable {
 
             // Handle the response - when it is the game data (board, bag, players) we need to de-serialize it
 
-            if(Board){
+            if (Board) {
                 try {
                     // Convert the received board string back to a byte array
                     byte[] boardBytes = response.getBytes();
@@ -59,7 +59,7 @@ public class Model extends Observable {
                     e.printStackTrace();
                 }
             }
-            if (Bag){
+            if (Bag) {
                 try {
                     // Convert the received board string back to a byte array
                     byte[] bagBytes = response.getBytes();
@@ -73,7 +73,7 @@ public class Model extends Observable {
                     e.printStackTrace();
                 }
             }
-            if (Round){
+            if (Round) {
                 int round = Integer.parseInt(response);
             }
 

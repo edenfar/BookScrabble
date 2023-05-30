@@ -1,4 +1,4 @@
-package server.java.server;
+package server;
 
 import java.util.Objects;
 import java.util.Random;
@@ -97,8 +97,8 @@ public class Tile implements Serializable {
 
         public Tile[] getRandomTiles(int count) {
             Tile[] randTiles = new Tile[count];
-            for (int i = 0 ; i < count ; i++){
-                randTiles[i]  = getRand();
+            for (int i = 0; i < count; i++) {
+                randTiles[i] = getRand();
             }
             return randTiles;
         }

@@ -1,4 +1,4 @@
-package server.java.server;
+package server;
 
 public interface CacheReplacementPolicy {
     void add(String word);
