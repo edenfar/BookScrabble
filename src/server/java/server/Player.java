@@ -1,12 +1,17 @@
 package server;
 
+import java.io.Serializable;
 import java.util.function.Consumer;
+
+import server.Tile.Bag;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
-import server.Tile.Bag;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Player implements Serializable {
     String name;
@@ -20,6 +25,17 @@ public class Player implements Serializable {
         this.tiles = new Tile[]{};
         this.sendToPlayer = sendToPlayer;
     }
+    public String getName() {
+        return name;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
 
     public void addScore(int additionalScore) {
         if (additionalScore > 0) {
@@ -28,19 +44,39 @@ public class Player implements Serializable {
     }
 
     public boolean hasTiles(Tile[] tiles) {
-        throw new UnsupportedOperationException();
+        return new HashSet<>(Arrays.asList(this.tiles)).containsAll(Arrays.asList(tiles));
     }
 
     public void replaceTiles(Tile[] currentTiles, Tile[] newTiles) {
-        throw new UnsupportedOperationException();
+        if (currentTiles.length != newTiles.length) {
+            throw new IllegalArgumentException("The number of current tiles and new tiles must be the same.");
+        }
+
+        if (!hasTiles(currentTiles)) {
+            throw new IllegalArgumentException("You don't have the tiles you try to replace.");
+        }
+
+        for (int i = 0; i < currentTiles.length; i++) {
+            int index = Arrays.asList(this.tiles).indexOf(currentTiles[i]);
+            this.tiles[index] = newTiles[i];
+        }
     }
 
     public void notifyMissingTilesForWord(Word word) {
+        Set<Tile> wordTiles = new HashSet<>(Arrays.asList(word.getTiles()));
+        Set<Tile> playerTiles = new HashSet<>(Arrays.asList(tiles));
+        Set<Tile> missingTiles = new HashSet<>(wordTiles);
+
+        missingTiles.removeAll(playerTiles);
+
+        if (!missingTiles.isEmpty()) {
+            String message = String.format("Missing tiles for word: %s", missingTiles);
+            sendToPlayer.accept(message);
+        }
     }
 
     public void notifyIllegalWord(Word word) {
-        String message = "The word \"" + word + "\" can't fit";
-        sendToPlayer.accept(message);
+        throw new UnsupportedOperationException();
     }
 
     public void sendBoard(Board board) {
@@ -85,7 +121,6 @@ public class Player implements Serializable {
     }
 
     public void sendCurrentRound(int round) {
-
         sendToPlayer.accept(String.valueOf(round));
     }
 

@@ -2,6 +2,7 @@ package server;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class GamesManager {
 
@@ -20,7 +21,7 @@ public class GamesManager {
     }
 
     public Game createGame(String[] fileNames, Player host) {
-        String name = this.getRandomName();
+        String name = getNewRandomName();
         Game game = new Game(name, fileNames, host, ROUNDS);
         games.put(name, new Game(name, fileNames, host, ROUNDS));
         return game;
@@ -30,7 +31,14 @@ public class GamesManager {
         return games.get(gameName);
     }
 
-    private String getRandomName() {
-        throw new UnsupportedOperationException();
+    private static String getNewRandomName() {
+        String ALPHA_NUMERICS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder salt = new StringBuilder();
+        Random random = new Random();
+        while (salt.length() < 6) {
+            int index = (int) (random.nextFloat() * ALPHA_NUMERICS.length());
+            salt.append(ALPHA_NUMERICS.charAt(index));
+        }
+        return salt.toString();
     }
 }
