@@ -20,7 +20,6 @@ public class Model extends Observable {
     private PrintWriter outToServer;
     private Scanner inFromServer;
     private Thread serverListener;
-    boolean Bag, Board, Round = false; //still ongoing
 
     public void connect(String host, int port) {
         try {
@@ -45,10 +44,11 @@ public class Model extends Observable {
 
             // Handle the response - when it is the game data (board, bag, players) we need to de-serialize it
 
-            if (Board) {
+            if (response.startsWith("Board:")) {
+                String boardString = response.substring("Board:".length());
                 try {
                     // Convert the received board string back to a byte array
-                    byte[] boardBytes = response.getBytes();
+                    byte[] boardBytes = boardString.getBytes();
 
                     // Create an ObjectInputStream to read the byte array and deserialize the board object
                     ObjectInputStream objectIn = new ObjectInputStream(new ByteArrayInputStream(boardBytes));
@@ -59,10 +59,12 @@ public class Model extends Observable {
                     e.printStackTrace();
                 }
             }
-            if (Bag) {
+
+            if (response.startsWith("Bag:")) {
+                String bagString = response.substring("Bag:".length());
                 try {
                     // Convert the received board string back to a byte array
-                    byte[] bagBytes = response.getBytes();
+                    byte[] bagBytes = bagString.getBytes();
 
                     // Create an ObjectInputStream to read the byte array and deserialize the board object
                     ObjectInputStream objectIn = new ObjectInputStream(new ByteArrayInputStream(bagBytes));
@@ -73,10 +75,24 @@ public class Model extends Observable {
                     e.printStackTrace();
                 }
             }
-            if (Round) {
-                int round = Integer.parseInt(response);
+
+            if (response.startsWith("Round:")) {
+                String roundString = response.substring("Round:".length());
+                int round = Integer.parseInt(roundString);
             }
 
+            if (response.startsWith("Players:")) {
+                String temp = response.substring("Players:".length());
+                String[] playersArray = temp.split(", "); //Will need to be change depending on how we use this data in the game
+            }
+
+            if (response.startsWith("CurrPlayer:")) {
+                String CurrPlayerName = response.substring("CurrPlayer:".length());
+            }
+
+            if (response.startsWith("GameName:")) {
+                String GameName = response.substring("GameName:".length());
+            }
 
             this.setChanged();
             this.notifyObservers();

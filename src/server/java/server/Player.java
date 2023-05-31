@@ -25,6 +25,7 @@ public class Player implements Serializable {
         this.tiles = new Tile[]{};
         this.sendToPlayer = sendToPlayer;
     }
+
     public String getName() {
         return name;
     }
@@ -83,6 +84,7 @@ public class Player implements Serializable {
         try {
             //Serialize and Convert the byte array to a string and send it using the sendToPlayer consumer
             String boardString = seriallizeObject(board).toString();
+            boardString = "Board:" + boardString;
             sendToPlayer.accept(boardString);
 
             System.out.println("Board sent to the player");
@@ -94,8 +96,9 @@ public class Player implements Serializable {
     public void sendBag(Bag bag) {
         try {
             // Serialize and Convert the object to a string and send it using the sendToPlayer consumer
-            String boardString = seriallizeObject(bag).toString();
-            sendToPlayer.accept(boardString);
+            String bagString = seriallizeObject(bag).toString();
+            bagString = "Bag:" + bagString;
+            sendToPlayer.accept(bagString);
 
             System.out.println("Bag sent to the player");
         } catch (IOException e) {
@@ -113,18 +116,31 @@ public class Player implements Serializable {
     }
 
     public void sendPlayers(Player[] players) {
-        throw new UnsupportedOperationException();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Players:");
+        for (Player player : players) {
+            stringBuilder.append(player.getName()).append(":").append(player.getScore());
+            stringBuilder.append(", ");
+        }
+
+        // Get the final string representation
+        String playerDataString = stringBuilder.toString();
+
+        sendToPlayer.accept(playerDataString);
     }
 
     public void sendCurrentPlayer(String name) {
-        sendToPlayer.accept(name);
+        String message = "CurrPlayer:" + name;
+        sendToPlayer.accept(message);
     }
 
     public void sendCurrentRound(int round) {
-        sendToPlayer.accept(String.valueOf(round));
+        String message = "Round:" + round;
+        sendToPlayer.accept(message);
     }
 
     public void sendGameName(String name) {
-        sendToPlayer.accept(name);
+        String message = "GameName:" + name;
+        sendToPlayer.accept(message);
     }
 }
