@@ -8,7 +8,6 @@ import server.Tile.Bag;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -83,7 +82,7 @@ public class Player implements Serializable {
     public void sendBoard(Board board) {
         try {
             //Serialize and Convert the byte array to a string and send it using the sendToPlayer consumer
-            String boardString = seriallizeObject(board).toString();
+            String boardString = serializeObject(board);
             boardString = "Board:" + boardString;
             sendToPlayer.accept(boardString);
 
@@ -96,7 +95,7 @@ public class Player implements Serializable {
     public void sendBag(Bag bag) {
         try {
             // Serialize and Convert the object to a string and send it using the sendToPlayer consumer
-            String bagString = seriallizeObject(bag).toString();
+            String bagString = serializeObject(bag);
             bagString = "Bag:" + bagString;
             sendToPlayer.accept(bagString);
 
@@ -106,13 +105,13 @@ public class Player implements Serializable {
         }
     }
 
-    public ByteArrayOutputStream seriallizeObject(Object o) throws IOException {
+    public String serializeObject(Object o) throws IOException {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         ObjectOutputStream objectOut = new ObjectOutputStream(byteOut);
         objectOut.writeObject(o);
         objectOut.flush();
 
-        return byteOut;
+        return byteOut.toString();
     }
 
     public void sendPlayers(Player[] players) {

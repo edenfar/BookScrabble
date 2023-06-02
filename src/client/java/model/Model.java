@@ -20,6 +20,12 @@ public class Model extends Observable {
     private PrintWriter outToServer;
     private Scanner inFromServer;
     private Thread serverListener;
+    private Board board;
+    private Tile.Bag bag;
+    private int round;
+    private String[] playersArray;
+    private String CurrPlayerName;
+    private String GameName;
 
     public void connect(String host, int port) {
         try {
@@ -47,12 +53,7 @@ public class Model extends Observable {
             if (response.startsWith("Board:")) {
                 String boardString = response.substring("Board:".length());
                 try {
-                    // Convert the received board string back to a byte array
-                    byte[] boardBytes = boardString.getBytes();
-
-                    // Create an ObjectInputStream to read the byte array and deserialize the board object
-                    ObjectInputStream objectIn = new ObjectInputStream(new ByteArrayInputStream(boardBytes));
-                    Board receivedBoard = (Board) objectIn.readObject();
+                    this.board = (Board) deSerialize(boardString);
 
                     System.out.println("Board received and deserialized");
                 } catch (IOException | ClassNotFoundException e) {
@@ -63,12 +64,8 @@ public class Model extends Observable {
             if (response.startsWith("Bag:")) {
                 String bagString = response.substring("Bag:".length());
                 try {
-                    // Convert the received board string back to a byte array
-                    byte[] bagBytes = bagString.getBytes();
 
-                    // Create an ObjectInputStream to read the byte array and deserialize the board object
-                    ObjectInputStream objectIn = new ObjectInputStream(new ByteArrayInputStream(bagBytes));
-                    Tile.Bag receivedBag = (Tile.Bag) objectIn.readObject();
+                    this.bag = (Tile.Bag) deSerialize(bagString);
 
                     System.out.println("Bag received and deserialized");
                 } catch (IOException | ClassNotFoundException e) {
@@ -78,20 +75,20 @@ public class Model extends Observable {
 
             if (response.startsWith("Round:")) {
                 String roundString = response.substring("Round:".length());
-                int round = Integer.parseInt(roundString);
+               this.round = Integer.parseInt(roundString);
             }
 
             if (response.startsWith("Players:")) {
                 String temp = response.substring("Players:".length());
-                String[] playersArray = temp.split(", "); //Will need to be change depending on how we use this data in the game
+                 this.playersArray = temp.split(", "); //Will need to be change depending on how we use this data in the game
             }
 
             if (response.startsWith("CurrPlayer:")) {
-                String CurrPlayerName = response.substring("CurrPlayer:".length());
+                this.CurrPlayerName = response.substring("CurrPlayer:".length());
             }
 
             if (response.startsWith("GameName:")) {
-                String GameName = response.substring("GameName:".length());
+               this.GameName = response.substring("GameName:".length());
             }
 
             this.setChanged();
@@ -105,6 +102,15 @@ public class Model extends Observable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Object deSerialize(String response) throws IOException, ClassNotFoundException {
+        // Convert the received board string back to a byte array
+        byte[] respToBytes = response.getBytes();
+
+        // Create an ObjectInputStream to read the byte array and deserialize the board object
+        ObjectInputStream objectIn = new ObjectInputStream(new ByteArrayInputStream(respToBytes));
+        return objectIn.readObject();
     }
 
     public void playTurn(String word, int row, int col, boolean vertical) {
