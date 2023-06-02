@@ -1,13 +1,18 @@
 package server;
 
+import java.io.Serializable;
 import java.util.function.Consumer;
 
 import server.Tile.Bag;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Player {
+public class Player implements Serializable {
     String name;
     private int score;
     private Tile[] tiles;
@@ -19,6 +24,7 @@ public class Player {
         this.tiles = new Tile[]{};
         this.sendToPlayer = sendToPlayer;
     }
+
     public String getName() {
         return name;
     }
@@ -74,26 +80,66 @@ public class Player {
     }
 
     public void sendBoard(Board board) {
-        throw new UnsupportedOperationException();
+        try {
+            //Serialize and Convert the byte array to a string and send it using the sendToPlayer consumer
+            String boardString = serializeObject(board);
+            boardString = "Board:" + boardString;
+            sendToPlayer.accept(boardString);
+
+            System.out.println("Board sent to the player");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendBag(Bag bag) {
-        throw new UnsupportedOperationException();
+        try {
+            // Serialize and Convert the object to a string and send it using the sendToPlayer consumer
+            String bagString = serializeObject(bag);
+            bagString = "Bag:" + bagString;
+            sendToPlayer.accept(bagString);
+
+            System.out.println("Bag sent to the player");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String serializeObject(Object o) throws IOException {
+        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        ObjectOutputStream objectOut = new ObjectOutputStream(byteOut);
+        objectOut.writeObject(o);
+        objectOut.flush();
+
+        return byteOut.toString();
     }
 
     public void sendPlayers(Player[] players) {
-        throw new UnsupportedOperationException();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Players:");
+        for (Player player : players) {
+            stringBuilder.append(player.getName()).append(":").append(player.getScore());
+            stringBuilder.append(", ");
+        }
+
+        // Get the final string representation
+        String playerDataString = stringBuilder.toString();
+
+        sendToPlayer.accept(playerDataString);
     }
 
     public void sendCurrentPlayer(String name) {
-        throw new UnsupportedOperationException();
+        String message = "CurrPlayer:" + name;
+        sendToPlayer.accept(message);
     }
 
     public void sendCurrentRound(int round) {
-        throw new UnsupportedOperationException();
+        String message = "Round:" + round;
+        sendToPlayer.accept(message);
     }
 
     public void sendGameName(String name) {
-        throw new UnsupportedOperationException();
+        String message = "GameName:" + name;
+        sendToPlayer.accept(message);
     }
 }

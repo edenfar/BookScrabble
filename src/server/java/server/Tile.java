@@ -2,8 +2,9 @@ package server;
 
 import java.util.Objects;
 import java.util.Random;
+import java.io.Serializable;
 
-public class Tile {
+public class Tile implements Serializable {
 
     public final char letter;
     public final int score;
@@ -29,6 +30,11 @@ public class Tile {
             return false;
         Tile other = (Tile) obj;
         return letter == other.letter && score == other.score;
+    }
+
+    @Override
+    public String toString() {
+        return letter + Integer.toString(score);
     }
 
     public static class Bag {
@@ -84,7 +90,11 @@ public class Tile {
         }
 
         public Tile[] getRandomTiles(int count) {
-            throw new UnsupportedOperationException();
+            Tile[] randTiles = new Tile[count];
+            for (int i = 0; i < count; i++) {
+                randTiles[i] = getRand();
+            }
+            return randTiles;
         }
 
         public Tile getTile(char c) {
