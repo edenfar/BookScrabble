@@ -4,11 +4,15 @@ package server;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 public class PlayerHandler implements ClientHandler {
     PrintWriter out;
     Scanner in;
+    Consumer<String> sendToPlayer;
     Player player;
     Game game;
 
@@ -21,6 +25,7 @@ public class PlayerHandler implements ClientHandler {
     public void handleClient(InputStream inFromClient, OutputStream outToClient) {
         out = new PrintWriter(outToClient);
         in = new Scanner(inFromClient);
+        sendToPlayer = (String message) -> { out.println(message); out.flush(); };
         Object request = parseRequest(in.nextLine());
         if (request instanceof HostRequest hostRequest) {
             this.createGameByRequest(hostRequest);
@@ -60,18 +65,24 @@ public class PlayerHandler implements ClientHandler {
         host,<player name>,<file names separated by commas>
         guest,<player name>,<game name>
          */
-        throw new UnsupportedOperationException();
+        System.out.println("received request: " + request);
+        String[] params = request.split(",");
+        if (Objects.equals(params[0], "guest"))
+            return new GuestRequest(params[1], params[2]);
+        if (Objects.equals(params[0], "host"))
+            return new HostRequest(params[1], Arrays.copyOfRange(params, 2, params.length));
+        throw new UnsupportedOperationException("Invalid request received: " + request);
     }
 
     public void createGameByRequest(HostRequest request) {
         GamesManager gamesManager = GamesManager.get();
-        player = new Player(request.name, out::println);
+        player = new Player(request.name, this.sendToPlayer);
         game = gamesManager.createGame(request.fileNames, player);
     }
 
     public void connectToGameByRequest(GuestRequest request) {
         GamesManager gamesManager = GamesManager.get();
-        player = new Player(request.name, out::println);
+        player = new Player(request.name, this.sendToPlayer);
         game = gamesManager.getGame(request.gameName);
         game.addPlayer(player);
     }

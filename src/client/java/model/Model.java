@@ -15,7 +15,6 @@ import java.util.Scanner;
 public class Model extends Observable {
     private String gameName;
     private String playerName;
-    // Feel free to add fields and classes for the game data
     private Socket server;
     private PrintWriter outToServer;
     private Scanner inFromServer;
@@ -24,8 +23,7 @@ public class Model extends Observable {
     private Tile.Bag bag;
     private int round;
     private String[] playersArray;
-    private String CurrPlayerName;
-    private String GameName;
+    private String currPlayerName;
 
     public void connect(String host, int port) {
         try {
@@ -39,7 +37,7 @@ public class Model extends Observable {
         serverListener.start();
     }
 
-    private void sendMessage(String message) {
+    protected void sendMessage(String message) {
         outToServer.println(message);
         outToServer.flush();
     }
@@ -47,9 +45,6 @@ public class Model extends Observable {
     public void listen() {
         String response = inFromServer.next();
         while (!Objects.equals(response, "end")) {
-
-            // Handle the response - when it is the game data (board, bag, players) we need to de-serialize it
-
             if (response.startsWith("Board:")) {
                 String boardString = response.substring("Board:".length());
                 try {
@@ -84,15 +79,16 @@ public class Model extends Observable {
             }
 
             if (response.startsWith("CurrPlayer:")) {
-                this.CurrPlayerName = response.substring("CurrPlayer:".length());
+                this.currPlayerName = response.substring("CurrPlayer:".length());
             }
 
             if (response.startsWith("GameName:")) {
-               this.GameName = response.substring("GameName:".length());
+               this.gameName = response.substring("GameName:".length());
             }
 
+            while (this.hasChanged());
             this.setChanged();
-            this.notifyObservers();
+            this.notifyObservers(response.split(":")[0]);
             response = inFromServer.next();
         }
         inFromServer.close();
@@ -115,5 +111,29 @@ public class Model extends Observable {
 
     public void playTurn(String word, int row, int col, boolean vertical) {
         throw new UnsupportedOperationException();
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public Tile.Bag getBag() {
+        return bag;
+    }
+
+    public int getRound() {
+        return round;
+    }
+
+    public String[] getPlayersArray() {
+        return playersArray;
+    }
+
+    public String getCurrPlayerName() {
+        return currPlayerName;
+    }
+
+    public String getGameName() {
+        return gameName;
     }
 }
