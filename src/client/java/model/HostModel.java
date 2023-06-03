@@ -2,7 +2,7 @@ package model;
 
 public class HostModel extends Model {
     public void createGame(String playerName, String[] fileNames) {
-        throw new UnsupportedOperationException();
+        this.sendMessage(String.join(",", "host", playerName, String.join(",", fileNames)));
     }
 
     public void startGame() {

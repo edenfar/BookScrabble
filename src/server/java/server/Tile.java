@@ -101,7 +101,6 @@ public class Tile implements Serializable {
             if (c >= 'A' && c <= 'Z' && quantities[c - 'A'] > 0) {
                 quantities[c - 'A'] -= 1;
                 size -= 1;
-                //System.out.println("getting "+c+" - "+quantities[c-'A']);
                 return tiles[c - 'A'];
             }
             return null;

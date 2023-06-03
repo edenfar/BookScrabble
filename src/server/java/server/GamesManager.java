@@ -28,7 +28,10 @@ public class GamesManager {
     }
 
     public Game getGame(String gameName) {
-        return games.get(gameName);
+        Game game = games.get(gameName);
+        if (game == null)
+            throw new RuntimeException("Game is not found: " + gameName);
+        return game;
     }
 
     private static String getNewRandomName() {
