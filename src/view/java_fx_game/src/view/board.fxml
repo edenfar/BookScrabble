@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LetterButtonsComponent">
+
+    <HBox fx:id="buttonContainer" />
+
+</HBox>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.NewGameWindowController" prefWidth="600" prefHeight="400">
+    <top>
+        <GridPane>
+            <Label text="Let's Start Playing!" style="-fx-font-size: 20px; -fx-alignment: center; -fx-text-fill: #ff0000;" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="15"/>
+        </GridPane>
+    </top>
+    <center>
+        <GridPane>
+            <!-- Row 1 -->
+            <Rectangle width="25" height="25" style="-fx-fill: #ff0000;" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="5" GridPane.rowIndex="1"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="6" GridPane.rowIndex="1"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ff0000;" GridPane.columnIndex="7" GridPane.rowIndex="1"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="8" GridPane.rowIndex="1"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="9" GridPane.rowIndex="1"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="10" GridPane.rowIndex="1"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="11" GridPane.rowIndex="1"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="12" GridPane.rowIndex="1"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="13" GridPane.rowIndex="1"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ff0000;" GridPane.columnIndex="14" GridPane.rowIndex="1"/>
+
+            <!-- Row 2 -->
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="4" GridPane.rowIndex="2"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #0000ff;" GridPane.columnIndex="5" GridPane.rowIndex="2"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="6" GridPane.rowIndex="2"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="7" GridPane.rowIndex="2"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="8" GridPane.rowIndex="2"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #0000ff;" GridPane.columnIndex="9" GridPane.rowIndex="2"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="10" GridPane.rowIndex="2"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="11" GridPane.rowIndex="2"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="12" GridPane.rowIndex="2"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="13" GridPane.rowIndex="2"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="14" GridPane.rowIndex="2"/>
+
+            <!-- Row 3 -->
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="3" GridPane.rowIndex="3"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="4" GridPane.rowIndex="3"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="5" GridPane.rowIndex="3"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="6" GridPane.rowIndex="3"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="7" GridPane.rowIndex="3"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="8" GridPane.rowIndex="3"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="9" GridPane.rowIndex="3"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="10" GridPane.rowIndex="3"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="11" GridPane.rowIndex="3"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="12" GridPane.rowIndex="3"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="13" GridPane.rowIndex="3"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="14" GridPane.rowIndex="3"/>
+
+            <!-- Row 4 -->
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="3" GridPane.rowIndex="4"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="4" GridPane.rowIndex="4"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="5" GridPane.rowIndex="4"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="6" GridPane.rowIndex="4"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="7" GridPane.rowIndex="4"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="8" GridPane.rowIndex="4"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="9" GridPane.rowIndex="4"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="10" GridPane.rowIndex="4"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="11" GridPane.rowIndex="4"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="12" GridPane.rowIndex="4"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="13" GridPane.rowIndex="4"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="14" GridPane.rowIndex="4"/>
+
+            <!-- Row 5 -->
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="2" GridPane.rowIndex="5"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="3" GridPane.rowIndex="5"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="4" GridPane.rowIndex="5"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="5" GridPane.rowIndex="5"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="6" GridPane.rowIndex="5"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="7" GridPane.rowIndex="5"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="8" GridPane.rowIndex="5"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="9" GridPane.rowIndex="5"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="10" GridPane.rowIndex="5"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="11" GridPane.rowIndex="5"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="12" GridPane.rowIndex="5"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="13" GridPane.rowIndex="5"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="14" GridPane.rowIndex="5"/>
+
+            <!-- Row 6 -->
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #0000ff;" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="3" GridPane.rowIndex="6"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="4" GridPane.rowIndex="6"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #0000ff;" GridPane.columnIndex="5" GridPane.rowIndex="6"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="6" GridPane.rowIndex="6"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="7" GridPane.rowIndex="6"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="8" GridPane.rowIndex="6"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #0000ff;" GridPane.columnIndex="9" GridPane.rowIndex="6"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="10" GridPane.rowIndex="6"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="11" GridPane.rowIndex="6"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="12" GridPane.rowIndex="6"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #0000ff;" GridPane.columnIndex="13" GridPane.rowIndex="6"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="14" GridPane.rowIndex="6"/>
+            
+            <!-- Row 7 -->
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="2" GridPane.rowIndex="7"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="3" GridPane.rowIndex="7"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="4" GridPane.rowIndex="7"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="5" GridPane.rowIndex="7"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="6" GridPane.rowIndex="7"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="7" GridPane.rowIndex="7"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="8" GridPane.rowIndex="7"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="9" GridPane.rowIndex="7"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="10" GridPane.rowIndex="7"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="11" GridPane.rowIndex="7"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="12" GridPane.rowIndex="7"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="13" GridPane.rowIndex="7"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="14" GridPane.rowIndex="7"/>
+
+            <!-- Row 8 -->
+            <Rectangle width="25" height="25" style="-fx-fill: #ff0000;" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="2" GridPane.rowIndex="8"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="3" GridPane.rowIndex="8"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="4" GridPane.rowIndex="8"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="5" GridPane.rowIndex="8"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="6" GridPane.rowIndex="8"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="7" GridPane.rowIndex="8"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="8" GridPane.rowIndex="8"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="9" GridPane.rowIndex="8"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="10" GridPane.rowIndex="8"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="11" GridPane.rowIndex="8"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="12" GridPane.rowIndex="8"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="13" GridPane.rowIndex="8"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ff0000;" GridPane.columnIndex="14" GridPane.rowIndex="8"/>
+
+            <!-- Row 9 -->
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="0" GridPane.rowIndex="9"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="2" GridPane.rowIndex="9"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="3" GridPane.rowIndex="9"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="4" GridPane.rowIndex="9"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="5" GridPane.rowIndex="9"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="6" GridPane.rowIndex="9"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="7" GridPane.rowIndex="9"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="8" GridPane.rowIndex="9"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="9" GridPane.rowIndex="9"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="10" GridPane.rowIndex="9"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="11" GridPane.rowIndex="9"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="12" GridPane.rowIndex="9"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="13" GridPane.rowIndex="9"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="14" GridPane.rowIndex="9"/>
+
+            <!-- Row 10 -->
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #0000ff;" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="2" GridPane.rowIndex="10"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="3" GridPane.rowIndex="10"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="4" GridPane.rowIndex="10"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #0000ff;" GridPane.columnIndex="5" GridPane.rowIndex="10"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="6" GridPane.rowIndex="10"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="7" GridPane.rowIndex="10"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="8" GridPane.rowIndex="10"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #0000ff;" GridPane.columnIndex="9" GridPane.rowIndex="10"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="10" GridPane.rowIndex="10"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="11" GridPane.rowIndex="10"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="12" GridPane.rowIndex="10"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #0000ff;" GridPane.columnIndex="13" GridPane.rowIndex="10"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="14" GridPane.rowIndex="10"/>
+
+            <!-- Row 11 -->
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="0" GridPane.rowIndex="11"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="1" GridPane.rowIndex="11"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="2" GridPane.rowIndex="11"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="3" GridPane.rowIndex="11"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="4" GridPane.rowIndex="11"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="5" GridPane.rowIndex="11"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="6" GridPane.rowIndex="11"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="7" GridPane.rowIndex="11"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="8" GridPane.rowIndex="11"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="9" GridPane.rowIndex="11"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="10" GridPane.rowIndex="11"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="11" GridPane.rowIndex="11"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="12" GridPane.rowIndex="11"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="13" GridPane.rowIndex="11"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="14" GridPane.rowIndex="11"/>
+            
+            <!-- Row 12 -->
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="0" GridPane.rowIndex="12"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="1" GridPane.rowIndex="12"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="2" GridPane.rowIndex="12"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="3" GridPane.rowIndex="12"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="4" GridPane.rowIndex="12"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="5" GridPane.rowIndex="12"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="6" GridPane.rowIndex="12"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="7" GridPane.rowIndex="12"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="8" GridPane.rowIndex="12"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="9" GridPane.rowIndex="12"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="10" GridPane.rowIndex="12"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="11" GridPane.rowIndex="12"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="12" GridPane.rowIndex="12"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="13" GridPane.rowIndex="12"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="14" GridPane.rowIndex="12"/>
+
+            <!-- Row 13 -->
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="0" GridPane.rowIndex="13"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="1" GridPane.rowIndex="13"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="2" GridPane.rowIndex="13"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="3" GridPane.rowIndex="13"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="4" GridPane.rowIndex="13"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="5" GridPane.rowIndex="13"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="6" GridPane.rowIndex="13"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="7" GridPane.rowIndex="13"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="8" GridPane.rowIndex="13"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="9" GridPane.rowIndex="13"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="10" GridPane.rowIndex="13"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="11" GridPane.rowIndex="13"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="12" GridPane.rowIndex="13"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="13" GridPane.rowIndex="13"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="14" GridPane.rowIndex="13"/>
+
+            <!-- Row 14 -->
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="0" GridPane.rowIndex="14"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="1" GridPane.rowIndex="14"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="2" GridPane.rowIndex="14"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="3" GridPane.rowIndex="14"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="4" GridPane.rowIndex="14"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #0000ff;" GridPane.columnIndex="5" GridPane.rowIndex="14"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="6" GridPane.rowIndex="14"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="7" GridPane.rowIndex="14"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="8" GridPane.rowIndex="14"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #0000ff;" GridPane.columnIndex="9" GridPane.rowIndex="14"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="10" GridPane.rowIndex="14"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="11" GridPane.rowIndex="14"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="12" GridPane.rowIndex="14"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ffff00;" GridPane.columnIndex="13" GridPane.rowIndex="14"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="14" GridPane.rowIndex="14"/>
+
+            <!-- Row 15 -->
+            <Rectangle width="25" height="25" style="-fx-fill: #ff0000;" GridPane.columnIndex="0" GridPane.rowIndex="15"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="1" GridPane.rowIndex="15"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="2" GridPane.rowIndex="15"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="3" GridPane.rowIndex="15"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="4" GridPane.rowIndex="15"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="5" GridPane.rowIndex="15"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="6" GridPane.rowIndex="15"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ff0000;" GridPane.columnIndex="7" GridPane.rowIndex="15"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="8" GridPane.rowIndex="15"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="9" GridPane.rowIndex="15"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="10" GridPane.rowIndex="15"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #add8e6;" GridPane.columnIndex="11" GridPane.rowIndex="15"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="12" GridPane.rowIndex="15"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #00ff00;" GridPane.columnIndex="13" GridPane.rowIndex="15"/>
+            <Rectangle width="25" height="25" style="-fx-fill: #ff0000;" GridPane.columnIndex="14" GridPane.rowIndex="15"/>
+
+        </GridPane>
+    </center>
+</BorderPane>
