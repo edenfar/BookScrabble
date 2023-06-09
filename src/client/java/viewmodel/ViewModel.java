@@ -75,6 +75,17 @@ public class ViewModel extends Observable implements Observer {
         // Trigger view to change screen
     }
 
+    public void playTurn(String word, int r, int c, boolean vertical) {
+        HostModel hostModel = new HostModel();
+        this.setModel(hostModel);
+        // TODO: Request server details from client
+        hostModel.connect("localhost", 6123);
+        String[] fileNames = {"x", "y"
+        };
+        hostModel.createGame(playerName.getValue(), fileNames);
+        m.playTurn(word, r, c, vertical);
+    }
+
     @Override
     public void update(Observable o, Object arg) {
         if (o == m) {
