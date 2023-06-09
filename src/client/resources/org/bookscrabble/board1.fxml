@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+
+<?import org.bookscrabble.BoardDisplayer?>
+<?import org.bookscrabble.LettersDisplayer?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.bookscrabble.BoardController">
+    <top>
+        <Text text="lets start playing!" BorderPane.alignment="CENTER">
+            <font>
+                <Font size="26.0"/>
+            </font>
+        </Text>
+    </top>
+    <center>
+        <BoardDisplayer fx:id="boardDisplayer" height="233.0" width="290.0" BorderPane.alignment="CENTER"/>
+    </center>
+    <bottom>
+        <LettersDisplayer fx:id="lettersDisplayer" height="85.0" width="458.0" BorderPane.alignment="CENTER"/>
+    </bottom>
+    <right>
+        <Button fx:id="doneButton" text="Done" BorderPane.alignment="CENTER_RIGHT"/>
+    </right>
+</BorderPane>

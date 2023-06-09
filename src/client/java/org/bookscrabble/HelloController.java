@@ -8,11 +8,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ButtonType;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import viewmodel.ViewModel;
 
+import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.ResourceBundle;
 
 public class HelloController implements Observer {
     @FXML
@@ -61,7 +65,13 @@ public class HelloController implements Observer {
 
         dialog.showAndWait().ifPresent((GuestData guestData) -> vm.connectToGame());
     }
-
+    @FXML
+    private void rectangleClicked(ActionEvent event) {
+        Rectangle rectangle = (Rectangle) event.getSource();
+        int row = GridPane.getRowIndex(rectangle);
+        int column = GridPane.getColumnIndex(rectangle);
+        System.out.println("Clicked Rectangle at row: " + row + ", column: " + column);
+    }
     public void createNewGame(ActionEvent actionEvent) {
         Dialog<HostData> dialog = new Dialog<>();
         dialog.setTitle("Enter Your Name & File Names");
