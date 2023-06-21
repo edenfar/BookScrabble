@@ -1,6 +1,7 @@
 package server;
 
 import java.io.Serializable;
+import java.util.Base64;
 import java.util.function.Consumer;
 
 import server.Tile.Bag;
@@ -111,20 +112,20 @@ public class Player implements Serializable {
         objectOut.writeObject(o);
         objectOut.flush();
 
-        return byteOut.toString();
+        byte[] bytes = byteOut.toByteArray();
+        return Base64.getEncoder().encodeToString(bytes);
     }
 
     public void sendPlayers(Player[] players) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Players:");
         for (Player player : players) {
-            stringBuilder.append(player.getName()).append(":").append(player.getScore());
-            stringBuilder.append(", ");
+                stringBuilder.append(player.getName()).append(":").append(player.getScore());
+                stringBuilder.append(",");
         }
 
         // Get the final string representation
         String playerDataString = stringBuilder.toString();
-
         sendToPlayer.accept(playerDataString);
     }
 
@@ -142,4 +143,9 @@ public class Player implements Serializable {
         String message = "GameName:" + name;
         sendToPlayer.accept(message);
     }
+    public void sendGameStart() {
+        String message = "GameStarted:";
+        sendToPlayer.accept(message);
+    }
 }
+

@@ -1,19 +1,22 @@
 package model;
 
+import javafx.beans.property.StringProperty;
 import server.Board;
+import server.Game;
+import server.Player;
 import server.Tile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Base64;
 import java.util.Objects;
 import java.util.Observable;
 import java.util.Scanner;
 
 public class Model extends Observable {
     private String gameName;
-    private String playerName;
     private Socket server;
     private PrintWriter outToServer;
     private Scanner inFromServer;
@@ -42,7 +45,7 @@ public class Model extends Observable {
     }
 
     public void listen() {
-        String response = inFromServer.next();
+        String response = inFromServer.nextLine();
         while (!Objects.equals(response, "end")) {
             if (response.startsWith("Board:")) {
                 String boardString = response.substring("Board:".length());
@@ -69,12 +72,12 @@ public class Model extends Observable {
 
             if (response.startsWith("Round:")) {
                 String roundString = response.substring("Round:".length());
-               this.round = Integer.parseInt(roundString);
+                this.round = Integer.parseInt(roundString);
             }
 
             if (response.startsWith("Players:")) {
                 String temp = response.substring("Players:".length());
-                 this.playersArray = temp.split(", "); //Will need to be change depending on how we use this data in the game
+                this.playersArray = temp.split(","); //Will need to be change depending on how we use this data in the game
             }
 
             if (response.startsWith("CurrPlayer:")) {
@@ -82,13 +85,13 @@ public class Model extends Observable {
             }
 
             if (response.startsWith("GameName:")) {
-               this.gameName = response.substring("GameName:".length());
+                this.gameName = response.substring("GameName:".length());
             }
 
             while (this.hasChanged());
             this.setChanged();
             this.notifyObservers(response.split(":")[0]);
-            response = inFromServer.next();
+            response = inFromServer.nextLine();
         }
         inFromServer.close();
         outToServer.close();
@@ -99,9 +102,10 @@ public class Model extends Observable {
         }
     }
 
+
     public Object deSerialize(String response) throws IOException, ClassNotFoundException {
         // Convert the received board string back to a byte array
-        byte[] respToBytes = response.getBytes();
+        byte[] respToBytes = Base64.getDecoder().decode(response);
 
         // Create an ObjectInputStream to read the byte array and deserialize the board object
         ObjectInputStream objectIn = new ObjectInputStream(new ByteArrayInputStream(respToBytes));

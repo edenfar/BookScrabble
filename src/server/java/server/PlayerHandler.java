@@ -4,36 +4,42 @@ package server;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class PlayerHandler implements ClientHandler {
-    PrintWriter out;
-    Scanner in;
-    Consumer<String> sendToPlayer;
-    Player player;
-    Game game;
-
     /*
     All the communication with the player should happen here, and not in Player class
     We assume that the player has a thread listening to messages from the server (i.e., this class)
      */
+    Game game;
+    List<PrintWriter> outList = new ArrayList<>();
+    List<Scanner> inList = new ArrayList<>();
 
     @Override
     public void handleClient(InputStream inFromClient, OutputStream outToClient) {
+        PrintWriter out;
+        Scanner in;
+        Consumer<String> sendToPlayer;
+        Player player = null;
+
         out = new PrintWriter(outToClient);
+        outList.add(out);
         in = new Scanner(inFromClient);
+        inList.add(in);
         sendToPlayer = (String message) -> { out.println(message); out.flush(); };
         Object request = parseRequest(in.nextLine());
+
         if (request instanceof HostRequest hostRequest) {
-            this.createGameByRequest(hostRequest);
+            player = createGameByRequest(hostRequest, sendToPlayer);
             player.sendGameName(game.name);
-            this.receiveStartGameSignal();
+            player.sendPlayers(game.players);
+
+            this.receiveStartGameSignal(in);
             game.setup();
         } else if (request instanceof GuestRequest guestRequest) {
-            this.connectToGameByRequest(guestRequest);
+            player = connectToGameByRequest(guestRequest,sendToPlayer);
+            game.addPlayer(player);
         }
         while (!game.isOver()) {
             String move = in.nextLine();
@@ -54,10 +60,11 @@ public class PlayerHandler implements ClientHandler {
         throw new UnsupportedOperationException();
     }
 
-    private void receiveStartGameSignal() {
+    private void receiveStartGameSignal(Scanner in) {
         String request = in.nextLine();
-        // assert it is a start request
-        throw new UnsupportedOperationException();
+        //TODO: to change
+        if (!Objects.equals(request, "start"))
+            throw new UnsupportedOperationException("Invalid request received: " + request);
     }
 
     private static Object parseRequest(String request) {
@@ -74,23 +81,28 @@ public class PlayerHandler implements ClientHandler {
         throw new UnsupportedOperationException("Invalid request received: " + request);
     }
 
-    public void createGameByRequest(HostRequest request) {
+    public Player createGameByRequest(HostRequest request, Consumer<String> sendToPlayer) {
         GamesManager gamesManager = GamesManager.get();
-        player = new Player(request.name, this.sendToPlayer);
+        Player player = new Player(request.name, sendToPlayer);
         game = gamesManager.createGame(request.fileNames, player);
+        return player;
     }
 
-    public void connectToGameByRequest(GuestRequest request) {
+    public Player connectToGameByRequest(GuestRequest request, Consumer<String> sendToPlayer) {
         GamesManager gamesManager = GamesManager.get();
-        player = new Player(request.name, this.sendToPlayer);
+        Player player = new Player(request.name, sendToPlayer);
         game = gamesManager.getGame(request.gameName);
-        game.addPlayer(player);
+        return player;
     }
 
     @Override
     public void close() {
-        in.close();
-        out.close();
+        for (Scanner in : inList) {
+            in.close();
+        }
+        for (PrintWriter out : outList) {
+            out.close();
+        }
     }
 }
 
