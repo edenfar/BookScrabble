@@ -24,7 +24,7 @@ public class Game {
         this.name = name;
         this.board = new Board(fileNames);
         this.bag = new Bag();
-        this.players = new Player[MAX_PLAYERS];
+        this.players = new Player[1];
         this.players[0] = host;
         this.rounds = rounds;
         this.numOfPlayers = 1;
@@ -74,6 +74,9 @@ public class Game {
         this.orderPlayers();
         currentRound = 1;
         currentPlayer = players[0];
+        for (Player player : players) {
+            player.sendGameStart();
+        }
     }
 
     public boolean isOver() {
@@ -84,9 +87,17 @@ public class Game {
         if (numOfPlayers >= MAX_PLAYERS) {
             throw new UnsupportedOperationException("Maximum number of players reached.");
         }
+        if (numOfPlayers >= players.length) {
+            int newCapacity = players.length +1 ;
+            Player[] newPlayers = new Player[newCapacity];
+            System.arraycopy(players, 0, newPlayers, 0, players.length);
+            players = newPlayers;
+        }
 
         players[numOfPlayers] = player;
         numOfPlayers++;
+        sendGameToPlayer(player);
+        sendPlayersToPlayers(player);
     }
 
     public void playTurn(Player player, Word word) {
@@ -115,6 +126,13 @@ public class Game {
         this.sendGameToPlayers();
     }
 
+    private void sendPlayersToPlayers(Player p){
+        for (Player player : players){
+            if (player != p)
+                player.sendPlayers(players);
+        }
+    }
+
     private void sendGameToPlayers() {
         for (Player player : players) {
             player.sendBoard(board);
@@ -124,8 +142,16 @@ public class Game {
             player.sendCurrentRound(currentRound);
         }
     }
+    private void sendGameToPlayer(Player p){
+            p.sendBoard(board);
+            p.sendBag(bag);
+            p.sendPlayers(players);
+           // p.sendCurrentPlayer(currentPlayer.name);  //Need to stay in comment for now until it's functional (crashing the code for now)
+            p.sendCurrentRound(currentRound);
+    }
 
     private void advanceCurrentPlayer() {
         throw new UnsupportedOperationException();
     }
+
 }
