@@ -1,5 +1,6 @@
 package org.bookscrabble;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ListChangeListener;
@@ -7,6 +8,7 @@ import javafx.event.ActionEvent;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -26,6 +28,7 @@ import java.util.ResourceBundle;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import viewmodel.ViewModel;
 
 import java.io.IOException;
@@ -43,11 +46,12 @@ public class HelloController implements Observer {
     public VBox stringContainer;
 
 
-
     private ViewModel vm;
 
 
     private Stage stage;
+    PauseTransition delay = new PauseTransition(Duration.millis(250));
+
     private Scene scene;
     final int VBOX_HEIGHT = 8;
     final int DIALOG_WIDTH = 300;
@@ -91,7 +95,14 @@ public class HelloController implements Observer {
             return null;
         });
 
-        dialog.showAndWait().ifPresent((GuestData guestData) -> vm.connectToGame());
+
+        dialog.showAndWait().ifPresent((GuestData guestData) -> {
+            vm.connectToGame();
+            closeMainStage((Stage) ((Node) actionEvent.getSource()).getScene().getWindow());
+
+        });
+
+
     }
     @FXML
     private void rectangleClicked(ActionEvent event) {
@@ -121,19 +132,26 @@ public class HelloController implements Observer {
 
         dialog.showAndWait().ifPresent((HostData guestData) -> {
             vm.createGame(fileNames.getText().split(","));
+            closeMainStage((Stage) ((Node) actionEvent.getSource()).getScene().getWindow());
+
         });
     }
-
 
     private Button getStartButton() {
         return this.startButton;
     }
+
     public void displayStrings(String[] strings) {
         stringContainer.getChildren().clear();
         for (String str : strings) {
             Label label = new Label(str);
             stringContainer.getChildren().add(label);
         }
+    }
+
+    public void closeMainStage(Stage s) {
+        delay.setOnFinished(event -> s.close());
+        delay.play();
     }
 
     @Override
@@ -168,12 +186,12 @@ public class HelloController implements Observer {
                     HelloController controller = loader.getController();
 
                     // Display the game name on the window
-                    String name_s = vm.gameName.getValue()+ " ";
+                    String name_s = vm.gameName.getValue() + " ";
                     controller.gameNameLabel.setText(name_s);
 
                     scene = new Scene(root);
                     stage = new Stage();
-                    stage.setTitle("Scene 2");
+                    stage.setTitle("Pre-Game");
                     stage.setScene(scene);
 
 
@@ -193,7 +211,6 @@ public class HelloController implements Observer {
                     controller.startButton.setOnAction(event -> {
                         vm.startGame();
                     });
-
                     stage.show();
                 });
             }
