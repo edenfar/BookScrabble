@@ -88,7 +88,7 @@ public class Game {
             throw new UnsupportedOperationException("Maximum number of players reached.");
         }
         if (numOfPlayers >= players.length) {
-            int newCapacity = players.length +1 ;
+            int newCapacity = players.length + 1;
             Player[] newPlayers = new Player[newCapacity];
             System.arraycopy(players, 0, newPlayers, 0, players.length);
             players = newPlayers;
@@ -126,9 +126,9 @@ public class Game {
         this.sendGameToPlayers();
     }
 
-    private void sendPlayersToPlayers(Player p){
-        for (Player player : players){
-            if (player != p)
+    private void sendPlayersToPlayers(Player Except) {
+        for (Player player : players) {
+            if (player != Except)
                 player.sendPlayers(players);
         }
     }
@@ -142,12 +142,13 @@ public class Game {
             player.sendCurrentRound(currentRound);
         }
     }
-    private void sendGameToPlayer(Player p){
-            p.sendBoard(board);
-            p.sendBag(bag);
-            p.sendPlayers(players);
-           // p.sendCurrentPlayer(currentPlayer.name);  //Need to stay in comment for now until it's functional (crashing the code for now)
-            p.sendCurrentRound(currentRound);
+
+    private void sendGameToPlayer(Player p) {
+        p.sendBoard(board);
+        p.sendBag(bag);
+        p.sendPlayers(players);
+        // p.sendCurrentPlayer(currentPlayer.name);  //Need to stay in comment for now until it's functional (crashing the code for now)
+        p.sendCurrentRound(currentRound);
     }
 
     private void advanceCurrentPlayer() {

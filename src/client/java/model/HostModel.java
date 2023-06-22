@@ -8,7 +8,6 @@ public class HostModel extends Model {
 
     public void startGame() {
         System.out.println("Starting game");
-        //TODO: to change
         this.sendMessage("start");
     }
 }

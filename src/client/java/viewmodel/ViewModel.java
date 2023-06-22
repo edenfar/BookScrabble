@@ -56,6 +56,8 @@ public class ViewModel extends Observable implements Observer {
     public void startGame() {
         if (this.m instanceof HostModel) {
             ((HostModel) m).startGame();
+        }else{
+            throw new RuntimeException("Cannot start game as guest");
         }
     }
 
