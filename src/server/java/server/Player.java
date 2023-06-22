@@ -120,8 +120,8 @@ public class Player implements Serializable {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Players:");
         for (Player player : players) {
-                stringBuilder.append(player.getName()).append(":").append(player.getScore());
-                stringBuilder.append(",");
+            stringBuilder.append(player.getName()).append(":").append(player.getScore());
+            stringBuilder.append(",");
         }
 
         // Get the final string representation
@@ -143,6 +143,7 @@ public class Player implements Serializable {
         String message = "GameName:" + name;
         sendToPlayer.accept(message);
     }
+
     public void sendGameStart() {
         String message = "GameStarted:";
         sendToPlayer.accept(message);

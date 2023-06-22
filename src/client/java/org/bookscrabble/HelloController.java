@@ -173,7 +173,7 @@ public class HelloController implements Observer {
                     }
                     FXMLLoader loader;
 
-                    // Create a new window with scene2.fxml if it doesn't exist yet
+                    // Create a new window with pre-game-screen.fxml if it doesn't exist yet
                     loader = new FXMLLoader(getClass().getResource("pre-game-screen.fxml"));
                     Parent root;
                     try {
@@ -205,7 +205,7 @@ public class HelloController implements Observer {
                     }
                     controller.displayStrings(stringArray);
 
-                    boolean showStartButton = vm.getIsHost(); // Replace this with your actual condition
+                    boolean showStartButton = vm.getIsHost();
                     controller.getStartButton().setVisible(showStartButton);
 
                     controller.startButton.setOnAction(event -> {
