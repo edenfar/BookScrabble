@@ -19,7 +19,7 @@
         </Text>
     </top>
     <center>
-        <BoardDisplayer fx:id="boardDisplayer" height="233.0" width="290.0" BorderPane.alignment="CENTER"/>
+        <BoardDisplayer fx:id="boardDisplayer" height="430" width="430" BorderPane.alignment="CENTER"/>
     </center>
     <bottom>
         <LettersDisplayer fx:id="lettersDisplayer" height="85.0" width="458.0" BorderPane.alignment="CENTER"/>

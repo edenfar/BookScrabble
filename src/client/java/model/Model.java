@@ -2,7 +2,6 @@ package model;
 
 import server.Board;
 import server.Tile;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -110,7 +109,10 @@ public class Model extends Observable {
     }
 
     public void playTurn(String word, int row, int col, boolean vertical) {
-        throw new UnsupportedOperationException();
+        String concatenatedString = word + "," + row + "," + col + "," + vertical;
+
+        this.sendMessage(concatenatedString);
+
     }
 
     public Board getBoard() {
