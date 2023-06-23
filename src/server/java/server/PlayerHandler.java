@@ -1,6 +1,5 @@
 package server;
 
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -12,7 +11,6 @@ public class PlayerHandler implements ClientHandler {
     All the communication with the player should happen here, and not in Player class
     We assume that the player has a thread listening to messages from the server (i.e., this class)
      */
-    Game game;
     List<PrintWriter> outList = new ArrayList<>();
     List<Scanner> inList = new ArrayList<>();
 
@@ -22,24 +20,34 @@ public class PlayerHandler implements ClientHandler {
         Scanner in;
         Consumer<String> sendToPlayer;
         Player player = null;
+        Game game = null;
 
         out = new PrintWriter(outToClient);
         outList.add(out);
         in = new Scanner(inFromClient);
         inList.add(in);
-        sendToPlayer = (String message) -> { out.println(message); out.flush(); };
+        sendToPlayer = (String message) -> {
+            out.println(message);
+            out.flush();
+        };
         Object request = parseRequest(in.nextLine());
 
         if (request instanceof HostRequest hostRequest) {
-            player = createGameByRequest(hostRequest, sendToPlayer);
+
+            player = getPlayer(hostRequest, sendToPlayer);
+            game = createGameGetGame(hostRequest, player);
+
             player.sendGameName(game.name);
             player.sendPlayers(game.players);
 
             this.receiveStartGameSignal(in);
             game.setup();
         } else if (request instanceof GuestRequest guestRequest) {
-            player = connectToGameByRequest(guestRequest,sendToPlayer);
+            player = getPlayer(guestRequest, sendToPlayer);
+            game = connectToGameGetGame(guestRequest);
             game.addPlayer(player);
+
+
         }
         while (!game.isOver()) {
             String move = in.nextLine();
@@ -49,11 +57,22 @@ public class PlayerHandler implements ClientHandler {
         out.flush();
     }
 
-
-    public record HostRequest(String name, String[] fileNames) {
+    public interface Request {
+        String getName();
     }
 
-    public record GuestRequest(String name, String gameName) {
+    public record HostRequest(String name, String[] fileNames) implements Request {
+        @Override
+        public String getName() {
+            return name;
+        }
+    }
+
+    public record GuestRequest(String name, String gameName) implements Request {
+        @Override
+        public String getName() {
+            return name;
+        }
     }
 
     private Word parseMove(String move) {
@@ -81,18 +100,18 @@ public class PlayerHandler implements ClientHandler {
         throw new UnsupportedOperationException("Invalid request received: " + request);
     }
 
-    public Player createGameByRequest(HostRequest request, Consumer<String> sendToPlayer) {
+    public Game createGameGetGame(HostRequest request, Player p) {
         GamesManager gamesManager = GamesManager.get();
-        Player player = new Player(request.name, sendToPlayer);
-        game = gamesManager.createGame(request.fileNames, player);
-        return player;
+        return gamesManager.createGame(request.fileNames, p);
     }
 
-    public Player connectToGameByRequest(GuestRequest request, Consumer<String> sendToPlayer) {
+    public Player getPlayer(Request request, Consumer<String> sendToPlayer) {
+        return new Player(request.getName(), sendToPlayer);
+    }
+
+    public Game connectToGameGetGame(GuestRequest request) {
         GamesManager gamesManager = GamesManager.get();
-        Player player = new Player(request.name, sendToPlayer);
-        game = gamesManager.getGame(request.gameName);
-        return player;
+        return gamesManager.getGame(request.gameName);
     }
 
     @Override

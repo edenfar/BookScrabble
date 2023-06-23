@@ -24,7 +24,7 @@ public class Game {
         this.name = name;
         this.board = new Board(fileNames);
         this.bag = new Bag();
-        this.players = new Player[1];
+        this.players = new Player[MAX_PLAYERS];
         this.players[0] = host;
         this.rounds = rounds;
         this.numOfPlayers = 1;
@@ -75,7 +75,8 @@ public class Game {
         currentRound = 1;
         currentPlayer = players[0];
         for (Player player : players) {
-            player.sendGameStart();
+            if (player != null)
+                player.sendGameStart();
         }
     }
 
@@ -87,13 +88,6 @@ public class Game {
         if (numOfPlayers >= MAX_PLAYERS) {
             throw new UnsupportedOperationException("Maximum number of players reached.");
         }
-        if (numOfPlayers >= players.length) {
-            int newCapacity = players.length + 1;
-            Player[] newPlayers = new Player[newCapacity];
-            System.arraycopy(players, 0, newPlayers, 0, players.length);
-            players = newPlayers;
-        }
-
         players[numOfPlayers] = player;
         numOfPlayers++;
         sendGameToPlayer(player);
@@ -128,18 +122,22 @@ public class Game {
 
     private void sendPlayersToPlayers(Player Except) {
         for (Player player : players) {
-            if (player != Except)
-                player.sendPlayers(players);
+            if (player != null) {
+                if (player != Except)
+                    player.sendPlayers(players);
+            }
         }
     }
 
     private void sendGameToPlayers() {
         for (Player player : players) {
-            player.sendBoard(board);
-            player.sendBag(bag);
-            player.sendPlayers(players);
-            player.sendCurrentPlayer(currentPlayer.name);
-            player.sendCurrentRound(currentRound);
+            if (player != null) {
+                player.sendBoard(board);
+                player.sendBag(bag);
+                player.sendPlayers(players);
+                player.sendCurrentPlayer(currentPlayer.name);
+                player.sendCurrentRound(currentRound);
+            }
         }
     }
 
@@ -154,5 +152,4 @@ public class Game {
     private void advanceCurrentPlayer() {
         throw new UnsupportedOperationException();
     }
-
 }

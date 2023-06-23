@@ -23,7 +23,7 @@ public class GamesManager {
     public Game createGame(String[] fileNames, Player host) {
         String name = getNewRandomName();
         Game game = new Game(name, fileNames, host, ROUNDS);
-        games.put(name, new Game(name, fileNames, host, ROUNDS));
+        games.put(name, game);
         return game;
     }
 

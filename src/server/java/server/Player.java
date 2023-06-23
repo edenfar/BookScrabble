@@ -120,8 +120,10 @@ public class Player implements Serializable {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Players:");
         for (Player player : players) {
-            stringBuilder.append(player.getName()).append(":").append(player.getScore());
-            stringBuilder.append(",");
+            if (player != null) {
+                stringBuilder.append(player.getName()).append(":").append(player.getScore());
+                stringBuilder.append(",");
+            }
         }
 
         // Get the final string representation
