@@ -21,6 +21,7 @@ public class PlayerHandler implements ClientHandler {
         Consumer<String> sendToPlayer;
         Player player = null;
         Game game = null;
+        String name;
 
         out = new PrintWriter(outToClient);
         outList.add(out);
@@ -33,9 +34,9 @@ public class PlayerHandler implements ClientHandler {
         Object request = parseRequest(in.nextLine());
 
         if (request instanceof HostRequest hostRequest) {
-
-            player = getPlayer(hostRequest, sendToPlayer);
-            game = createGameGetGame(hostRequest, player);
+            name = hostRequest.name;
+            player = getPlayer(name, sendToPlayer);
+            game = createGame(hostRequest, player);
 
             player.sendGameName(game.name);
             player.sendPlayers(game.players);
@@ -43,8 +44,9 @@ public class PlayerHandler implements ClientHandler {
             this.receiveStartGameSignal(in);
             game.setup();
         } else if (request instanceof GuestRequest guestRequest) {
-            player = getPlayer(guestRequest, sendToPlayer);
-            game = connectToGameGetGame(guestRequest);
+            name = guestRequest.name;
+            player = getPlayer(name, sendToPlayer);
+            game = connectToGame(guestRequest);
             game.addPlayer(player);
 
 
@@ -57,22 +59,10 @@ public class PlayerHandler implements ClientHandler {
         out.flush();
     }
 
-    public interface Request {
-        String getName();
+    public record HostRequest(String name, String[] fileNames) {
     }
 
-    public record HostRequest(String name, String[] fileNames) implements Request {
-        @Override
-        public String getName() {
-            return name;
-        }
-    }
-
-    public record GuestRequest(String name, String gameName) implements Request {
-        @Override
-        public String getName() {
-            return name;
-        }
+    public record GuestRequest(String name, String gameName) {
     }
 
     private Word parseMove(String move) {
@@ -100,16 +90,16 @@ public class PlayerHandler implements ClientHandler {
         throw new UnsupportedOperationException("Invalid request received: " + request);
     }
 
-    public Game createGameGetGame(HostRequest request, Player p) {
+    public Game createGame(HostRequest request, Player p) {
         GamesManager gamesManager = GamesManager.get();
         return gamesManager.createGame(request.fileNames, p);
     }
 
-    public Player getPlayer(Request request, Consumer<String> sendToPlayer) {
-        return new Player(request.getName(), sendToPlayer);
+    public Player getPlayer(String name, Consumer<String> sendToPlayer) {
+        return new Player(name, sendToPlayer);
     }
 
-    public Game connectToGameGetGame(GuestRequest request) {
+    public Game connectToGame(GuestRequest request) {
         GamesManager gamesManager = GamesManager.get();
         return gamesManager.getGame(request.gameName);
     }
