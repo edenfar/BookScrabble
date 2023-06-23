@@ -37,7 +37,7 @@ public class Tile implements Serializable {
         return letter + Integer.toString(score);
     }
 
-    public static class Bag {
+    public static class Bag implements Serializable{
         private int[] maxQuantities = {9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1};
         private int[] quantities = maxQuantities.clone();
         private Tile[] tiles = {

@@ -74,6 +74,10 @@ public class Game {
         this.orderPlayers();
         currentRound = 1;
         currentPlayer = players[0];
+        for (Player player : players) {
+            if (player != null)
+                player.sendGameStart();
+        }
     }
 
     public boolean isOver() {
@@ -84,9 +88,10 @@ public class Game {
         if (numOfPlayers >= MAX_PLAYERS) {
             throw new UnsupportedOperationException("Maximum number of players reached.");
         }
-
         players[numOfPlayers] = player;
         numOfPlayers++;
+        sendGameToPlayer(player);
+        sendPlayersToPlayers(player);
     }
 
     public void playTurn(Player player, Word word) {
@@ -115,14 +120,33 @@ public class Game {
         this.sendGameToPlayers();
     }
 
+    private void sendPlayersToPlayers(Player Except) {
+        for (Player player : players) {
+            if (player != null) {
+                if (player != Except)
+                    player.sendPlayers(players);
+            }
+        }
+    }
+
     private void sendGameToPlayers() {
         for (Player player : players) {
-            player.sendBoard(board);
-            player.sendBag(bag);
-            player.sendPlayers(players);
-            player.sendCurrentPlayer(currentPlayer.name);
-            player.sendCurrentRound(currentRound);
+            if (player != null) {
+                player.sendBoard(board);
+                player.sendBag(bag);
+                player.sendPlayers(players);
+                player.sendCurrentPlayer(currentPlayer.name);
+                player.sendCurrentRound(currentRound);
+            }
         }
+    }
+
+    private void sendGameToPlayer(Player p) {
+        p.sendBoard(board);
+        p.sendBag(bag);
+        p.sendPlayers(players);
+        // p.sendCurrentPlayer(currentPlayer.name);  //Need to stay in comment for now until it's functional (crashing the code for now)
+        p.sendCurrentRound(currentRound);
     }
 
     private void advanceCurrentPlayer() {

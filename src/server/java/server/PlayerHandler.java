@@ -1,39 +1,55 @@
 package server;
 
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class PlayerHandler implements ClientHandler {
-    PrintWriter out;
-    Scanner in;
-    Consumer<String> sendToPlayer;
-    Player player;
-    Game game;
-
     /*
     All the communication with the player should happen here, and not in Player class
     We assume that the player has a thread listening to messages from the server (i.e., this class)
      */
+    List<PrintWriter> outList = new ArrayList<>();
+    List<Scanner> inList = new ArrayList<>();
 
     @Override
     public void handleClient(InputStream inFromClient, OutputStream outToClient) {
+        PrintWriter out;
+        Scanner in;
+        Consumer<String> sendToPlayer;
+        Player player = null;
+        Game game = null;
+        String name;
+
         out = new PrintWriter(outToClient);
+        outList.add(out);
         in = new Scanner(inFromClient);
-        sendToPlayer = (String message) -> { out.println(message); out.flush(); };
+        inList.add(in);
+        sendToPlayer = (String message) -> {
+            out.println(message);
+            out.flush();
+        };
         Object request = parseRequest(in.nextLine());
+
         if (request instanceof HostRequest hostRequest) {
-            this.createGameByRequest(hostRequest);
+            name = hostRequest.name;
+            player = getPlayer(name, sendToPlayer);
+            game = createGame(hostRequest, player);
+
             player.sendGameName(game.name);
-            this.receiveStartGameSignal();
+            player.sendPlayers(game.players);
+
+            this.receiveStartGameSignal(in);
             game.setup();
         } else if (request instanceof GuestRequest guestRequest) {
-            this.connectToGameByRequest(guestRequest);
+            name = guestRequest.name;
+            player = getPlayer(name, sendToPlayer);
+            game = connectToGame(guestRequest);
+            game.addPlayer(player);
+
+
         }
         while (!game.isOver()) {
             String move = in.nextLine();
@@ -42,7 +58,6 @@ public class PlayerHandler implements ClientHandler {
         }
         out.flush();
     }
-
 
     public record HostRequest(String name, String[] fileNames) {
     }
@@ -54,10 +69,11 @@ public class PlayerHandler implements ClientHandler {
         throw new UnsupportedOperationException();
     }
 
-    private void receiveStartGameSignal() {
+    private void receiveStartGameSignal(Scanner in) {
         String request = in.nextLine();
-        // assert it is a start request
-        throw new UnsupportedOperationException();
+        //TODO: to change
+        if (!Objects.equals(request, "start"))
+            throw new UnsupportedOperationException("Invalid request received: " + request);
     }
 
     private static Object parseRequest(String request) {
@@ -74,23 +90,28 @@ public class PlayerHandler implements ClientHandler {
         throw new UnsupportedOperationException("Invalid request received: " + request);
     }
 
-    public void createGameByRequest(HostRequest request) {
+    public Game createGame(HostRequest request, Player p) {
         GamesManager gamesManager = GamesManager.get();
-        player = new Player(request.name, this.sendToPlayer);
-        game = gamesManager.createGame(request.fileNames, player);
+        return gamesManager.createGame(request.fileNames, p);
     }
 
-    public void connectToGameByRequest(GuestRequest request) {
+    public Player getPlayer(String name, Consumer<String> sendToPlayer) {
+        return new Player(name, sendToPlayer);
+    }
+
+    public Game connectToGame(GuestRequest request) {
         GamesManager gamesManager = GamesManager.get();
-        player = new Player(request.name, this.sendToPlayer);
-        game = gamesManager.getGame(request.gameName);
-        game.addPlayer(player);
+        return gamesManager.getGame(request.gameName);
     }
 
     @Override
     public void close() {
-        in.close();
-        out.close();
+        for (Scanner in : inList) {
+            in.close();
+        }
+        for (PrintWriter out : outList) {
+            out.close();
+        }
     }
 }
 
