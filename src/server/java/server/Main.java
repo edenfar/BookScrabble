@@ -10,7 +10,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String input = "";
 
-        MyServer server = new MyServer(PORT, new PlayerHandler(), 3);
+        MyServer server = new MyServer(PORT, new PlayerHandler(), 4);
         server.start();
 
         while (!input.equals("stop")) {
