@@ -22,19 +22,19 @@ public class BoardDisplayer extends Canvas {
         } else {
             double W = getWidth();
             double H = getHeight();
-            System.out.println("not null");
+//            System.out.println("not null");
 
 //            double W = getWidth();
 //            double H = getHeight();
-            System.out.println("W: " + W);
-            System.out.println("H: " + H);
+//            System.out.println("W: " + W);
+//            System.out.println("H: " + H);
             double w = W / boardData[0].length;
             double h = H / boardData.length;
 
             GraphicsContext gc = getGraphicsContext2D();
 
             /* going over the rows */
-            System.out.println("boardData.length: " + boardData.length);
+//            System.out.println("boardData.length: " + boardData.length);
             for (int i = 0; i < boardData.length; i++)
 
                 /* going over the columns */
