@@ -1,11 +1,11 @@
 package server;
 
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.io.Serializable;
 
 public class Tile implements Serializable {
 
+    public Integer id;
     public final char letter;
     public final int score;
 
@@ -22,12 +22,9 @@ public class Tile implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         Tile other = (Tile) obj;
         return letter == other.letter && score == other.score;
     }
@@ -37,9 +34,9 @@ public class Tile implements Serializable {
         return letter + Integer.toString(score);
     }
 
-    public static class Bag implements Serializable{
-        private int[] maxQuantities = {9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1};
-        private int[] quantities = maxQuantities.clone();
+    public static class Bag implements Serializable {
+        private Integer id;
+        private Integer[] maxQuantities = {9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1};
         private Tile[] tiles = {
                 new Tile('A', 1),
                 new Tile('B', 3),
@@ -68,22 +65,25 @@ public class Tile implements Serializable {
                 new Tile('Y', 4),
                 new Tile('Z', 10)
         };
+        private List<TileQuantity> quantities = new ArrayList<TileQuantity>();
 
         Random r;
         int size;
 
         public Bag() {
+            for (int i = 0; i < tiles.length; i++) {
+                quantities.add(new TileQuantity(tiles[i], maxQuantities[i]));
+            }
             r = new Random();
             size = 98;
         }
 
         public Tile getRand() {
             if (size > 0) {
-                int i = r.nextInt(quantities.length);
-                while (quantities[i] == 0)
-                    i = r.nextInt(quantities.length);
+                int i = r.nextInt(quantities.size());
+                while (quantities.get(i).getValue() == 0) i = r.nextInt(quantities.size());
                 size -= 1;
-                quantities[i] -= 1;
+                quantities.get(i).decrementValue();
                 return tiles[i];
             }
             return null;
@@ -98,8 +98,8 @@ public class Tile implements Serializable {
         }
 
         public Tile getTile(char c) {
-            if (c >= 'A' && c <= 'Z' && quantities[c - 'A'] > 0) {
-                quantities[c - 'A'] -= 1;
+            if (c >= 'A' && c <= 'Z' && quantities.get(c - 'A').getValue() > 0) {
+                quantities.get(c - 'A').decrementValue();
                 size -= 1;
                 return tiles[c - 'A'];
             }
@@ -112,12 +112,11 @@ public class Tile implements Serializable {
 
         public void put(Tile t) {
             int i = t.letter - 'A';
-            if (quantities[i] < maxQuantities[i])
-                quantities[i] += 1;
+            if (quantities.get(i).getValue() < maxQuantities[i]) quantities.get(i).incrementValue();
         }
 
-        public int[] getQuantities() {
-            return quantities.clone();
+        public ArrayList<TileQuantity> getQuantities() {
+            return new ArrayList<TileQuantity>(quantities);
         }
 
     }

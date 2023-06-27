@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD
+3.0//EN" "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="connection.url">
+            jdbc:mysql://localhost:3306/book_scrabble
+        </property>
+        <property name="connection.driver_class">
+            com.mysql.cj.jdbc.Driver
+        </property>
+        <property name="connection.username">
+            root
+        </property>
+        <property name="connection.password">
+            gmu73fIn2
+        </property>
+        <!-- Set AutoCommit to true -->
+        <property name="connection.autocommit">
+            true
+        </property>
+        <!-- SQL Dialect to use. Dialects are database specific -->
+        <property name="dialect">
+            org.hibernate.dialect.MySQLDialect
+        </property>
+        <!-- Mapping files -->
+        <mapping resource="Player.hbm.xml" />
+        <mapping resource="Tile.hbm.xml" />
+        <mapping resource="Bag.hbm.xml" />
+        <mapping resource="TileQuantity.hbm.xml" />
+        <mapping resource="Board.hbm.xml" />
+        <mapping resource="Game.hbm.xml" />
+    </session-factory>
+</hibernate-configuration>

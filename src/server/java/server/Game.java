@@ -2,19 +2,21 @@ package server;
 
 import server.Tile.Bag;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Comparator;
 
-public class Game {
+public class Game implements Serializable {
 
     final static int MAX_PLAYERS = 4;
 
+    private Integer id;
     String name;
     Board board;
     Bag bag;
-    Player[] players;
+    List<Player> players;
     int numOfPlayers;
     Player currentPlayer;
     int rounds;
@@ -24,8 +26,9 @@ public class Game {
         this.name = name;
         this.board = new Board(fileNames);
         this.bag = new Bag();
-        this.players = new Player[MAX_PLAYERS];
-        this.players[0] = host;
+        this.players = new ArrayList<>(MAX_PLAYERS);
+        this.players.add(host);
+        this.currentPlayer = players.get(0);
         this.rounds = rounds;
         this.numOfPlayers = 1;
     }
@@ -51,8 +54,8 @@ public class Game {
             return;
         }
 
-        for (int i = 0; i < players.length; i++) {
-            if (players[i] != null) {
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i) != null) {
                 tile = this.bag.getRand();
                 letter = tile.letter;
                 playersInt[i] = letterToInt(letter);
@@ -60,11 +63,11 @@ public class Game {
             }
         }
 
-        players = orderPlayersByArray(players, playersInt);
+        players = Arrays.asList(orderPlayersByArray(players, playersInt));
     }
 
-    public static Player[] orderPlayersByArray(Player[] players, int[] values) {
-        final List<Player> playersListCopy = Arrays.asList(players);
+    public static Player[] orderPlayersByArray(List<Player> players, int[] values) {
+        final List<Player> playersListCopy = new ArrayList<>(players);
         ArrayList<Player> sortedPlayers = new ArrayList(playersListCopy);
         sortedPlayers.sort(Comparator.comparing(player -> values[playersListCopy.indexOf(player)]));
         return sortedPlayers.toArray(Player[]::new);
@@ -73,10 +76,9 @@ public class Game {
     public void setup() {
         this.orderPlayers();
         currentRound = 1;
-        currentPlayer = players[0];
+        currentPlayer = players.get(0);
         for (Player player : players) {
-            if (player != null)
-                player.sendGameStart();
+            if (player != null) player.sendGameStart();
         }
     }
 
@@ -88,7 +90,7 @@ public class Game {
         if (numOfPlayers >= MAX_PLAYERS) {
             throw new UnsupportedOperationException("Maximum number of players reached.");
         }
-        players[numOfPlayers] = player;
+        players.add(player);
         numOfPlayers++;
         sendGameToPlayer(player);
         sendPlayersToPlayers(player);
@@ -96,7 +98,7 @@ public class Game {
 
     public void playTurn(Player player, Word word) {
         if (player != currentPlayer) {
-            player.sendToPlayer.accept("Player " + player.name + " is not the current player");
+            player.sendToPlayer.accept("Player " + player.getName() + " is not the current player");
             return;
         }
         playCurrentTurn(word);
@@ -123,8 +125,7 @@ public class Game {
     private void sendPlayersToPlayers(Player Except) {
         for (Player player : players) {
             if (player != null) {
-                if (player != Except)
-                    player.sendPlayers(players);
+                if (player != Except) player.sendPlayers(players);
             }
         }
     }
@@ -135,7 +136,7 @@ public class Game {
                 player.sendBoard(board);
                 player.sendBag(bag);
                 player.sendPlayers(players);
-                player.sendCurrentPlayer(currentPlayer.name);
+                player.sendCurrentPlayer(currentPlayer.getName());
                 player.sendCurrentRound(currentRound);
             }
         }

@@ -3,6 +3,8 @@ package server;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 public class GameTest {
 
     @Test
@@ -14,7 +16,7 @@ public class GameTest {
         Player[] players = {player1, player2, player3, player4};
 
         int[] values = {3, 2, 6, 5};
-        Player[] orderedPlayers = Game.orderPlayersByArray(players, values);
+        Player[] orderedPlayers = Game.orderPlayersByArray(Arrays.asList(players), values);
         Assertions.assertArrayEquals(orderedPlayers, new Player[]{player2, player1, player4, player3});
     }
 }
