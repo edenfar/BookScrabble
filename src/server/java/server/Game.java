@@ -42,7 +42,7 @@ public class Game {
     }
 
     public void orderPlayers() {
-        int[] playersInt = new int[MAX_PLAYERS];
+        int[] playersInt = new int[numOfPlayers];
 
         Tile tile;
         char letter;
@@ -51,7 +51,7 @@ public class Game {
             return;
         }
 
-        for (int i = 0; i < players.length; i++) {
+        for (int i = 0; i < numOfPlayers; i++) {
             if (players[i] != null) {
                 tile = this.bag.getRand();
                 letter = tile.letter;
@@ -61,22 +61,43 @@ public class Game {
         }
 
         players = orderPlayersByArray(players, playersInt);
+        currentPlayer = players[0];
+        sendCurrentPlayer();
+
+    }
+
+    public void sendCurrentPlayer(){
+        for (Player p : players) {
+            if (p != null) {
+                p.sendCurrentPlayer(currentPlayer.name);
+            }
+        }
     }
 
     public static Player[] orderPlayersByArray(Player[] players, int[] values) {
-        final List<Player> playersListCopy = Arrays.asList(players);
-        ArrayList<Player> sortedPlayers = new ArrayList(playersListCopy);
-        sortedPlayers.sort(Comparator.comparing(player -> values[playersListCopy.indexOf(player)]));
-        return sortedPlayers.toArray(Player[]::new);
+        List<Player> nonNullPlayers = new ArrayList<>();
+        for (Player player : players) {
+            if (player != null) {
+                nonNullPlayers.add(player);
+            }
+        }
+        List<Player> sortedPlayers = new ArrayList<>(nonNullPlayers);
+        sortedPlayers.sort(Comparator.comparing(player -> values[nonNullPlayers.indexOf(player)]));
+
+        return sortedPlayers.toArray(new Player[0]);
     }
 
     public void setup() {
         this.orderPlayers();
-        currentRound = 1;
         currentPlayer = players[0];
+        sendCurrentPlayer();
+        currentRound = 1;
         for (Player player : players) {
-            if (player != null)
+            if (player != null) {
+                player.setTiles(bag.getRandomTiles(7));
+                player.sendPlayerTiles();
                 player.sendGameStart();
+            }
         }
     }
 
@@ -137,6 +158,7 @@ public class Game {
                 player.sendPlayers(players);
                 player.sendCurrentPlayer(currentPlayer.name);
                 player.sendCurrentRound(currentRound);
+                player.sendPlayerTiles();
             }
         }
     }
@@ -145,7 +167,6 @@ public class Game {
         p.sendBoard(board);
         p.sendBag(bag);
         p.sendPlayers(players);
-        // p.sendCurrentPlayer(currentPlayer.name);  //Need to stay in comment for now until it's functional (crashing the code for now)
         p.sendCurrentRound(currentRound);
     }
 

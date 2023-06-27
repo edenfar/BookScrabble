@@ -21,6 +21,7 @@ public class Model extends Observable {
     private PrintWriter outToServer;
     private Scanner inFromServer;
     private Thread serverListener;
+    private String playerTiles;
     private Board board;
     private Tile.Bag bag;
     private int round;
@@ -87,6 +88,11 @@ public class Model extends Observable {
             if (response.startsWith("GameName:")) {
                 this.gameName = response.substring("GameName:".length());
             }
+            if (response.startsWith("PlayerTiles:")) {
+                this.playerTiles =response.substring("PlayerTiles:".length());
+            }
+
+
 
             while (this.hasChanged());
             this.setChanged();
@@ -141,5 +147,9 @@ public class Model extends Observable {
 
     public String getGameName() {
         return gameName;
+    }
+
+    public String getPlayerTiles() {
+        return playerTiles;
     }
 }

@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
+
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -34,7 +35,7 @@ import viewmodel.ViewModel;
 import java.io.IOException;
 import java.util.*;
 
-public class HelloController implements Observer {
+public class HelloController extends Observable implements Observer {
 
     @FXML
     public Button startButton;
@@ -45,14 +46,13 @@ public class HelloController implements Observer {
     @FXML
     public VBox stringContainer;
 
-
     private ViewModel vm;
 
 
     private Stage stage;
     PauseTransition delay = new PauseTransition(Duration.millis(250));
 
-    private Scene scene;
+    private Scene scene, scene2;
     final int VBOX_HEIGHT = 8;
     final int DIALOG_WIDTH = 300;
 
@@ -166,7 +166,7 @@ public class HelloController implements Observer {
 
         if (o == vm) {
             String type = (String) arg;
-            if (Objects.equals(type, "Players")) {
+            if ((Objects.equals(type, "Players")) && (!vm.isGameStarted)) {
                 Platform.runLater(() -> {
                     if (stage != null) {
                         stage.close();
@@ -215,13 +215,32 @@ public class HelloController implements Observer {
                 });
             }
             if (Objects.equals(type, "GameStarted")) {
-                System.out.println("Game started");
-                Platform.runLater(() -> stage.close());
+                Platform.runLater(() -> {
+                    FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("board1.fxml"));
+                    Parent root;
+
+                    BoardController mwc = new BoardController(vm);
+                    fxmlLoader.setController(mwc);
+
+                    try {
+                        root = fxmlLoader.load();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    mwc.setBoardAndDisplay();
+
+                    scene2 = new Scene(root,700, 700);
+                    stage.setTitle("Board");
+                    stage.setScene(scene2);
+
+                    stage.show();
+
+                });
+//                this.setChanged();
+//                this.notifyObservers("GameStarted");
             }
         }
 
     }
-
-
 }
 

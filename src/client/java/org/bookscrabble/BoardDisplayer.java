@@ -18,7 +18,7 @@ public class BoardDisplayer extends Canvas {
 
     private void redrow() {
         if (boardData == null) {
-            System.out.println("null");
+           System.out.println("null");
         } else {
             double W = getWidth();
             double H = getHeight();
