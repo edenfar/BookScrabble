@@ -6,7 +6,7 @@ module org.bookscrabble {
     requires java.naming;
     requires java.sql;
 
-
+    requires jdk.httpserver;
     opens org.bookscrabble to javafx.fxml;
     opens server to org.hibernate.orm.core;
     exports org.bookscrabble;
