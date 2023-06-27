@@ -11,10 +11,11 @@ public class Game {
 
     final static int MAX_PLAYERS = 4;
 
+    private Integer id;
     String name;
     Board board;
     Bag bag;
-    Player[] players;
+    List<Player> players;
     int numOfPlayers;
     Player currentPlayer;
     int rounds;
@@ -24,8 +25,9 @@ public class Game {
         this.name = name;
         this.board = new Board(fileNames);
         this.bag = new Bag();
-        this.players = new Player[MAX_PLAYERS];
-        this.players[0] = host;
+        this.players = new ArrayList<>(MAX_PLAYERS);
+        this.players.add(host);
+        this.currentPlayer = players.get(0);
         this.rounds = rounds;
         this.numOfPlayers = 1;
     }
@@ -52,7 +54,7 @@ public class Game {
         }
 
         for (int i = 0; i < numOfPlayers; i++) {
-            if (players[i] != null) {
+            if (players.get(i) != null) {
                 tile = this.bag.getRand();
                 letter = tile.letter;
                 playersInt[i] = letterToInt(letter);
@@ -60,8 +62,8 @@ public class Game {
             }
         }
 
-        players = orderPlayersByArray(players, playersInt);
-        currentPlayer = players[0];
+        players = Arrays.asList(orderPlayersByArray(players, playersInt));
+        currentPlayer = players.get(0);
         sendCurrentPlayer();
 
     }
@@ -69,7 +71,7 @@ public class Game {
     public void sendCurrentPlayer() {
         for (Player p : players) {
             if (p != null) {
-                p.sendCurrentPlayer(currentPlayer.name);
+                p.sendCurrentPlayer(currentPlayer.getName());
             }
         }
     }
@@ -82,7 +84,7 @@ public class Game {
         }
     }
 
-    public static Player[] orderPlayersByArray(Player[] players, int[] values) {
+    public static Player[] orderPlayersByArray(List<Player> players, int[] values) {
         List<Player> nonNullPlayers = new ArrayList<>();
         for (Player player : players) {
             if (player != null) {
@@ -97,12 +99,12 @@ public class Game {
 
     public void setup() {
         this.orderPlayers();
-        currentPlayer = players[0];
+        currentPlayer = players.get(0);
         sendCurrentPlayer();
         currentRound = 1;
         sendCurrentRound();
         for (Player player : players) {
-            if (player != null) {
+            if (player != null){
                 player.setTiles(bag.getRandomTiles(7));
                 player.sendPlayerTiles();
                 player.sendGameStart();
@@ -118,7 +120,7 @@ public class Game {
         if (numOfPlayers >= MAX_PLAYERS) {
             throw new UnsupportedOperationException("Maximum number of players reached.");
         }
-        players[numOfPlayers] = player;
+        players.add(player);
         numOfPlayers++;
         sendGameToPlayer(player);
         sendPlayersToPlayers(player);
@@ -126,7 +128,7 @@ public class Game {
 
     public void playTurn(Player player, Word word) {
         if (player != currentPlayer) {
-            player.sendToPlayer.accept("Player " + player.name + " is not the current player");
+            player.sendToPlayer.accept("Player " + player.getName() + " is not the current player");
             return;
         }
         playCurrentTurn(word);
@@ -167,8 +169,7 @@ public class Game {
     private void sendPlayersToPlayers(Player Except) {
         for (Player player : players) {
             if (player != null) {
-                if (player != Except)
-                    player.sendPlayers(players);
+                if (player != Except) player.sendPlayers(players);
             }
         }
     }
@@ -178,7 +179,7 @@ public class Game {
             if (player != null) {
                 player.sendBoard(board);
                 player.sendPlayers(players);
-                player.sendCurrentPlayer(currentPlayer.name);
+                player.sendCurrentPlayer(currentPlayer.getName());
                 player.sendCurrentRound(currentRound);
                 player.sendPlayerTiles();
                 player.sendNewTurn();
@@ -195,8 +196,8 @@ public class Game {
     }
 
     private void advanceCurrentPlayer() {
-        int currentPlayerIndex = Arrays.asList(players).indexOf(currentPlayer);
+        int currentPlayerIndex = players.indexOf(currentPlayer);
         currentPlayerIndex = (currentPlayerIndex + 1) % numOfPlayers;
-        currentPlayer = players[currentPlayerIndex];
+        currentPlayer = players.get(currentPlayerIndex);
     }
 }

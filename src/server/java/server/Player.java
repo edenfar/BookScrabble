@@ -1,17 +1,15 @@
 package server;
 
-import java.util.Base64;
+import java.util.*;
 import java.util.function.Consumer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Player {
-    String name;
+    private Integer id;
+    private String name;
     private int score;
     private Tile[] tiles;
     Consumer<String> sendToPlayer;
@@ -31,18 +29,19 @@ public class Player {
         return score;
     }
 
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
     public void addScore(int additionalScore) {
         if (additionalScore > 0) {
             this.score += additionalScore;
         } else throw new IllegalArgumentException(additionalScore + " is not a positive number");
     }
 
+    public Tile[] getTiles() {
+        return tiles;
+    }
+
     public void setTiles(Tile[] tiles) {
+        if (this.tiles.length > 0)
+            throw new RuntimeException("Tiles are already set");
         this.tiles = tiles;
     }
 
@@ -129,7 +128,7 @@ public class Player {
         return sb.toString();
     }
 
-    public void sendPlayers(Player[] players) {
+    public void sendPlayers(List<Player> players) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Players:");
         for (Player player : players) {

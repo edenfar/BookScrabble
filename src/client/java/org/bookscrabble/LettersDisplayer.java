@@ -4,11 +4,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import server.Tile;
 
 public class LettersDisplayer extends Canvas {
     private String[] letters;
-    private Tile[] playerTilesArray;
     public final int cellSize = 30;
 
     public LettersDisplayer() {

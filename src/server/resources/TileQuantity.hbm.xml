@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+    <class name="server.TileQuantity" table="TILE_QUANTITIES">
+        <id name="id" type="java.lang.Integer" column="id" access="field">
+            <generator class="increment"/>
+        </id>
+        <many-to-one
+                name="tile" access="field"
+                class="server.Tile" column="tileId"
+                unique="true" not-null="true" cascade="all"
+        />
+        <property name="value" type="java.lang.Integer" column="value" access="field" />
+    </class>
+</hibernate-mapping>

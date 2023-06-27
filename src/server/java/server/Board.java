@@ -29,6 +29,7 @@ public class Board {
             {tw, 0, 0, dl, 0, 0, 0, tw, 0, 0, 0, dl, 0, 0, tw}
     };
 
+    Integer id;
     Tile[][] tiles;
     boolean isEmpty;
     String[] fileNames;
