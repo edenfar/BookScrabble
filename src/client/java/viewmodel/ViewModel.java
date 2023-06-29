@@ -86,11 +86,6 @@ public class ViewModel extends Observable implements Observer {
             if (Objects.equals(type, "GameName"))
                 this.onNewGame(m.getGameName());
             if (Objects.equals(type, "Players")) {
-                String[] stringPlayers = m.getPlayersArray();
-                this.playersArray = new StringProperty[stringPlayers.length];
-                for (int i = 0; i < stringPlayers.length; i++) {
-                    this.playersArray[i] = new SimpleStringProperty(stringPlayers[i]);
-                }
                 this.setChanged();
                 this.notifyObservers("Players");
             }

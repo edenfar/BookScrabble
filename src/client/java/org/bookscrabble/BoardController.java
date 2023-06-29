@@ -174,7 +174,6 @@ public class BoardController extends Observable implements Observer, Initializab
                         String temp = String.valueOf(letter);
 
                         letterArray[i] = temp;
-                        System.out.println(letterArray[index]);
                     }
                     letterclicked = letterArray[index];
                 }
