@@ -17,6 +17,11 @@ public class Player implements Serializable {
     private Tile[] tiles;
     Consumer<String> sendToPlayer;
 
+    public Player() {
+        this.score = 0;
+        this.tiles = new Tile[]{};
+    }
+
     public Player(String name, Consumer<String> sendToPlayer) {
         this.name = name;
         this.score = 0;

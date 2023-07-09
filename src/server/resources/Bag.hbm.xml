@@ -9,8 +9,8 @@
         </id>
         <list name="quantities" access="field" cascade="all">
             <key column="bagId"/>
-            <list-index column="id"/>
-            <one-to-many class="server.TileQuantity" entity-name="server.TileQuantity"/>
+            <list-index column="idx"/>
+            <one-to-many class="server.TileQuantity"/>
         </list>
     </class>
 </hibernate-mapping>

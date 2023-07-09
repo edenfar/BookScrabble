@@ -35,10 +35,20 @@ public class Board implements Serializable {
     boolean isEmpty;
     String[] fileNames;
 
+    public Board() {
+        tiles = new Tile[][]{};
+        isEmpty = true;
+        fileNames = new String[]{};
+    }
+
     public Board(String[] fileNames) {
         tiles = new Tile[15][15];
         isEmpty = true;
         this.fileNames = fileNames;
+    }
+
+    public String[] getFileNames() {
+        return fileNames.clone();
     }
 
     public Tile[][] getTiles() {
