@@ -23,12 +23,16 @@
         <property name="dialect">
             org.hibernate.dialect.MySQLDialect
         </property>
+        <!-- Create or alter tables or columns if needed, without deleting existing data -->
+        <property name="hibernate.hbm2ddl.auto">
+            update
+        </property>
         <!-- Mapping files -->
-        <mapping resource="Player.hbm.xml" />
-        <mapping resource="Tile.hbm.xml" />
-        <mapping resource="Bag.hbm.xml" />
-        <mapping resource="TileQuantity.hbm.xml" />
-        <mapping resource="Board.hbm.xml" />
-        <mapping resource="Game.hbm.xml" />
+        <mapping resource="Player.hbm.xml"/>
+        <mapping resource="Tile.hbm.xml"/>
+        <mapping resource="Bag.hbm.xml"/>
+        <mapping resource="TileQuantity.hbm.xml"/>
+        <mapping resource="Board.hbm.xml"/>
+        <mapping resource="Game.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

@@ -7,7 +7,7 @@
         <id name="id" type="java.lang.Integer" column="id" access="field">
             <generator class="increment"/>
         </id>
-        <property name="name" access="field" type="java.lang.String" column="name" />
+        <property name="name" access="field" type="java.lang.String" column="name"/>
         <many-to-one
                 name="bag" access="field"
                 class="server.Tile$Bag" column="bagId"
@@ -20,16 +20,16 @@
         />
         <list name="players" access="field" cascade="all">
             <key column="gameId"/>
-            <list-index column="id"/>
+            <list-index column="idx"/>
             <one-to-many class="server.Player"/>
         </list>
-        <property name="numOfPlayers" access="field" type="java.lang.Integer" column="numOfPlayers" />
+        <property name="numOfPlayers" access="field" type="java.lang.Integer" column="numOfPlayers"/>
         <many-to-one
                 name="currentPlayer" access="field"
                 class="server.Player" column="currentPlayer"
                 unique="true" not-null="false" cascade="all"
         />
-        <property name="rounds" access="field" type="java.lang.Integer" column="rounds" />
-        <property name="currentRound" access="field" type="java.lang.Integer" column="currentRound" />
+        <property name="rounds" access="field" type="java.lang.Integer" column="rounds"/>
+        <property name="currentRound" access="field" type="java.lang.Integer" column="currentRound"/>
     </class>
 </hibernate-mapping>

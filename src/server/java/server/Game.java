@@ -21,6 +21,10 @@ public class Game {
     int rounds;
     int currentRound;
 
+    public Game() {
+        this.players = new ArrayList<>(MAX_PLAYERS);
+    }
+
     public Game(String name, String[] fileNames, Player host, int rounds) {
         this.name = name;
         this.board = new Board(fileNames);

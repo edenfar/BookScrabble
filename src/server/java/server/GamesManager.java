@@ -38,14 +38,21 @@ public class GamesManager {
     }
 
     public Game loadGame(String name) {
-        Query query = session.createQuery("from Game where name = :name");
+        Query<Game> query = session.createQuery("from Game where name = :name", Game.class);
         query.setParameter("name", name);
         List<Game> results = query.getResultList();
         if (results.size() > 1)
             throw new RuntimeException("More than one game found for name " + name);
         if (results.size() == 0)
             throw new RuntimeException("No game found for name " + name);
-        return results.get(0);
+        Game retrieved = results.get(0);
+        games.put(name, retrieved);
+        return retrieved;
+    }
+
+    public void close() {
+        session.close();
+        manager = null;
     }
 
     public Game createGame(String[] fileNames, Player host) {
