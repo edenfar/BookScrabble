@@ -1,9 +1,8 @@
 package org.bookscrabble;
 
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.StringProperty;
-import javafx.collections.ListChangeListener;
+
 import javafx.event.ActionEvent;
 
 import javafx.fxml.FXML;
@@ -15,16 +14,22 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.util.Duration;
+import javafx.scene.shape.Rectangle;
 import viewmodel.ViewModel;
+
+import java.util.Observable;
+import java.util.Observer;
+
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.*;
 
-public class HelloController implements Observer {
+public class HelloController extends Observable implements Observer {
 
     @FXML
     public Button startButton;
@@ -35,14 +40,11 @@ public class HelloController implements Observer {
     @FXML
     public VBox stringContainer;
 
-
     private ViewModel vm;
 
 
     private Stage stage;
-    PauseTransition delay = new PauseTransition(Duration.millis(250));
-
-    private Scene scene;
+    private Scene scene, scene2;
     final int VBOX_HEIGHT = 8;
     final int DIALOG_WIDTH = 300;
 
@@ -66,6 +68,9 @@ public class HelloController implements Observer {
     }
 
     public void joinExistingGame(ActionEvent actionEvent) {
+        //Get main stage
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+
         Dialog<GuestData> dialog = new Dialog<>();
         dialog.setTitle("Enter Game & Your Name");
 
@@ -88,14 +93,19 @@ public class HelloController implements Observer {
 
         dialog.showAndWait().ifPresent((GuestData guestData) -> {
             vm.connectToGame();
-            closeMainStage((Stage) ((Node) actionEvent.getSource()).getScene().getWindow());
-
         });
 
 
     }
-
+    @FXML
+    private void rectangleClicked(ActionEvent event) {
+        Rectangle rectangle = (Rectangle) event.getSource();
+        int row = GridPane.getRowIndex(rectangle);
+        int column = GridPane.getColumnIndex(rectangle);
+        System.out.println("Clicked Rectangle at row: " + row + ", column: " + column);
+    }
     public void createNewGame(ActionEvent actionEvent) {
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         Dialog<HostData> dialog = new Dialog<>();
         dialog.setTitle("Enter Your Name & File Names");
 
@@ -116,8 +126,6 @@ public class HelloController implements Observer {
 
         dialog.showAndWait().ifPresent((HostData guestData) -> {
             vm.createGame(fileNames.getText().split(","));
-            closeMainStage((Stage) ((Node) actionEvent.getSource()).getScene().getWindow());
-
         });
     }
 
@@ -133,11 +141,6 @@ public class HelloController implements Observer {
         }
     }
 
-    public void closeMainStage(Stage s) {
-        delay.setOnFinished(event -> s.close());
-        delay.play();
-    }
-
     @Override
     public void update(Observable o, Object arg) {
         //Change screen To screen with players list and start button
@@ -150,11 +153,8 @@ public class HelloController implements Observer {
 
         if (o == vm) {
             String type = (String) arg;
-            if (Objects.equals(type, "Players")) {
+            if ((Objects.equals(type, "Players")) && (!vm.isGameStarted)) {
                 Platform.runLater(() -> {
-                    if (stage != null) {
-                        stage.close();
-                    }
                     FXMLLoader loader;
 
                     // Create a new window with pre-game-screen.fxml if it doesn't exist yet
@@ -174,7 +174,6 @@ public class HelloController implements Observer {
                     controller.gameNameLabel.setText(name_s);
 
                     scene = new Scene(root);
-                    stage = new Stage();
                     stage.setTitle("Pre-Game");
                     stage.setScene(scene);
 
@@ -199,13 +198,30 @@ public class HelloController implements Observer {
                 });
             }
             if (Objects.equals(type, "GameStarted")) {
-                System.out.println("Game started");
-                Platform.runLater(() -> stage.close());
+                Platform.runLater(() -> {
+                    FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("board1.fxml"));
+                    Parent root;
+
+                    BoardController mwc = new BoardController(vm);
+                    fxmlLoader.setController(mwc);
+
+                    try {
+                        root = fxmlLoader.load();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    mwc.setBoardAndDisplay();
+
+                    scene2 = new Scene(root,700, 700);
+                    stage.setTitle("Board");
+                    stage.setScene(scene2);
+
+                    stage.show();
+
+                });
             }
         }
 
     }
-
-
 }
 

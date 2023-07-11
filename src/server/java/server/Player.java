@@ -34,6 +34,7 @@ public class Player implements Serializable {
         return score;
     }
 
+
     public void setScore(int score) {
         this.score = score;
     }
@@ -42,6 +43,10 @@ public class Player implements Serializable {
         if (additionalScore > 0) {
             this.score += additionalScore;
         } else throw new IllegalArgumentException(additionalScore + " is not a positive number");
+    }
+
+    public void setTiles(Tile[] tiles) {
+        this.tiles = tiles;
     }
 
     public boolean hasTiles(Tile[] tiles) {
@@ -104,6 +109,14 @@ public class Player implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void sendPlayerTiles(){
+        StringBuilder playerTilesString = new StringBuilder("PlayerTiles:");
+        for (Tile tile: this.tiles){
+            playerTilesString.append(tile.letterToString());
+        }
+        sendToPlayer.accept(playerTilesString.toString());
     }
 
     public String serializeObject(Object o) throws IOException {

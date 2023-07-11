@@ -5,7 +5,6 @@ import server.Board;
 import server.Game;
 import server.Player;
 import server.Tile;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -22,6 +21,7 @@ public class Model extends Observable {
     private PrintWriter outToServer;
     private Scanner inFromServer;
     private Thread serverListener;
+    private String playerTiles;
     private Board board;
     private Tile.Bag bag;
     private int round;
@@ -88,6 +88,11 @@ public class Model extends Observable {
             if (response.startsWith("GameName:")) {
                 this.gameName = response.substring("GameName:".length());
             }
+            if (response.startsWith("PlayerTiles:")) {
+                this.playerTiles =response.substring("PlayerTiles:".length());
+            }
+
+
 
             while (this.hasChanged());
             this.setChanged();
@@ -114,7 +119,10 @@ public class Model extends Observable {
     }
 
     public void playTurn(String word, int row, int col, boolean vertical) {
-        throw new UnsupportedOperationException();
+        String concatenatedString = word + "," + row + "," + col + "," + vertical;
+
+        this.sendMessage(concatenatedString);
+
     }
 
     public Board getBoard() {
@@ -139,5 +147,9 @@ public class Model extends Observable {
 
     public String getGameName() {
         return gameName;
+    }
+
+    public String getPlayerTiles() {
+        return playerTiles;
     }
 }

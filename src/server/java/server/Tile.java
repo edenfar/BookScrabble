@@ -36,6 +36,9 @@ public class Tile implements Serializable {
     public String toString() {
         return letter + Integer.toString(score);
     }
+    public String letterToString() {
+        return Character.toString(letter);
+    }
 
     public static class Bag implements Serializable{
         private int[] maxQuantities = {9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1};
@@ -77,6 +80,7 @@ public class Tile implements Serializable {
             size = 98;
         }
 
+        //draw rand tile from bag
         public Tile getRand() {
             if (size > 0) {
                 int i = r.nextInt(quantities.length);
@@ -115,7 +119,6 @@ public class Tile implements Serializable {
             if (quantities[i] < maxQuantities[i])
                 quantities[i] += 1;
         }
-
         public int[] getQuantities() {
             return quantities.clone();
         }
