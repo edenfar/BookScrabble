@@ -141,6 +141,12 @@ public class Game {
         this.sendGameToPlayers();
     }
 
+    public void playNullTurn(){
+        this.advanceCurrentPlayer();
+        currentRound += 1;
+        this.sendGameToPlayers();
+    }
+
     private void sendPlayersToPlayers(Player Except) {
         for (Player player : players) {
             if (player != null) {
@@ -159,6 +165,8 @@ public class Game {
                 player.sendCurrentPlayer(currentPlayer.name);
                 player.sendCurrentRound(currentRound);
                 player.sendPlayerTiles();
+                player.sendNewTurn();
+                player.sendScore();
             }
         }
     }
@@ -168,9 +176,12 @@ public class Game {
         p.sendBag(bag);
         p.sendPlayers(players);
         p.sendCurrentRound(currentRound);
+        p.sendScore();
     }
 
     private void advanceCurrentPlayer() {
-        throw new UnsupportedOperationException();
+        int currentPlayerIndex = Arrays.asList(players).indexOf(currentPlayer);
+        currentPlayerIndex = (currentPlayerIndex + 1) % numOfPlayers;
+        currentPlayer = players[currentPlayerIndex];
     }
 }

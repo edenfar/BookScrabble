@@ -28,6 +28,32 @@ public class Dictionary {
         searcher = new ParIOSearcher();
     }
 
+    //Edited version, working but somehow say everything is legal
+//    public boolean query(String word) {
+//        String capFirst = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+//        if (exists.query(word.toLowerCase()) || (exists.query(capFirst)) || (exists.query(word)))
+//            return true;
+//        if (notExists.query(word.toLowerCase()) || notExists.query(capFirst) || notExists.query(word))
+//            return false;
+//
+//        boolean bool1 = bf.contains(word.toLowerCase());
+//        boolean bool2 = bf.contains(capFirst);
+//        boolean bool3 = bf.contains(word);
+//        boolean doesExist = bool1 || bool2 || bool3;
+//        if (doesExist) {
+//            exists.add(word.toLowerCase());
+//            exists.add(capFirst);
+//            exists.add(word);
+//        }
+//        else {
+//            notExists.add(word.toLowerCase());
+//            notExists.add(capFirst);
+//            notExists.add(word);
+//        }
+//        return doesExist;
+//    }
+
+    //Original
     public boolean query(String word) {
         if (exists.query(word))
             return true;
@@ -35,11 +61,12 @@ public class Dictionary {
             return false;
 
         boolean doesExist = bf.contains(word);
-        if (doesExist)
+        if (doesExist) {
             exists.add(word);
-        else
+        }
+        else {
             notExists.add(word);
-
+        }
         return doesExist;
     }
 

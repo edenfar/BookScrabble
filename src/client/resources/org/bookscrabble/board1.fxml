@@ -11,13 +11,14 @@
 
 <?import org.bookscrabble.BoardDisplayer?>
 <?import org.bookscrabble.LettersDisplayer?>
+
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <HBox alignment="CENTER" prefHeight="50.0" prefWidth="177.0" BorderPane.alignment="CENTER">
          <children>
             <Text fx:id="playerName" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="62.21630859375">
                <HBox.margin>
-                  <Insets right="115.0" />
+                  <Insets right="68.0" />
                </HBox.margin>
                 <style>
                     -fx-font-weight: bold;
@@ -27,7 +28,15 @@
                   <Font name="Arial Bold" size="16.0" />
                </font>
             </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="lets start playing!">
+            <Text fx:id="playerScore" strokeType="OUTSIDE" strokeWidth="0.0">
+               <HBox.margin>
+                  <Insets left="-30.0" right="89.0" />
+               </HBox.margin>
+               <font>
+                  <Font name="Arial Bold" size="16.0" />
+               </font>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lets Play!">
                <font>
                   <Font size="30.0" />
                </font>
@@ -41,13 +50,14 @@
 
 
 
+   <center>
+      <BoardDisplayer fx:id="boardDisplayer" height="430" width="430" BorderPane.alignment="CENTER"/>
+   </center>
+   <bottom>
+      <LettersDisplayer fx:id="lettersDisplayer" height="85.0" width="458.0" BorderPane.alignment="CENTER"/>
+   </bottom>
 
-    <center>
-        <BoardDisplayer fx:id="boardDisplayer" height="430" width="430" BorderPane.alignment="CENTER"/>
-    </center>
-    <bottom>
-        <LettersDisplayer fx:id="lettersDisplayer" height="85.0" width="458.0" BorderPane.alignment="CENTER"/>
-    </bottom>
+
 
 
    <right>

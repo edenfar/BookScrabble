@@ -1,5 +1,6 @@
 package model;
 
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.StringProperty;
 import server.Board;
 import server.Game;
@@ -22,11 +23,15 @@ public class Model extends Observable {
     private Scanner inFromServer;
     private Thread serverListener;
     private String playerTiles;
+    private String playerTilesLetters;
     private Board board;
+
+    private Tile[][] boardTiles;
     private Tile.Bag bag;
     private int round;
     private String[] playersArray;
     private String currPlayerName;
+    private String playerScore;
 
     public void connect(String host, int port) {
         try {
@@ -57,6 +62,7 @@ public class Model extends Observable {
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
+                this.boardTiles = board.getTiles();
             }
 
             if (response.startsWith("Bag:")) {
@@ -89,7 +95,12 @@ public class Model extends Observable {
                 this.gameName = response.substring("GameName:".length());
             }
             if (response.startsWith("PlayerTiles:")) {
-                this.playerTiles =response.substring("PlayerTiles:".length());
+                String temp = response.substring("PlayerTiles:".length());
+                this.playerTiles =temp.substring(0,13);
+                this.playerTilesLetters = temp.substring(15);
+            }
+            if (response.startsWith("PlayerScore:")) {
+                this.playerScore = response.substring("PlayerScore:".length());
             }
 
 
@@ -120,7 +131,6 @@ public class Model extends Observable {
 
     public void playTurn(String word, int row, int col, boolean vertical) {
         String concatenatedString = word + "," + row + "," + col + "," + vertical;
-
         this.sendMessage(concatenatedString);
 
     }
@@ -151,5 +161,16 @@ public class Model extends Observable {
 
     public String getPlayerTiles() {
         return playerTiles;
+    }
+    public String getPlayerTilesLetters() {
+        return playerTilesLetters;
+    }
+
+    public String getPlayerScore() {
+        return playerScore;
+    }
+
+    public Tile[][] getBoardTiles() {
+        return boardTiles;
     }
 }

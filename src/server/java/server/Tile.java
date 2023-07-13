@@ -9,7 +9,8 @@ public class Tile implements Serializable {
     public final char letter;
     public final int score;
 
-    private Tile(char letter, int score) {
+    //Need to change this back to private but that's the only way to do it for now
+    public Tile(char letter, int score) {
         super();
         this.letter = letter;
         this.score = score;
@@ -60,7 +61,8 @@ public class Tile implements Serializable {
                 new Tile('N', 1),
                 new Tile('O', 1),
                 new Tile('P', 3),
-                new Tile('Q', 10),
+//                new Tile('Q', 10), //Also need to change this back to 10 and fix the bug it makes
+                new Tile('Q', 9),
                 new Tile('R', 1),
                 new Tile('S', 1),
                 new Tile('T', 1),
@@ -69,7 +71,8 @@ public class Tile implements Serializable {
                 new Tile('W', 4),
                 new Tile('X', 8),
                 new Tile('Y', 4),
-                new Tile('Z', 10)
+//                new Tile('Z', 10)
+                new Tile('Z', 9)
         };
 
         Random r;
