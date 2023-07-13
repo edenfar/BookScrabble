@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class Player implements Serializable {
     String name;
-    private int score;
+    private int score = 0;
     private Tile[] tiles;
     Consumer<String> sendToPlayer;
 
@@ -51,6 +51,14 @@ public class Player implements Serializable {
 
     public boolean hasTiles(Tile[] tiles) {
         return new HashSet<>(Arrays.asList(this.tiles)).containsAll(Arrays.asList(tiles));
+    }
+    public Tile getTile(char letter) {
+        for (Tile tile : tiles) {
+            if (tile.letter == letter) {
+                return tile;
+            }
+        }
+        return null;
     }
 
     public void replaceTiles(Tile[] currentTiles, Tile[] newTiles) {
@@ -115,9 +123,16 @@ public class Player implements Serializable {
         StringBuilder playerTilesString = new StringBuilder("PlayerTiles:");
         for (Tile tile: this.tiles){
             playerTilesString.append(tile.letterToString());
+            playerTilesString.append(tile.score);
         }
+        playerTilesString.append(":");
+        for (Tile tile: this.tiles){
+            playerTilesString.append(tile.letterToString());
+        }
+
         sendToPlayer.accept(playerTilesString.toString());
     }
+
 
     public String serializeObject(Object o) throws IOException {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
@@ -157,6 +172,16 @@ public class Player implements Serializable {
     public void sendGameName(String name) {
         String message = "GameName:" + name;
         sendToPlayer.accept(message);
+    }
+    public void sendScore() {
+        String message = "PlayerScore:" + this.score;
+        sendToPlayer.accept(message);
+    }
+
+    public void sendNewTurn() {
+        String message = "NewTurn:";
+        sendToPlayer.accept(message);
+
     }
 
     public void sendGameStart() {
