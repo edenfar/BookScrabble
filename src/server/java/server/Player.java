@@ -90,7 +90,7 @@ public class Player implements Serializable {
     }
 
     public void notifyIllegalWord(Word word) {
-        throw new UnsupportedOperationException();
+        System.out.println("Illegal word");
     }
 
     public void sendBoard(Board board) {

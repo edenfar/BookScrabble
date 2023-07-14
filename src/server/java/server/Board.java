@@ -123,8 +123,7 @@ public class Board implements Serializable {
 
     public boolean dictionaryLegal(Word w) {
         DictionaryManager dictionaryManager = DictionaryManager.get();
-//        List<String> list = new ArrayList<>(Arrays.asList(fileNames));
-        List<String> list = new ArrayList<>(Arrays.asList("src/server/java/resources/test.txt"));
+        List<String> list = new ArrayList<>(Arrays.asList(fileNames));
         list.add(w.getWordAsString());
         return dictionaryManager.query(list.toArray(new String[0]));
     }

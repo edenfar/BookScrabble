@@ -38,11 +38,13 @@ public class BoardController extends Observable implements Observer, Initializab
     private Text playerTilesLetters;
     private String letterclicked;
 
-
     private String word;
     private int r, c;
 
     private boolean vertical;
+    private boolean firstLetter = true;
+
+    private int[][] boardDataRound;
 
 
     public BoardController(ViewModel vm) {
@@ -54,6 +56,7 @@ public class BoardController extends Observable implements Observer, Initializab
 
         setViewModel(vm);
 
+        boardDataRound = new int[15][15];
         boardData = new String[15][15];
 
 
@@ -66,6 +69,7 @@ public class BoardController extends Observable implements Observer, Initializab
         vertical = true;
 
     }
+
     public void setViewModel(ViewModel vm) {
         this.vm = vm;
         this.vm.addObserver(this);
@@ -87,30 +91,33 @@ public class BoardController extends Observable implements Observer, Initializab
     }
 
 
-    public void setBoardAndDisplay(){
+    public void setBoardAndDisplay() {
+
+        //TODO: Update Bag
+
 
         currentPlayerName.textProperty().bind(this.vm.currPlayerName);
         playerName.textProperty().bind(this.vm.playerName);
         playerTilesArray.textProperty().bind(this.vm.playerTiles);
         playerScore.textProperty().bind(this.vm.playerScore);
         playerTilesLetters.textProperty().bind(this.vm.playerTilesLetters);
+
         this.boardTiles = vm.boardTiles;
 
 
-            for (int i = 0; i < boardTiles.length; i++) {
-                for (int j = 0; j < boardTiles[i].length; j++) {
-                    if (boardTiles[i][j] != null){
-                        boardData[i][j] = String.valueOf(boardTiles[i][j].letter);
-                    }
+        for (int i = 0; i < boardTiles.length; i++) {
+            for (int j = 0; j < boardTiles[i].length; j++) {
+                if (boardTiles[i][j] != null) {
+                    boardData[i][j] = String.valueOf(boardTiles[i][j].letter);
                 }
             }
+        }
 
         boolean showEndButton = false;
 
         boardDisplayer.setBoardData(boardData);
         lettersDisplayer.setLetters(playerTilesLetters.getText());
-
-        if(currentPlayerName.getText().equals(playerName.getText())) {
+        if (currentPlayerName.getText().equals(playerName.getText())) {
             showEndButton = true;
             boardDisplayer.addEventFilter(MouseEvent.MOUSE_CLICKED, (e) -> boardDisplayer.requestFocus());
             boardDisplayer.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -125,34 +132,48 @@ public class BoardController extends Observable implements Observer, Initializab
                     int column = (int) (mouseEvent.getX() / cellWidth);
 
                     System.out.println("Clicked on row: " + row + ", column: " + column);
-                    if (letterclicked != "") {
-                        boardData[row][column] = letterclicked;
-                        boardTiles[row][column] = toTiles(letterclicked);
+                    if (letterclicked != "" && ((boardData[row][column] == null)||(boardDataRound[row][column]== vm.round)) && (vm.round == 1
+                                || (boardData[row][column - 1] != null || boardData[row][column + 1] != null
+                                || boardData[row - 1][column] != null || boardData[row + 1][column] != null))) {
+                        //check if the letter is in the same row or column that was clicked before or if it is in the first round
+                        if (((boardData[row + 1][column] != null) && ((boardData[row + 1][column - 1] == null) && (boardData[row + 1][column + 1] == null)))
+                                || ((boardData[row - 1][column] != null) && ((boardData[row - 1][column - 1] == null) && (boardData[row - 1][column + 1] == null)))
+                                || ((boardData[row][column + 1] != null) && ((boardData[row - 1][column + 1] == null) && (boardData[row + 1][column + 1] == null)))
+                                || ((boardData[row][column - 1] != null) && ((boardData[row - 1][column - 1] == null) && (boardData[row + 1][column - 1] == null)))
+                                || firstLetter) {
 
-                        word = word.concat(letterclicked);
-                        letterclicked = "";
-                        if (r == -1) {
-                            r = row;
-                            c = column;
-                        } else {
-                            //if the letter in teh same row, the word is vertical
-                            if (r == row) {
-                                vertical = false;
-                                //check if the new letter is from the left
-                                if (column < c) {
-                                    c = (column);
-                                }
+                            boardData[row][column] = letterclicked;
+                            boardTiles[row][column] = toTiles(letterclicked);
+                            boardDataRound[row][column] = vm.round;
+                            firstLetter = false;
+
+                            word = word.concat(letterclicked);
+                            letterclicked = "";
+                            if (r == -1) {
+                                r = row;
+                                c = column;
                             } else {
-                                if (c == column) {
-                                    vertical = true;
-                                    if (row < r) {
-                                        r = row;
+                                //if the letter in teh same row, the word is vertical
+                                if (r == row) {
+                                    vertical = false;
+                                    //check if the new letter is from the left
+                                    if (column < c) {
+                                        c = (column);
+                                    }
+                                } else {
+                                    if (c == column) {
+                                        vertical = true;
+                                        if (row < r) {
+                                            r = row;
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                     boardDisplayer.setBoardData(boardData);
+                    vm.setFirstRound();
+
                 }
             });
 
@@ -187,6 +208,7 @@ public class BoardController extends Observable implements Observer, Initializab
             });
             doneButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (e) -> doneButton.requestFocus());
 
+
             doneButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 double x, y;
 
@@ -202,16 +224,27 @@ public class BoardController extends Observable implements Observer, Initializab
         doneButton.setVisible(showEndButton);
     }
 
+
     private Tile toTiles(String letterclicked) {
-            int index = playerTilesArray.getText().indexOf(letterclicked);
-            if (index + 1 < playerTilesArray.getText().length()) {
+        int index = playerTilesArray.getText().indexOf(letterclicked);
+        if (index + 1 < playerTilesArray.getText().length()) {
+            if ((letterclicked.charAt(0) == 'Z') || (letterclicked.charAt(0) == 'Q')) {
+                index++;
+                char nextChar = playerTilesArray.getText().charAt(index + 1);
+                if (Character.isDigit(nextChar)) {
+                    int score = Integer.parseInt(playerTilesArray.getText().substring((index), (index + 2)));
+                    Tile tile = new Tile(letterclicked.charAt(0), score);
+                    return tile;
+                }
+            } else {
                 char nextChar = playerTilesArray.getText().charAt(index + 1);
                 if (Character.isDigit(nextChar)) {
                     Tile tile = new Tile(letterclicked.charAt(0), Character.getNumericValue(nextChar));
                     return tile;
                 }
             }
-            return null;
+        }
+        return null;
     }
 
 

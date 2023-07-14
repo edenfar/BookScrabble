@@ -28,7 +28,7 @@ public class Model extends Observable {
 
     private Tile[][] boardTiles;
     private Tile.Bag bag;
-    private int round;
+    private int round = 1;
     private String[] playersArray;
     private String currPlayerName;
     private String playerScore;
@@ -96,8 +96,13 @@ public class Model extends Observable {
             }
             if (response.startsWith("PlayerTiles:")) {
                 String temp = response.substring("PlayerTiles:".length());
-                this.playerTiles =temp.substring(0,13);
-                this.playerTilesLetters = temp.substring(15);
+                String[] tempArray = temp.split(":");
+                this.playerTiles = tempArray[0];
+                this.playerTilesLetters = tempArray[1];
+
+                System.out.println("Temp: " + temp);
+                System.out.println("PlayerTiles:" + this.playerTiles);
+                System.out.println("PlayerTilesLetters: " + this.playerTilesLetters);
             }
             if (response.startsWith("PlayerScore:")) {
                 this.playerScore = response.substring("PlayerScore:".length());
