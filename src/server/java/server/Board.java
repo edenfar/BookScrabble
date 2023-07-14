@@ -253,8 +253,6 @@ public class Board implements Serializable {
         }
         return sum;
     }
-
-
     public void print() {
         for (Tile[] ts : tiles) {
             for (Tile t : ts) {

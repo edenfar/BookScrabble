@@ -76,7 +76,7 @@ public class PlayerHandler implements ClientHandler {
 
         // Accessing each substring
         String wordString = substrings[0];
-        int raw = Integer.parseInt(substrings[1]);
+        int row = Integer.parseInt(substrings[1]);
         int col = Integer.parseInt(substrings[2]);
         boolean vertical = Boolean.parseBoolean(substrings[3]);
 
@@ -84,10 +84,12 @@ public class PlayerHandler implements ClientHandler {
         Tile[] tiles = new Tile[wordString.length()];
         int i = 0;
         for (char c : wordString.toCharArray()) {
+            if (player.getTile(c) == null)
+                throw new IllegalArgumentException("Player does not have tile " + c);
             tiles[i] = player.getTile(c);
             i++;
         }
-        Word word = new Word(tiles, raw, col, vertical);
+        Word word = new Word(tiles, row, col, vertical);
         return word;
     }
 

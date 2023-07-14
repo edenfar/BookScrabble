@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class Player implements Serializable {
     String name;
-    private int score = 0;
+    private int score;
     private Tile[] tiles;
     Consumer<String> sendToPlayer;
 

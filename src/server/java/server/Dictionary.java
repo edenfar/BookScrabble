@@ -35,12 +35,12 @@ public class Dictionary {
             return false;
 
         boolean doesExist = bf.contains(word);
-        if (doesExist) {
+        if (doesExist)
             exists.add(word);
-        }
-        else {
+
+        else
             notExists.add(word);
-        }
+
         return doesExist;
     }
 

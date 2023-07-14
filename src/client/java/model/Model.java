@@ -99,10 +99,6 @@ public class Model extends Observable {
                 String[] tempArray = temp.split(":");
                 this.playerTiles = tempArray[0];
                 this.playerTilesLetters = tempArray[1];
-
-                System.out.println("Temp: " + temp);
-                System.out.println("PlayerTiles:" + this.playerTiles);
-                System.out.println("PlayerTilesLetters: " + this.playerTilesLetters);
             }
             if (response.startsWith("PlayerScore:")) {
                 this.playerScore = response.substring("PlayerScore:".length());

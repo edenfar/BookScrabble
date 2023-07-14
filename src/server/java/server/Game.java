@@ -74,6 +74,14 @@ public class Game {
         }
     }
 
+    public void sendCurrentRound(){
+        for (Player p : players) {
+            if (p != null) {
+                p.sendCurrentRound(currentRound);
+            }
+        }
+    }
+
     public static Player[] orderPlayersByArray(Player[] players, int[] values) {
         List<Player> nonNullPlayers = new ArrayList<>();
         for (Player player : players) {
@@ -92,6 +100,7 @@ public class Game {
         currentPlayer = players[0];
         sendCurrentPlayer();
         currentRound = 1;
+        sendCurrentRound();
         for (Player player : players) {
             if (player != null) {
                 player.setTiles(bag.getRandomTiles(7));
