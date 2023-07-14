@@ -8,8 +8,7 @@
             <generator class="increment"/>
         </id>
         <many-to-one
-                name="tile" access="field"
-                class="server.Tile" column="tileId"
+                name="tile" class="server.Tile" column="tileId" access="field"
                 unique="true" not-null="true" cascade="all"
         />
         <property name="value" type="java.lang.Integer" column="value" access="field" />

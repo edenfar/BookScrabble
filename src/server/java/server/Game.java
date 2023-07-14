@@ -3,15 +3,15 @@ package server;
 import server.Tile.Bag;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 
 public class Game {
 
     final static int MAX_PLAYERS = 4;
 
-    private Integer id;
+    private int id;
     String name;
     Board board;
     Bag bag;
@@ -31,9 +31,22 @@ public class Game {
         this.bag = new Bag();
         this.players = new ArrayList<>(MAX_PLAYERS);
         this.players.add(host);
-        this.currentPlayer = players.get(0);
         this.rounds = rounds;
         this.numOfPlayers = 1;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Game game)) return false;
+        return game.id == this.id
+                && Objects.equals(game.name, this.name)
+                && game.rounds == this.rounds
+                && game.numOfPlayers == this.numOfPlayers
+                && ((game.currentPlayer == null && this.currentPlayer == null)
+                    || game.currentPlayer.equals(this.currentPlayer))
+                && game.players.equals(this.players)
+                && game.bag.equals(this.bag)
+                && game.board.equals(this.board);
     }
 
     public int letterToInt(char letter) {
@@ -66,7 +79,7 @@ public class Game {
             }
         }
 
-        players = Arrays.asList(orderPlayersByArray(players, playersInt));
+        players = orderPlayersByArray(players, playersInt);
         currentPlayer = players.get(0);
         sendCurrentPlayer();
 
@@ -88,7 +101,7 @@ public class Game {
         }
     }
 
-    public static Player[] orderPlayersByArray(List<Player> players, int[] values) {
+    public static List<Player> orderPlayersByArray(List<Player> players, int[] values) {
         List<Player> nonNullPlayers = new ArrayList<>();
         for (Player player : players) {
             if (player != null) {
@@ -98,7 +111,7 @@ public class Game {
         List<Player> sortedPlayers = new ArrayList<>(nonNullPlayers);
         sortedPlayers.sort(Comparator.comparing(player -> values[nonNullPlayers.indexOf(player)]));
 
-        return sortedPlayers.toArray(new Player[0]);
+        return sortedPlayers;
     }
 
     public void setup() {
@@ -108,7 +121,7 @@ public class Game {
         currentRound = 1;
         sendCurrentRound();
         for (Player player : players) {
-            if (player != null){
+            if (player != null) {
                 player.setTiles(bag.getRandomTiles(7));
                 player.sendPlayerTiles();
                 player.sendGameStart();

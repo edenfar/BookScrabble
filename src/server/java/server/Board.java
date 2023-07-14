@@ -29,7 +29,7 @@ public class Board {
             {tw, 0, 0, dl, 0, 0, 0, tw, 0, 0, 0, dl, 0, 0, tw}
     };
 
-    Integer id;
+    int id;
     Tile[][] tiles;
     boolean isEmpty;
     String[] fileNames;
@@ -44,6 +44,14 @@ public class Board {
         tiles = new Tile[15][15];
         isEmpty = true;
         this.fileNames = fileNames;
+    }
+
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Board board)) return false;
+        return board.id == this.id
+                && Arrays.deepEquals(board.tiles, this.tiles)
+                && board.isEmpty == this.isEmpty
+                && Arrays.equals(board.fileNames, this.fileNames);
     }
 
     public String[] getFileNames() {

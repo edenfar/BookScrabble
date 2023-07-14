@@ -7,6 +7,7 @@
         <id name="id" type="java.lang.Integer" column="id" access="field">
             <generator class="increment"/>
         </id>
+        <property name="size" type="java.lang.Integer" column="size" access="field" />
         <list name="quantities" access="field" cascade="all">
             <key column="bagId"/>
             <list-index column="idx"/>

@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 public class Player {
-    private Integer id;
+    private int id;
     private String name;
     private int score;
     private Tile[] tiles;
@@ -17,6 +17,15 @@ public class Player {
     public Player() {
         this.score = 0;
         this.tiles = new Tile[]{};
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Player player)) return false;
+        return player.id == this.id
+                && Objects.equals(player.name, this.name)
+                && player.score == this.score
+                && Arrays.equals(player.tiles, this.tiles);
     }
 
     public Player(String name, Consumer<String> sendToPlayer) {

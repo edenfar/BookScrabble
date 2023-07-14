@@ -8,6 +8,11 @@ public class Tile {
     public final char letter;
     public final int score;
 
+    public Tile() {
+        this.letter = 'A';
+        this.score = 0;
+    }
+
     private Tile(char letter, int score) {
         super();
         this.letter = letter;
@@ -37,8 +42,8 @@ public class Tile {
     }
 
     public static class Bag  {
-        private Integer id;
-        private Integer[] maxQuantities = {9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1};
+        private int id;
+        private int[] maxQuantities = {9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1};
         private Tile[] tiles = {
                 new Tile('A', 1),
                 new Tile('B', 3),
@@ -67,7 +72,7 @@ public class Tile {
                 new Tile('Y', 4),
                 new Tile('Z', 10)
         };
-        private List<TileQuantity> quantities = new ArrayList<TileQuantity>();
+        private List<TileQuantity> quantities = new ArrayList<>();
 
         Random r;
         int size;
@@ -78,6 +83,12 @@ public class Tile {
             }
             r = new Random();
             size = 98;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof Bag bag)) return false;
+            return bag.id == this.id && bag.size == this.size && bag.quantities.equals(this.quantities);
         }
 
         // draw rand tile from bag
