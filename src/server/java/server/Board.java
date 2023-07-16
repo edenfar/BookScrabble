@@ -290,11 +290,20 @@ public class Board {
             for (int j = 0; j < tiles[i].length; j++) {
                 Tile t = tiles[i][j];
                 if (t != null)
-                    board[i][j] = t.letterToString();
+                    board[i][j] = String.valueOf(t.letter);
                 else
                     board[i][j] = "_";
             }
         }
         return board;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (String[] row : this.getBoardsLetters()) {
+            sb.append(String.join(",", row)).append("|");
+        }
+        return sb.toString();
     }
 }

@@ -1,8 +1,9 @@
 package server;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Tile {
+public class Tile implements Serializable {
 
     public Integer id;
     public final char letter;
@@ -36,9 +37,6 @@ public class Tile {
     @Override
     public String toString() {
         return letter + Integer.toString(score);
-    }
-    public String letterToString() {
-        return Character.toString(letter);
     }
 
     public static class Bag  {

@@ -3,10 +3,6 @@ package server;
 import java.util.*;
 import java.util.function.Consumer;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-
 public class Player {
     private int id;
     private String name;
@@ -62,6 +58,7 @@ public class Player {
     public boolean hasTiles(Tile[] tiles) {
         return new HashSet<>(Arrays.asList(this.tiles)).containsAll(Arrays.asList(tiles));
     }
+
     public Tile getTile(char letter) {
         for (Tile tile : tiles) {
             if (tile.letter == letter) {
@@ -104,42 +101,21 @@ public class Player {
     }
 
     public void sendBoard(Board board) {
-        String boardString = boardToString(board.getBoardsLetters());
-        boardString = "Board:" + boardString;
-        sendToPlayer.accept(boardString);
+        sendToPlayer.accept("Board:" + board.toString());
     }
 
-    public void sendPlayerTiles(){
+    public void sendPlayerTiles() {
         StringBuilder playerTilesString = new StringBuilder("PlayerTiles:");
-        for (Tile tile: this.tiles){
-            playerTilesString.append(tile.letterToString());
+        for (Tile tile : this.tiles) {
+            playerTilesString.append(tile.letter);
             playerTilesString.append(tile.score);
         }
         playerTilesString.append(":");
-        for (Tile tile: this.tiles){
-            playerTilesString.append(tile.letterToString());
+        for (Tile tile : this.tiles) {
+            playerTilesString.append(tile.letter);
         }
 
         sendToPlayer.accept(playerTilesString.toString());
-    }
-
-
-    public String serializeObject(Object o) throws IOException {
-        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        ObjectOutputStream objectOut = new ObjectOutputStream(byteOut);
-        objectOut.writeObject(o);
-        objectOut.flush();
-
-        byte[] bytes = byteOut.toByteArray();
-        return Base64.getEncoder().encodeToString(bytes);
-    }
-
-    public static String boardToString(String[][] array) {
-        StringBuilder sb = new StringBuilder();
-        for (String[] row : array) {
-            sb.append(String.join(",", row)).append("|");
-        }
-        return sb.toString();
     }
 
     public void sendPlayers(List<Player> players) {
@@ -171,6 +147,7 @@ public class Player {
         String message = "GameName:" + name;
         sendToPlayer.accept(message);
     }
+
     public void sendScore() {
         String message = "PlayerScore:" + this.score;
         sendToPlayer.accept(message);
@@ -179,7 +156,6 @@ public class Player {
     public void sendNewTurn() {
         String message = "NewTurn:";
         sendToPlayer.accept(message);
-
     }
 
     public void sendGameStart() {
