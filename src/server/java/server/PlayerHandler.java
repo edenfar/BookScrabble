@@ -40,6 +40,8 @@ public class PlayerHandler implements ClientHandler {
 
             player.sendGameName(game.name);
             player.sendPlayers(game.players);
+            player.sendBoard(game.board);
+            player.sendScore();
 
             this.receiveStartGameSignal(in);
             game.setup();
@@ -53,8 +55,12 @@ public class PlayerHandler implements ClientHandler {
         }
         while (!game.isOver()) {
             String move = in.nextLine();
-            Word word = this.parseMove(move);
-            game.playTurn(player, word);
+            if (move.startsWith(","))//No word played
+                game.playNullTurn();
+            else {
+                Word word = this.parseMove(move, player);
+                game.playTurn(player, word);
+            }
         }
         out.flush();
     }
@@ -65,8 +71,32 @@ public class PlayerHandler implements ClientHandler {
     public record GuestRequest(String name, String gameName) {
     }
 
-    private Word parseMove(String move) {
-        throw new UnsupportedOperationException();
+    private Word parseMove(String move, Player player) {
+
+        String[] substrings = extractSubstrings(move);
+
+        // Accessing each substring
+        String wordString = substrings[0];
+        int row = Integer.parseInt(substrings[1]);
+        int col = Integer.parseInt(substrings[2]);
+        boolean vertical = Boolean.parseBoolean(substrings[3]);
+
+
+        Tile[] tiles = new Tile[wordString.length()];
+        int i = 0;
+        for (char c : wordString.toCharArray()) {
+            if (player.getTile(c) == null)
+                throw new IllegalArgumentException("Player does not have tile " + c);
+            tiles[i] = player.getTile(c);
+            i++;
+        }
+        Word word = new Word(tiles, row, col, vertical);
+        return word;
+    }
+
+    public static String[] extractSubstrings(String input) {
+        String[] substrings = input.split(",");
+        return substrings;
     }
 
     private void receiveStartGameSignal(Scanner in) {

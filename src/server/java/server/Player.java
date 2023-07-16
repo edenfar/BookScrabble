@@ -1,10 +1,7 @@
 package server;
 
-import java.io.Serializable;
 import java.util.Base64;
 import java.util.function.Consumer;
-
-import server.Tile.Bag;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,7 +10,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Player implements Serializable {
+public class Player {
     String name;
     private int score;
     private Tile[] tiles;
@@ -52,6 +49,14 @@ public class Player implements Serializable {
     public boolean hasTiles(Tile[] tiles) {
         return new HashSet<>(Arrays.asList(this.tiles)).containsAll(Arrays.asList(tiles));
     }
+    public Tile getTile(char letter) {
+        for (Tile tile : tiles) {
+            if (tile.letter == letter) {
+                return tile;
+            }
+        }
+        return null;
+    }
 
     public void replaceTiles(Tile[] currentTiles, Tile[] newTiles) {
         if (currentTiles.length != newTiles.length) {
@@ -82,42 +87,29 @@ public class Player implements Serializable {
     }
 
     public void notifyIllegalWord(Word word) {
-        throw new UnsupportedOperationException();
+        System.out.println("Illegal word");
     }
 
     public void sendBoard(Board board) {
-        try {
-            //Serialize and Convert the byte array to a string and send it using the sendToPlayer consumer
-            String boardString = serializeObject(board);
-            boardString = "Board:" + boardString;
-            sendToPlayer.accept(boardString);
-
-            System.out.println("Board sent to the player");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void sendBag(Bag bag) {
-        try {
-            // Serialize and Convert the object to a string and send it using the sendToPlayer consumer
-            String bagString = serializeObject(bag);
-            bagString = "Bag:" + bagString;
-            sendToPlayer.accept(bagString);
-
-            System.out.println("Bag sent to the player");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String boardString = boardToString(board.getBoardsLetters());
+        boardString = "Board:" + boardString;
+        sendToPlayer.accept(boardString);
     }
 
     public void sendPlayerTiles(){
         StringBuilder playerTilesString = new StringBuilder("PlayerTiles:");
         for (Tile tile: this.tiles){
             playerTilesString.append(tile.letterToString());
+            playerTilesString.append(tile.score);
         }
+        playerTilesString.append(":");
+        for (Tile tile: this.tiles){
+            playerTilesString.append(tile.letterToString());
+        }
+
         sendToPlayer.accept(playerTilesString.toString());
     }
+
 
     public String serializeObject(Object o) throws IOException {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
@@ -127,6 +119,14 @@ public class Player implements Serializable {
 
         byte[] bytes = byteOut.toByteArray();
         return Base64.getEncoder().encodeToString(bytes);
+    }
+
+    public static String boardToString(String[][] array) {
+        StringBuilder sb = new StringBuilder();
+        for (String[] row : array) {
+            sb.append(String.join(",", row)).append("|");
+        }
+        return sb.toString();
     }
 
     public void sendPlayers(Player[] players) {
@@ -157,6 +157,16 @@ public class Player implements Serializable {
     public void sendGameName(String name) {
         String message = "GameName:" + name;
         sendToPlayer.accept(message);
+    }
+    public void sendScore() {
+        String message = "PlayerScore:" + this.score;
+        sendToPlayer.accept(message);
+    }
+
+    public void sendNewTurn() {
+        String message = "NewTurn:";
+        sendToPlayer.accept(message);
+
     }
 
     public void sendGameStart() {

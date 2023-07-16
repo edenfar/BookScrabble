@@ -1,10 +1,12 @@
 package model;
 
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.StringProperty;
 import server.Board;
 import server.Game;
 import server.Player;
 import server.Tile;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -22,11 +24,15 @@ public class Model extends Observable {
     private Scanner inFromServer;
     private Thread serverListener;
     private String playerTiles;
+    private String playerTilesLetters;
     private Board board;
-    private Tile.Bag bag;
-    private int round;
+
+    private Tile[][] boardTiles;
+    private String[][] boardData;
+    private int round = 1;
     private String[] playersArray;
     private String currPlayerName;
+    private String playerScore;
 
     public void connect(String host, int port) {
         try {
@@ -50,25 +56,7 @@ public class Model extends Observable {
         while (!Objects.equals(response, "end")) {
             if (response.startsWith("Board:")) {
                 String boardString = response.substring("Board:".length());
-                try {
-                    this.board = (Board) deSerialize(boardString);
-
-                    System.out.println("Board received and deserialized");
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (response.startsWith("Bag:")) {
-                String bagString = response.substring("Bag:".length());
-                try {
-
-                    this.bag = (Tile.Bag) deSerialize(bagString);
-
-                    System.out.println("Bag received and deserialized");
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                this.boardData = stringToArray(boardString);
             }
 
             if (response.startsWith("Round:")) {
@@ -89,12 +77,17 @@ public class Model extends Observable {
                 this.gameName = response.substring("GameName:".length());
             }
             if (response.startsWith("PlayerTiles:")) {
-                this.playerTiles =response.substring("PlayerTiles:".length());
+                String temp = response.substring("PlayerTiles:".length());
+                String[] tempArray = temp.split(":");
+                this.playerTiles = tempArray[0];
+                this.playerTilesLetters = tempArray[1];
+            }
+            if (response.startsWith("PlayerScore:")) {
+                this.playerScore = response.substring("PlayerScore:".length());
             }
 
 
-
-            while (this.hasChanged());
+            while (this.hasChanged()) ;
             this.setChanged();
             this.notifyObservers(response.split(":")[0]);
             response = inFromServer.nextLine();
@@ -108,29 +101,14 @@ public class Model extends Observable {
         }
     }
 
-
-    public Object deSerialize(String response) throws IOException, ClassNotFoundException {
-        // Convert the received board string back to a byte array
-        byte[] respToBytes = Base64.getDecoder().decode(response);
-
-        // Create an ObjectInputStream to read the byte array and deserialize the board object
-        ObjectInputStream objectIn = new ObjectInputStream(new ByteArrayInputStream(respToBytes));
-        return objectIn.readObject();
-    }
-
     public void playTurn(String word, int row, int col, boolean vertical) {
         String concatenatedString = word + "," + row + "," + col + "," + vertical;
-
         this.sendMessage(concatenatedString);
 
     }
 
     public Board getBoard() {
         return board;
-    }
-
-    public Tile.Bag getBag() {
-        return bag;
     }
 
     public int getRound() {
@@ -151,5 +129,30 @@ public class Model extends Observable {
 
     public String getPlayerTiles() {
         return playerTiles;
+    }
+
+    public String getPlayerTilesLetters() {
+        return playerTilesLetters;
+    }
+
+    public String getPlayerScore() {
+        return playerScore;
+    }
+
+    public Tile[][] getBoardTiles() {
+        return boardTiles;
+    }
+
+    public String[][] getBoardData() {
+        return boardData;
+    }
+
+    public static String[][] stringToArray(String arrayAsString) {
+        String[] rows = arrayAsString.split("\\|");
+        String[][] array = new String[rows.length][];
+        for (int i = 0; i < rows.length; i++) {
+            array[i] = rows[i].split(",");
+        }
+        return array;
     }
 }

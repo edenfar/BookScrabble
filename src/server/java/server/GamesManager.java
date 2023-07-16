@@ -22,7 +22,14 @@ public class GamesManager {
 
     public Game createGame(String[] fileNames, Player host) {
         String name = getNewRandomName();
-        Game game = new Game(name, fileNames, host, ROUNDS);
+        String prefix = "src/server/java/resources/";
+
+        String[] fileWithPath = new String[fileNames.length];
+
+        for (int i = 0; i < fileNames.length; i++) {
+            fileWithPath[i] = prefix + fileNames[i];
+        }
+        Game game = new Game(name, fileWithPath, host, ROUNDS);
         games.put(name, game);
         return game;
     }

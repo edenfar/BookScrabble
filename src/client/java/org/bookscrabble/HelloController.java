@@ -197,7 +197,7 @@ public class HelloController extends Observable implements Observer {
                     stage.show();
                 });
             }
-            if (Objects.equals(type, "GameStarted")) {
+            if ((Objects.equals(type, "GameStarted")) || (Objects.equals(type, "NewTurn"))) {
                 Platform.runLater(() -> {
                     FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("board1.fxml"));
                     Parent root;

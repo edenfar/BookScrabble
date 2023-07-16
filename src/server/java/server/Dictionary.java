@@ -37,6 +37,7 @@ public class Dictionary {
         boolean doesExist = bf.contains(word);
         if (doesExist)
             exists.add(word);
+
         else
             notExists.add(word);
 

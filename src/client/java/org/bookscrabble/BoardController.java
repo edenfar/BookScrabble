@@ -6,6 +6,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import server.Board;
+import server.Tile;
 import viewmodel.ViewModel;
 
 import java.net.URL;
@@ -26,43 +28,34 @@ public class BoardController extends Observable implements Observer, Initializab
     private Text playerName;
     @FXML
     private Text currentPlayerName;
-
+    @FXML
+    private Text playerScore;
     private String[][] boardData;
     private String[] letterArray;
     private Text playerTilesArray;
+    private Text playerTilesLetters;
     private String letterclicked;
-
 
     private String word;
     private int r, c;
 
     private boolean vertical;
+    private boolean firstLetter = true;
+
+    private int[][] boardDataRound;
 
 
     public BoardController(ViewModel vm) {
         this.currentPlayerName = new Text();
         this.playerName = new Text();
         this.playerTilesArray = new Text();
+        this.playerTilesLetters = new Text();
+        this.playerScore = new Text();
 
         setViewModel(vm);
 
-        boardData = new String[][]{
-                {"1", "0", "0", "3", "0", "0", "0", "1", "0", "0", "0", "3", "0", "0", "1"},
-                {"0", "4", "0", "0", "0", "2", "0", "0", "0", "2", "0", "0", "0", "4", "0"},
-                {"0", "0", "4", "0", "0", "0", "3", "0", "3", "0", "0", "0", "4", "0", "0"},
-                {"3", "0", "0", "4", "0", "0", "0", "3", "0", "0", "0", "4", "0", "0", "3"},
-                {"0", "0", "0", "0", "4", "0", "0", "0", "0", "0", "4", "0", "0", "0", "0"},
-                {"0", "2", "0", "0", "0", "2", "0", "0", "0", "2", "0", "0", "0", "2", "0"},
-                {"0", "0", "3", "0", "0", "0", "3", "0", "3", "0", "0", "0", "3", "0", "0"},
-                {"1", "0", "0", "3", "0", "0", "0", "4", "0", "0", "0", "3", "0", "0", "1"},
-                {"0", "0", "3", "0", "0", "0", "3", "0", "3", "0", "0", "0", "3", "0", "0"},
-                {"0", "2", "0", "0", "0", "2", "0", "0", "0", "2", "0", "0", "0", "2", "0"},
-                {"0", "0", "0", "0", "4", "0", "0", "0", "0", "0", "4", "0", "0", "0", "0"},
-                {"3", "0", "0", "4", "0", "0", "0", "3", "0", "0", "0", "4", "0", "0", "3"},
-                {"0", "0", "4", "0", "0", "0", "3", "0", "3", "0", "0", "0", "4", "0", "0"},
-                {"0", "4", "0", "0", "0", "2", "0", "0", "0", "2", "0", "0", "0", "4", "0"},
-                {"1", "0", "0", "3", "0", "0", "0", "1", "0", "0", "0", "3", "0", "0", "1"},
-        };
+        boardDataRound = new int[15][15];
+        boardData = new String[15][15];
 
         letterclicked = "";
         c = -1;
@@ -71,6 +64,7 @@ public class BoardController extends Observable implements Observer, Initializab
         vertical = true;
 
     }
+
     public void setViewModel(ViewModel vm) {
         this.vm = vm;
         this.vm.addObserver(this);
@@ -92,19 +86,29 @@ public class BoardController extends Observable implements Observer, Initializab
     }
 
 
-    public void setBoardAndDisplay(){
+    public void setBoardAndDisplay() {
+
+        //TODO: Update Bag
+
 
         currentPlayerName.textProperty().bind(this.vm.currPlayerName);
         playerName.textProperty().bind(this.vm.playerName);
         playerTilesArray.textProperty().bind(this.vm.playerTiles);
+        playerScore.textProperty().bind(this.vm.playerScore);
+        playerTilesLetters.textProperty().bind(this.vm.playerTilesLetters);
 
-        boolean showStartButton = false;
+        this.boardData = vm.boardData.clone();
+        for (int i = 0; i < vm.boardData.length; i++) {
+            this.boardData[i] = vm.boardData[i].clone();
+        }
+
+
+        boolean showEndButton = false;
 
         boardDisplayer.setBoardData(boardData);
-        lettersDisplayer.setLetters(playerTilesArray.getText());
-
-        if(currentPlayerName.getText().equals(playerName.getText())) {
-            showStartButton = true;
+        lettersDisplayer.setLetters(playerTilesLetters.getText());
+        if (currentPlayerName.getText().equals(playerName.getText())) {
+            showEndButton = true;
             boardDisplayer.addEventFilter(MouseEvent.MOUSE_CLICKED, (e) -> boardDisplayer.requestFocus());
             boardDisplayer.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 double x, y;
@@ -118,8 +122,25 @@ public class BoardController extends Observable implements Observer, Initializab
                     int column = (int) (mouseEvent.getX() / cellWidth);
 
                     System.out.println("Clicked on row: " + row + ", column: " + column);
-                    if (letterclicked != "") {
+                    //delete letter from board by clicking on it only if it was put in same round
+                    if (letterclicked == "" && boardDataRound[row][column] == vm.round) {
+                        //add tile back to letter deck
+                        letterArray[findEmptyStringIndex(letterArray)] = boardData[row][column];
+                        boardData[row][column] = "_";
+                        boardDataRound[row][column] = 0;
+                        word = word.substring(0, word.length() - 1);
+                    }
+                    if (!letterclicked.equals("") && ((boardData[row][column].equals("_")) || (boardDataRound[row][column] == vm.round))) {
+
+                        //If we replace a letter we put on board on same turn
+                        if (!word.equals("") && (boardDataRound[row][column] == vm.round) && !boardData[row][column].equals("_")) {
+                            //add tile back to letter deck
+                            letterArray[findEmptyStringIndex(letterArray)] = boardData[row][column];
+                            word = word.substring(0, word.length() - 1);
+                        }
+
                         boardData[row][column] = letterclicked;
+                        boardDataRound[row][column] = vm.round;
                         word = word.concat(letterclicked);
                         letterclicked = "";
                         if (r == -1) {
@@ -144,9 +165,9 @@ public class BoardController extends Observable implements Observer, Initializab
                         }
                     }
                     boardDisplayer.setBoardData(boardData);
+                    vm.setFirstRound();
 
                 }
-
             });
 
 
@@ -167,18 +188,21 @@ public class BoardController extends Observable implements Observer, Initializab
                     int index = (int) (mouseX / cellWidth);
 
                     System.out.println("Clicked on letter at index: " + index);
-                    letterArray = new String[playerTilesArray.getText().length()];
+                    letterArray = new String[playerTilesLetters.getText().length()];
 
-                    for (int i = 0; i < playerTilesArray.getText().length(); i++) {
-                        char letter = playerTilesArray.getText().charAt(i);
+                    for (int i = 0; i < playerTilesLetters.getText().length(); i++) {
+                        char letter = playerTilesLetters.getText().charAt(i);
                         String temp = String.valueOf(letter);
 
                         letterArray[i] = temp;
                     }
                     letterclicked = letterArray[index];
+                    letterArray[index] = "";
+
                 }
             });
             doneButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (e) -> doneButton.requestFocus());
+
 
             doneButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 double x, y;
@@ -190,9 +214,18 @@ public class BoardController extends Observable implements Observer, Initializab
 
             });
         }
-        doneButton.setVisible(showStartButton);
+        doneButton.setVisible(showEndButton);
     }
 
+
+    public static int findEmptyStringIndex(String[] array) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equals("")) {
+                return i;
+            }
+        }
+        return -1; // If empty string not found
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

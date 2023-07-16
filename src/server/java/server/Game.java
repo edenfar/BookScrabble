@@ -66,10 +66,18 @@ public class Game {
 
     }
 
-    public void sendCurrentPlayer(){
+    public void sendCurrentPlayer() {
         for (Player p : players) {
             if (p != null) {
                 p.sendCurrentPlayer(currentPlayer.name);
+            }
+        }
+    }
+
+    public void sendCurrentRound() {
+        for (Player p : players) {
+            if (p != null) {
+                p.sendCurrentRound(currentRound);
             }
         }
     }
@@ -92,6 +100,7 @@ public class Game {
         currentPlayer = players[0];
         sendCurrentPlayer();
         currentRound = 1;
+        sendCurrentRound();
         for (Player player : players) {
             if (player != null) {
                 player.setTiles(bag.getRandomTiles(7));
@@ -133,9 +142,23 @@ public class Game {
             currentPlayer.notifyIllegalWord(word);
             return;
         }
+        this.sendBoard();
         currentPlayer.addScore(wordScore);
         int wordTilesCount = word.getTiles().length;
         currentPlayer.replaceTiles(word.getTiles(), bag.getRandomTiles(wordTilesCount));
+        this.advanceCurrentPlayer();
+        currentRound += 1;
+        this.sendGameToPlayers();
+    }
+
+    private void sendBoard() {
+        for (Player player : players) {
+            if (player != null) {
+                player.sendBoard(board);
+            }
+        }
+    }
+    public void playNullTurn() {
         this.advanceCurrentPlayer();
         currentRound += 1;
         this.sendGameToPlayers();
@@ -154,23 +177,26 @@ public class Game {
         for (Player player : players) {
             if (player != null) {
                 player.sendBoard(board);
-                player.sendBag(bag);
                 player.sendPlayers(players);
                 player.sendCurrentPlayer(currentPlayer.name);
                 player.sendCurrentRound(currentRound);
                 player.sendPlayerTiles();
+                player.sendNewTurn();
+                player.sendScore();
             }
         }
     }
 
     private void sendGameToPlayer(Player p) {
         p.sendBoard(board);
-        p.sendBag(bag);
         p.sendPlayers(players);
         p.sendCurrentRound(currentRound);
+        p.sendScore();
     }
 
     private void advanceCurrentPlayer() {
-        throw new UnsupportedOperationException();
+        int currentPlayerIndex = Arrays.asList(players).indexOf(currentPlayer);
+        currentPlayerIndex = (currentPlayerIndex + 1) % numOfPlayers;
+        currentPlayer = players[currentPlayerIndex];
     }
 }

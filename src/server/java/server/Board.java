@@ -2,10 +2,9 @@ package server;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.io.Serializable;
 import java.util.List;
 
-public class Board implements Serializable {
+public class Board {
     // indexes
     final byte dl = 2;    // double letter
     final byte tl = 3;    // triple letter
@@ -264,5 +263,19 @@ public class Board implements Serializable {
             }
             System.out.println();
         }
+    }
+
+    public String[][] getBoardsLetters() {
+        String[][] board = new String[15][15];
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[i].length; j++) {
+                Tile t = tiles[i][j];
+                if (t != null)
+                    board[i][j] = t.letterToString();
+                else
+                    board[i][j] = "_";
+            }
+        }
+        return board;
     }
 }
