@@ -40,6 +40,7 @@ public class PlayerHandler implements ClientHandler {
 
             player.sendGameName(game.name);
             player.sendPlayers(game.players);
+            player.sendBoard(game.board);
             player.sendScore();
 
             this.receiveStartGameSignal(in);

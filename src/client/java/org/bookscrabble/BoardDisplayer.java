@@ -47,13 +47,12 @@ public class BoardDisplayer extends Canvas {
             System.out.println("boardData.length: " + boardData.length);
             for (int i = 0; i < boardData.length; i++) {
                 for (int j = 0; j < boardData[i].length; j++) {
-                    if (boardData[i][j] != null) {
+                    if (!boardData[i][j].equals("_")) {
                         gc.setFill(Color.YELLOW);
                         gc.fillRect(j * w, i * h, w, h);
                         gc.setFill(Color.BLACK);
                         gc.fillText(boardData[i][j], j * w + (w / 2), i * h + (h / 2));
-                    }
-                    else {
+                    } else {
                         if (colorData[i][j] == "0") {
                             gc.setFill(Color.GREEN); // Set the fill color to green
                             gc.fillRect(j * w, i * h, w, h);

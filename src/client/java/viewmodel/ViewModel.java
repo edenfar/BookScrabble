@@ -19,6 +19,7 @@ public class ViewModel extends Observable implements Observer {
     public StringProperty[] playersArray;
 
     public Tile[][] boardTiles;
+    public String[][] boardData;
     public StringProperty playerTiles;
     public StringProperty playerTilesLetters;
     public StringProperty currPlayerName;
@@ -36,15 +37,12 @@ public class ViewModel extends Observable implements Observer {
         currPlayerName = new SimpleStringProperty();
         playerScore = new SimpleStringProperty();
         boardTiles = new Tile[15][15];
+        boardData = new String[15][15];
     }
 
     public void setModel(Model m) {
         this.m = m;
         m.addObserver(this);
-    }
-
-    public void setBoardTiles(Tile[][] boardTiles) {
-        this.boardTiles = boardTiles;
     }
 
     public void setFirstRound() {
@@ -143,11 +141,11 @@ public class ViewModel extends Observable implements Observer {
             }
             if (Objects.equals(type, "Board")) {
                 this.boardTiles = m.getBoardTiles();
-                this.setChanged();
-                this.notifyObservers("BoardText");
+                for (int i = 0; i < m.getBoardData().length; i++) {
+                    this.boardData[i] = m.getBoardData()[i].clone();
+                }
             }
 
         }
-
     }
 }

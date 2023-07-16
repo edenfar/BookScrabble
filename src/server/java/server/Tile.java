@@ -2,15 +2,13 @@ package server;
 
 import java.util.Objects;
 import java.util.Random;
-import java.io.Serializable;
 
-public class Tile implements Serializable {
+public class Tile {
 
     public final char letter;
     public final int score;
 
-    //Need to change this back to private but that's the only way to do it for now
-    public Tile(char letter, int score) {
+    private Tile(char letter, int score) {
         super();
         this.letter = letter;
         this.score = score;
@@ -41,7 +39,7 @@ public class Tile implements Serializable {
         return Character.toString(letter);
     }
 
-    public static class Bag implements Serializable{
+    public static class Bag {
         private int[] maxQuantities = {9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1};
         private int[] quantities = maxQuantities.clone();
         private Tile[] tiles = {
@@ -107,6 +105,15 @@ public class Tile implements Serializable {
                 quantities[c - 'A'] -= 1;
                 size -= 1;
                 return tiles[c - 'A'];
+            }
+            return null;
+        }
+
+        public Tile getTileFromLetter(char c) {
+            for (Tile t : tiles) {
+                if (t.letter == c) {
+                    return t;
+                }
             }
             return null;
         }

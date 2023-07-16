@@ -31,8 +31,6 @@ public class BoardController extends Observable implements Observer, Initializab
     @FXML
     private Text playerScore;
     private String[][] boardData;
-    private Board board;
-    private Tile[][] boardTiles;
     private String[] letterArray;
     private Text playerTilesArray;
     private Text playerTilesLetters;
@@ -58,9 +56,6 @@ public class BoardController extends Observable implements Observer, Initializab
 
         boardDataRound = new int[15][15];
         boardData = new String[15][15];
-
-
-        this.boardTiles = new Tile[15][15];
 
         letterclicked = "";
         c = -1;
@@ -102,16 +97,11 @@ public class BoardController extends Observable implements Observer, Initializab
         playerScore.textProperty().bind(this.vm.playerScore);
         playerTilesLetters.textProperty().bind(this.vm.playerTilesLetters);
 
-        this.boardTiles = vm.boardTiles;
-
-
-        for (int i = 0; i < boardTiles.length; i++) {
-            for (int j = 0; j < boardTiles[i].length; j++) {
-                if (boardTiles[i][j] != null) {
-                    boardData[i][j] = String.valueOf(boardTiles[i][j].letter);
-                }
-            }
+        this.boardData = vm.boardData.clone();
+        for (int i = 0; i < vm.boardData.length; i++) {
+            this.boardData[i] = vm.boardData[i].clone();
         }
+
 
         boolean showEndButton = false;
 
@@ -132,40 +122,43 @@ public class BoardController extends Observable implements Observer, Initializab
                     int column = (int) (mouseEvent.getX() / cellWidth);
 
                     System.out.println("Clicked on row: " + row + ", column: " + column);
-                    if (letterclicked != "" && ((boardData[row][column] == null)||(boardDataRound[row][column]== vm.round)) && (vm.round == 1
-                                || (boardData[row][column - 1] != null || boardData[row][column + 1] != null
-                                || boardData[row - 1][column] != null || boardData[row + 1][column] != null))) {
-                        //check if the letter is in the same row or column that was clicked before or if it is in the first round
-                        if (((boardData[row + 1][column] != null) && ((boardData[row + 1][column - 1] == null) && (boardData[row + 1][column + 1] == null)))
-                                || ((boardData[row - 1][column] != null) && ((boardData[row - 1][column - 1] == null) && (boardData[row - 1][column + 1] == null)))
-                                || ((boardData[row][column + 1] != null) && ((boardData[row - 1][column + 1] == null) && (boardData[row + 1][column + 1] == null)))
-                                || ((boardData[row][column - 1] != null) && ((boardData[row - 1][column - 1] == null) && (boardData[row + 1][column - 1] == null)))
-                                || firstLetter) {
+                    //delete letter from board by clicking on it only if it was put in same round
+                    if (letterclicked == "" && boardDataRound[row][column] == vm.round) {
+                        //add tile back to letter deck
+                        letterArray[findEmptyStringIndex(letterArray)] = boardData[row][column];
+                        boardData[row][column] = "_";
+                        boardDataRound[row][column] = 0;
+                        word = word.substring(0, word.length() - 1);
+                    }
+                    if (!letterclicked.equals("") && ((boardData[row][column].equals("_")) || (boardDataRound[row][column] == vm.round))) {
 
-                            boardData[row][column] = letterclicked;
-                            boardTiles[row][column] = toTiles(letterclicked);
-                            boardDataRound[row][column] = vm.round;
-                            firstLetter = false;
+                        //If we replace a letter we put on board on same turn
+                        if (!word.equals("") && (boardDataRound[row][column] == vm.round) && !boardData[row][column].equals("_")) {
+                            //add tile back to letter deck
+                            letterArray[findEmptyStringIndex(letterArray)] = boardData[row][column];
+                            word = word.substring(0, word.length() - 1);
+                        }
 
-                            word = word.concat(letterclicked);
-                            letterclicked = "";
-                            if (r == -1) {
-                                r = row;
-                                c = column;
+                        boardData[row][column] = letterclicked;
+                        boardDataRound[row][column] = vm.round;
+                        word = word.concat(letterclicked);
+                        letterclicked = "";
+                        if (r == -1) {
+                            r = row;
+                            c = column;
+                        } else {
+                            //if the letter in teh same row, the word is vertical
+                            if (r == row) {
+                                vertical = false;
+                                //check if the new letter is from the left
+                                if (column < c) {
+                                    c = (column);
+                                }
                             } else {
-                                //if the letter in teh same row, the word is vertical
-                                if (r == row) {
-                                    vertical = false;
-                                    //check if the new letter is from the left
-                                    if (column < c) {
-                                        c = (column);
-                                    }
-                                } else {
-                                    if (c == column) {
-                                        vertical = true;
-                                        if (row < r) {
-                                            r = row;
-                                        }
+                                if (c == column) {
+                                    vertical = true;
+                                    if (row < r) {
+                                        r = row;
                                     }
                                 }
                             }
@@ -204,6 +197,8 @@ public class BoardController extends Observable implements Observer, Initializab
                         letterArray[i] = temp;
                     }
                     letterclicked = letterArray[index];
+                    letterArray[index] = "";
+
                 }
             });
             doneButton.addEventFilter(MouseEvent.MOUSE_CLICKED, (e) -> doneButton.requestFocus());
@@ -215,8 +210,6 @@ public class BoardController extends Observable implements Observer, Initializab
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     checkBoard();
-                    //If word added to board we need to send new board to game (still ongoing)
-                    vm.setBoardTiles(boardTiles);
                 }
 
             });
@@ -225,28 +218,14 @@ public class BoardController extends Observable implements Observer, Initializab
     }
 
 
-    private Tile toTiles(String letterclicked) {
-        int index = playerTilesArray.getText().indexOf(letterclicked);
-        if (index + 1 < playerTilesArray.getText().length()) {
-            if ((letterclicked.charAt(0) == 'Z') || (letterclicked.charAt(0) == 'Q')) {
-                index++;
-                char nextChar = playerTilesArray.getText().charAt(index + 1);
-                if (Character.isDigit(nextChar)) {
-                    int score = Integer.parseInt(playerTilesArray.getText().substring((index), (index + 2)));
-                    Tile tile = new Tile(letterclicked.charAt(0), score);
-                    return tile;
-                }
-            } else {
-                char nextChar = playerTilesArray.getText().charAt(index + 1);
-                if (Character.isDigit(nextChar)) {
-                    Tile tile = new Tile(letterclicked.charAt(0), Character.getNumericValue(nextChar));
-                    return tile;
-                }
+    public static int findEmptyStringIndex(String[] array) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equals("")) {
+                return i;
             }
         }
-        return null;
+        return -1; // If empty string not found
     }
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

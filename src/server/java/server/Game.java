@@ -66,7 +66,7 @@ public class Game {
 
     }
 
-    public void sendCurrentPlayer(){
+    public void sendCurrentPlayer() {
         for (Player p : players) {
             if (p != null) {
                 p.sendCurrentPlayer(currentPlayer.name);
@@ -74,7 +74,7 @@ public class Game {
         }
     }
 
-    public void sendCurrentRound(){
+    public void sendCurrentRound() {
         for (Player p : players) {
             if (p != null) {
                 p.sendCurrentRound(currentRound);
@@ -142,6 +142,7 @@ public class Game {
             currentPlayer.notifyIllegalWord(word);
             return;
         }
+        this.sendBoard();
         currentPlayer.addScore(wordScore);
         int wordTilesCount = word.getTiles().length;
         currentPlayer.replaceTiles(word.getTiles(), bag.getRandomTiles(wordTilesCount));
@@ -150,7 +151,14 @@ public class Game {
         this.sendGameToPlayers();
     }
 
-    public void playNullTurn(){
+    private void sendBoard() {
+        for (Player player : players) {
+            if (player != null) {
+                player.sendBoard(board);
+            }
+        }
+    }
+    public void playNullTurn() {
         this.advanceCurrentPlayer();
         currentRound += 1;
         this.sendGameToPlayers();
@@ -169,7 +177,6 @@ public class Game {
         for (Player player : players) {
             if (player != null) {
                 player.sendBoard(board);
-                player.sendBag(bag);
                 player.sendPlayers(players);
                 player.sendCurrentPlayer(currentPlayer.name);
                 player.sendCurrentRound(currentRound);
@@ -182,7 +189,6 @@ public class Game {
 
     private void sendGameToPlayer(Player p) {
         p.sendBoard(board);
-        p.sendBag(bag);
         p.sendPlayers(players);
         p.sendCurrentRound(currentRound);
         p.sendScore();
