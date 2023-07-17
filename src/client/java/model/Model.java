@@ -1,18 +1,8 @@
 package model;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.StringProperty;
-import server.Board;
-import server.Game;
-import server.Player;
-import server.Tile;
-
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Base64;
 import java.util.Objects;
 import java.util.Observable;
 import java.util.Scanner;
@@ -25,9 +15,7 @@ public class Model extends Observable {
     private Thread serverListener;
     private String playerTiles;
     private String playerTilesLetters;
-    private Board board;
 
-    private Tile[][] boardTiles;
     private String[][] boardData;
     private int round = 1;
     private String[] playersArray;
@@ -107,10 +95,6 @@ public class Model extends Observable {
 
     }
 
-    public Board getBoard() {
-        return board;
-    }
-
     public int getRound() {
         return round;
     }
@@ -137,10 +121,6 @@ public class Model extends Observable {
 
     public String getPlayerScore() {
         return playerScore;
-    }
-
-    public Tile[][] getBoardTiles() {
-        return boardTiles;
     }
 
     public String[][] getBoardData() {

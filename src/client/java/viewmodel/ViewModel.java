@@ -5,7 +5,6 @@ import javafx.beans.property.StringProperty;
 import model.GuestModel;
 import model.HostModel;
 import model.Model;
-import server.Tile;
 
 
 import java.util.Objects;
@@ -18,7 +17,6 @@ public class ViewModel extends Observable implements Observer {
     public StringProperty playerName, gameName, playerScore;
     public StringProperty[] playersArray;
 
-    public Tile[][] boardTiles;
     public String[][] boardData;
     public StringProperty playerTiles;
     public StringProperty playerTilesLetters;
@@ -36,7 +34,6 @@ public class ViewModel extends Observable implements Observer {
         playersArray = new StringProperty[0];
         currPlayerName = new SimpleStringProperty();
         playerScore = new SimpleStringProperty();
-        boardTiles = new Tile[15][15];
         boardData = new String[15][15];
     }
 
@@ -140,7 +137,6 @@ public class ViewModel extends Observable implements Observer {
                 this.notifyObservers("PlayerScore");
             }
             if (Objects.equals(type, "Board")) {
-                this.boardTiles = m.getBoardTiles();
                 for (int i = 0; i < m.getBoardData().length; i++) {
                     this.boardData[i] = m.getBoardData()[i].clone();
                 }

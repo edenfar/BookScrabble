@@ -1,20 +1,28 @@
 package server;
 
-import java.util.Base64;
+import java.util.*;
 import java.util.function.Consumer;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 public class Player {
-    String name;
+    private int id;
+    private String name;
     private int score;
     private Tile[] tiles;
     Consumer<String> sendToPlayer;
+
+    public Player() {
+        this.score = 0;
+        this.tiles = new Tile[]{};
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Player player)) return false;
+        return player.id == this.id
+                && Objects.equals(player.name, this.name)
+                && player.score == this.score
+                && Arrays.equals(player.tiles, this.tiles);
+    }
 
     public Player(String name, Consumer<String> sendToPlayer) {
         this.name = name;
@@ -31,24 +39,26 @@ public class Player {
         return score;
     }
 
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
     public void addScore(int additionalScore) {
         if (additionalScore > 0) {
             this.score += additionalScore;
         } else throw new IllegalArgumentException(additionalScore + " is not a positive number");
     }
 
+    public Tile[] getTiles() {
+        return tiles;
+    }
+
     public void setTiles(Tile[] tiles) {
+        if (this.tiles.length > 0)
+            throw new RuntimeException("Tiles are already set");
         this.tiles = tiles;
     }
 
     public boolean hasTiles(Tile[] tiles) {
         return new HashSet<>(Arrays.asList(this.tiles)).containsAll(Arrays.asList(tiles));
     }
+
     public Tile getTile(char letter) {
         for (Tile tile : tiles) {
             if (tile.letter == letter) {
@@ -91,45 +101,24 @@ public class Player {
     }
 
     public void sendBoard(Board board) {
-        String boardString = boardToString(board.getBoardsLetters());
-        boardString = "Board:" + boardString;
-        sendToPlayer.accept(boardString);
+        sendToPlayer.accept("Board:" + board.toString());
     }
 
-    public void sendPlayerTiles(){
+    public void sendPlayerTiles() {
         StringBuilder playerTilesString = new StringBuilder("PlayerTiles:");
-        for (Tile tile: this.tiles){
-            playerTilesString.append(tile.letterToString());
+        for (Tile tile : this.tiles) {
+            playerTilesString.append(tile.letter);
             playerTilesString.append(tile.score);
         }
         playerTilesString.append(":");
-        for (Tile tile: this.tiles){
-            playerTilesString.append(tile.letterToString());
+        for (Tile tile : this.tiles) {
+            playerTilesString.append(tile.letter);
         }
 
         sendToPlayer.accept(playerTilesString.toString());
     }
 
-
-    public String serializeObject(Object o) throws IOException {
-        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        ObjectOutputStream objectOut = new ObjectOutputStream(byteOut);
-        objectOut.writeObject(o);
-        objectOut.flush();
-
-        byte[] bytes = byteOut.toByteArray();
-        return Base64.getEncoder().encodeToString(bytes);
-    }
-
-    public static String boardToString(String[][] array) {
-        StringBuilder sb = new StringBuilder();
-        for (String[] row : array) {
-            sb.append(String.join(",", row)).append("|");
-        }
-        return sb.toString();
-    }
-
-    public void sendPlayers(Player[] players) {
+    public void sendPlayers(List<Player> players) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Players:");
         for (Player player : players) {
@@ -158,6 +147,7 @@ public class Player {
         String message = "GameName:" + name;
         sendToPlayer.accept(message);
     }
+
     public void sendScore() {
         String message = "PlayerScore:" + this.score;
         sendToPlayer.accept(message);
@@ -166,7 +156,6 @@ public class Player {
     public void sendNewTurn() {
         String message = "NewTurn:";
         sendToPlayer.accept(message);
-
     }
 
     public void sendGameStart() {

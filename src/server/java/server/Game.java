@@ -3,31 +3,50 @@ package server;
 import server.Tile.Bag;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 
 public class Game {
 
     final static int MAX_PLAYERS = 4;
 
+    private int id;
     String name;
     Board board;
     Bag bag;
-    Player[] players;
+    List<Player> players;
     int numOfPlayers;
     Player currentPlayer;
     int rounds;
     int currentRound;
 
+    public Game() {
+        this.players = new ArrayList<>(MAX_PLAYERS);
+    }
+
     public Game(String name, String[] fileNames, Player host, int rounds) {
         this.name = name;
         this.board = new Board(fileNames);
         this.bag = new Bag();
-        this.players = new Player[MAX_PLAYERS];
-        this.players[0] = host;
+        this.players = new ArrayList<>(MAX_PLAYERS);
+        this.players.add(host);
         this.rounds = rounds;
         this.numOfPlayers = 1;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Game game)) return false;
+        return game.id == this.id
+                && Objects.equals(game.name, this.name)
+                && game.rounds == this.rounds
+                && game.numOfPlayers == this.numOfPlayers
+                && ((game.currentPlayer == null && this.currentPlayer == null)
+                    || game.currentPlayer.equals(this.currentPlayer))
+                && game.players.equals(this.players)
+                && game.bag.equals(this.bag)
+                && game.board.equals(this.board);
     }
 
     public int letterToInt(char letter) {
@@ -52,7 +71,7 @@ public class Game {
         }
 
         for (int i = 0; i < numOfPlayers; i++) {
-            if (players[i] != null) {
+            if (players.get(i) != null) {
                 tile = this.bag.getRand();
                 letter = tile.letter;
                 playersInt[i] = letterToInt(letter);
@@ -61,7 +80,7 @@ public class Game {
         }
 
         players = orderPlayersByArray(players, playersInt);
-        currentPlayer = players[0];
+        currentPlayer = players.get(0);
         sendCurrentPlayer();
 
     }
@@ -69,7 +88,7 @@ public class Game {
     public void sendCurrentPlayer() {
         for (Player p : players) {
             if (p != null) {
-                p.sendCurrentPlayer(currentPlayer.name);
+                p.sendCurrentPlayer(currentPlayer.getName());
             }
         }
     }
@@ -82,7 +101,7 @@ public class Game {
         }
     }
 
-    public static Player[] orderPlayersByArray(Player[] players, int[] values) {
+    public static List<Player> orderPlayersByArray(List<Player> players, int[] values) {
         List<Player> nonNullPlayers = new ArrayList<>();
         for (Player player : players) {
             if (player != null) {
@@ -92,12 +111,12 @@ public class Game {
         List<Player> sortedPlayers = new ArrayList<>(nonNullPlayers);
         sortedPlayers.sort(Comparator.comparing(player -> values[nonNullPlayers.indexOf(player)]));
 
-        return sortedPlayers.toArray(new Player[0]);
+        return sortedPlayers;
     }
 
     public void setup() {
         this.orderPlayers();
-        currentPlayer = players[0];
+        currentPlayer = players.get(0);
         sendCurrentPlayer();
         currentRound = 1;
         sendCurrentRound();
@@ -118,7 +137,7 @@ public class Game {
         if (numOfPlayers >= MAX_PLAYERS) {
             throw new UnsupportedOperationException("Maximum number of players reached.");
         }
-        players[numOfPlayers] = player;
+        players.add(player);
         numOfPlayers++;
         sendGameToPlayer(player);
         sendPlayersToPlayers(player);
@@ -126,7 +145,7 @@ public class Game {
 
     public void playTurn(Player player, Word word) {
         if (player != currentPlayer) {
-            player.sendToPlayer.accept("Player " + player.name + " is not the current player");
+            player.sendToPlayer.accept("Player " + player.getName() + " is not the current player");
             return;
         }
         playCurrentTurn(word);
@@ -167,8 +186,7 @@ public class Game {
     private void sendPlayersToPlayers(Player Except) {
         for (Player player : players) {
             if (player != null) {
-                if (player != Except)
-                    player.sendPlayers(players);
+                if (player != Except) player.sendPlayers(players);
             }
         }
     }
@@ -178,7 +196,7 @@ public class Game {
             if (player != null) {
                 player.sendBoard(board);
                 player.sendPlayers(players);
-                player.sendCurrentPlayer(currentPlayer.name);
+                player.sendCurrentPlayer(currentPlayer.getName());
                 player.sendCurrentRound(currentRound);
                 player.sendPlayerTiles();
                 player.sendNewTurn();
@@ -195,8 +213,8 @@ public class Game {
     }
 
     private void advanceCurrentPlayer() {
-        int currentPlayerIndex = Arrays.asList(players).indexOf(currentPlayer);
+        int currentPlayerIndex = players.indexOf(currentPlayer);
         currentPlayerIndex = (currentPlayerIndex + 1) % numOfPlayers;
-        currentPlayer = players[currentPlayerIndex];
+        currentPlayer = players.get(currentPlayerIndex);
     }
 }
