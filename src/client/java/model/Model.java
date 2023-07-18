@@ -92,7 +92,6 @@ public class Model extends Observable {
     public void playTurn(String word, int row, int col, boolean vertical) {
         String concatenatedString = word + "," + row + "," + col + "," + vertical;
         this.sendMessage(concatenatedString);
-
     }
 
     public int getRound() {
