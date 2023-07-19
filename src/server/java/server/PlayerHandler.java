@@ -19,8 +19,8 @@ public class PlayerHandler implements ClientHandler {
         PrintWriter out;
         Scanner in;
         Consumer<String> sendToPlayer;
-        Player player = null;
-        Game game = null;
+        Player player;
+        Game game;
         String name;
 
         out = new PrintWriter(outToClient);
@@ -31,11 +31,12 @@ public class PlayerHandler implements ClientHandler {
             out.println(message);
             out.flush();
         };
-        Object request = parseRequest(in.nextLine());
+        String request = in.nextLine();
+        Object parsedRequest = parseRequest(request);
 
-        if (request instanceof HostRequest hostRequest) {
+        if (parsedRequest instanceof HostRequest hostRequest) {
             name = hostRequest.name;
-            player = getPlayer(name, sendToPlayer);
+            player = createPlayer(name, sendToPlayer);
             game = createGame(hostRequest, player);
 
             player.sendGameName(game.name);
@@ -43,26 +44,34 @@ public class PlayerHandler implements ClientHandler {
             player.sendBoard(game.board);
             player.sendScore();
 
-            this.receiveStartGameSignal(in);
+            receiveStartGameSignal(in);
             game.setup();
-        } else if (request instanceof GuestRequest guestRequest) {
+        } else if (parsedRequest instanceof GuestRequest guestRequest) {
             name = guestRequest.name;
-            player = getPlayer(name, sendToPlayer);
+            player = createPlayer(name, sendToPlayer);
             game = connectToGame(guestRequest);
             game.addPlayer(player);
-
-
+        } else {
+            sendToPlayer.accept("Invalid request accepted: " + request);
+            return;
         }
         while (!game.isOver()) {
-            String move = in.nextLine();
-            if (move.startsWith(","))//No word played
+            request = in.nextLine();
+            if (request.equals("save"))
+                saveGame(game);
+            else if (request.startsWith(",")) // No word played
                 game.playNullTurn();
             else {
-                Word word = this.parseMove(move, player);
+                Word word = parseMove(request, player);
                 game.playTurn(player, word);
             }
         }
-        out.flush();
+    }
+
+    private static void saveGame(Game game) {
+        GamesManager gamesManager = GamesManager.get();
+        gamesManager.saveGame(game.name);
+        System.out.printf("Game %s saved%n", game.name);
     }
 
     public record HostRequest(String name, String[] fileNames) {
@@ -71,16 +80,14 @@ public class PlayerHandler implements ClientHandler {
     public record GuestRequest(String name, String gameName) {
     }
 
-    private Word parseMove(String move, Player player) {
-
-        String[] substrings = extractSubstrings(move);
+    private static Word parseMove(String move, Player player) {
+        String[] substrings = move.split(",");
 
         // Accessing each substring
         String wordString = substrings[0];
         int row = Integer.parseInt(substrings[1]);
         int col = Integer.parseInt(substrings[2]);
         boolean vertical = Boolean.parseBoolean(substrings[3]);
-
 
         Tile[] tiles = new Tile[wordString.length()];
         int i = 0;
@@ -90,16 +97,10 @@ public class PlayerHandler implements ClientHandler {
             tiles[i] = player.getTile(c);
             i++;
         }
-        Word word = new Word(tiles, row, col, vertical);
-        return word;
+        return new Word(tiles, row, col, vertical);
     }
 
-    public static String[] extractSubstrings(String input) {
-        String[] substrings = input.split(",");
-        return substrings;
-    }
-
-    private void receiveStartGameSignal(Scanner in) {
+    private static void receiveStartGameSignal(Scanner in) {
         String request = in.nextLine();
         //TODO: to change
         if (!Objects.equals(request, "start"))
@@ -120,16 +121,16 @@ public class PlayerHandler implements ClientHandler {
         throw new UnsupportedOperationException("Invalid request received: " + request);
     }
 
-    public Game createGame(HostRequest request, Player p) {
+    public static Game createGame(HostRequest request, Player p) {
         GamesManager gamesManager = GamesManager.get();
         return gamesManager.createGame(request.fileNames, p);
     }
 
-    public Player getPlayer(String name, Consumer<String> sendToPlayer) {
+    public static Player createPlayer(String name, Consumer<String> sendToPlayer) {
         return new Player(name, sendToPlayer);
     }
 
-    public Game connectToGame(GuestRequest request) {
+    public static Game connectToGame(GuestRequest request) {
         GamesManager gamesManager = GamesManager.get();
         return gamesManager.getGame(request.gameName);
     }

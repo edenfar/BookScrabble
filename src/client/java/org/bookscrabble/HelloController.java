@@ -188,7 +188,7 @@ public class HelloController extends Observable implements Observer {
                     }
                     controller.displayStrings(stringArray);
 
-                    boolean showStartButton = vm.getIsHost();
+                    boolean showStartButton = vm.isHost;
                     controller.getStartButton().setVisible(showStartButton);
 
                     controller.startButton.setOnAction(event -> {

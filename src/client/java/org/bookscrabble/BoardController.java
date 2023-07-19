@@ -23,6 +23,8 @@ public class BoardController extends Observable implements Observer, Initializab
     @FXML
     Button doneButton;
     @FXML
+    Button saveGameButton;
+    @FXML
     private Text playerName;
     @FXML
     private Text currentPlayerName;
@@ -38,7 +40,6 @@ public class BoardController extends Observable implements Observer, Initializab
     private int r, c;
 
     private boolean vertical;
-    private boolean firstLetter = true;
 
     private int[][] boardDataRound;
 
@@ -100,13 +101,12 @@ public class BoardController extends Observable implements Observer, Initializab
             this.boardData[i] = vm.boardData[i].clone();
         }
 
-
-        boolean showEndButton = false;
-
         boardDisplayer.setBoardData(boardData);
         lettersDisplayer.setLetters(playerTilesLetters.getText());
-        if (currentPlayerName.getText().equals(playerName.getText())) {
-            showEndButton = true;
+
+        boolean showEndButton = currentPlayerName.getText().equals(playerName.getText());
+        doneButton.setVisible(showEndButton);
+        if (showEndButton) {
             boardDisplayer.addEventFilter(MouseEvent.MOUSE_CLICKED, (e) -> boardDisplayer.requestFocus());
             boardDisplayer.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 double x, y;
@@ -212,7 +212,8 @@ public class BoardController extends Observable implements Observer, Initializab
 
             });
         }
-        doneButton.setVisible(showEndButton);
+        saveGameButton.setVisible(vm.isHost);
+        saveGameButton.setOnMouseClicked(mouseEvent -> vm.saveGame());
     }
 
 

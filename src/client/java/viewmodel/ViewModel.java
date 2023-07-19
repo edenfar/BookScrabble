@@ -26,7 +26,7 @@ public class ViewModel extends Observable implements Observer {
 
     public boolean firstRound = true;
 
-    public int round = 1 ;
+    public int round = 1;
 
     public ViewModel() {
         playerName = new SimpleStringProperty();
@@ -55,10 +55,6 @@ public class ViewModel extends Observable implements Observer {
         return this.playersArray;
     }
 
-    public boolean getIsHost() {
-        return this.isHost;
-    }
-
     public void createGame(String[] fileNames) {
         this.isHost = true;
         this.currPlayerName.setValue(playerName.getValue());
@@ -70,11 +66,19 @@ public class ViewModel extends Observable implements Observer {
     }
 
     public void startGame() {
-        if (this.m instanceof HostModel) {
-            ((HostModel) m).startGame();
+        if (this.m instanceof HostModel hostModel) {
+            hostModel.startGame();
             isGameStarted = true;
         } else {
             throw new RuntimeException("Cannot start game as guest");
+        }
+    }
+
+    public void saveGame() {
+        if (this.m instanceof HostModel hostModel) {
+            hostModel.saveGame();
+        } else {
+            throw new RuntimeException("Cannot save game as guest");
         }
     }
 
