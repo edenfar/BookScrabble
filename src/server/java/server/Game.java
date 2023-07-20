@@ -17,16 +17,17 @@ public class Game {
     Player[] players;
     int numOfPlayers;
     Player currentPlayer;
-    int rounds;
+
+    int maxRounds;
     int currentRound;
 
-    public Game(String name, String[] fileNames, Player host, int rounds) {
+    public Game(String name, String[] fileNames, Player host, int maxRounds) {
         this.name = name;
         this.board = new Board(fileNames);
         this.bag = new Bag();
         this.players = new Player[MAX_PLAYERS];
         this.players[0] = host;
-        this.rounds = rounds;
+        this.maxRounds = maxRounds;
         this.numOfPlayers = 1;
     }
 
@@ -37,6 +38,7 @@ public class Game {
         } else if (Character.isLowerCase(letter)) {
             return letter - 'a' + 1;
         } else {
+            System.out.println("Invalid letter: " + letter);
             throw new IllegalArgumentException("Invalid letter: " + letter);
         }
     }
@@ -111,7 +113,7 @@ public class Game {
     }
 
     public boolean isOver() {
-        return currentRound == rounds;
+        return currentRound > maxRounds;
     }
 
     public void addPlayer(Player player) {
@@ -120,20 +122,25 @@ public class Game {
         }
         players[numOfPlayers] = player;
         numOfPlayers++;
+        sendMaxRounds(player);
         sendGameToPlayer(player);
         sendPlayersToPlayers(player);
     }
 
-    public void playTurn(Player player, Word word) {
+    private void sendMaxRounds(Player player) {
+        player.sendMaxRounds(maxRounds);
+    }
+
+    public void playTurn(Player player, Word word, Word wordToReplaceW) {
         if (player != currentPlayer) {
             player.sendToPlayer.accept("Player " + player.name + " is not the current player");
             return;
         }
-        playCurrentTurn(word);
+        playCurrentTurn(word, wordToReplaceW);
     }
 
-    private void playCurrentTurn(Word word) {
-        if (!currentPlayer.hasTiles(word.getTiles())) {
+    private void playCurrentTurn(Word word, Word wordToReplaceW) {
+        if (!currentPlayer.hasTiles(wordToReplaceW.getTiles())) {
             currentPlayer.notifyMissingTilesForWord(word);
             return;
         }
@@ -142,10 +149,14 @@ public class Game {
             currentPlayer.notifyIllegalWord(word);
             return;
         }
+        if (wordScore == -1) {
+            currentPlayer.notifyIllegalBoard();
+            return;
+        }
         this.sendBoard();
         currentPlayer.addScore(wordScore);
-        int wordTilesCount = word.getTiles().length;
-        currentPlayer.replaceTiles(word.getTiles(), bag.getRandomTiles(wordTilesCount));
+        int wordTilesCount = wordToReplaceW.getTiles().length;
+        currentPlayer.replaceTiles(wordToReplaceW.getTiles(), bag.getRandomTiles(wordTilesCount));
         this.advanceCurrentPlayer();
         currentRound += 1;
         this.sendGameToPlayers();
@@ -158,6 +169,7 @@ public class Game {
             }
         }
     }
+
     public void playNullTurn() {
         this.advanceCurrentPlayer();
         currentRound += 1;
@@ -183,6 +195,7 @@ public class Game {
                 player.sendPlayerTiles();
                 player.sendNewTurn();
                 player.sendScore();
+                player.sendScoreBoard(getPlayersScores());
             }
         }
     }
@@ -199,4 +212,43 @@ public class Game {
         currentPlayerIndex = (currentPlayerIndex + 1) % numOfPlayers;
         currentPlayer = players[currentPlayerIndex];
     }
+
+    public void endGame() {
+        System.out.println("Game ended");
+        int winnerIndex = findIndexOfHighestValue(getPlayersScores());
+        String winnerName = players[winnerIndex].name;
+        String winnerScore = String.valueOf(players[winnerIndex].getScore());
+        for (Player player : players) {
+            if (player != null) {
+                player.sendGameEnd(winnerName, winnerScore);
+            }
+        }
+    }
+
+    public int findIndexOfHighestValue(String[] numbers) {
+        int highestIndex = 0;
+        int highestValue = Integer.parseInt(numbers[0]);
+
+        for (int i = 1; i < numbers.length; i++) {
+            int currentValue = Integer.parseInt(numbers[i]);
+            if (currentValue > highestValue) {
+                highestValue = currentValue;
+                highestIndex = i;
+            }
+        }
+
+        return highestIndex;
+    }
+
+
+    public String[] getPlayersScores() {
+        String playersScores[] = new String[numOfPlayers];
+        for (Player player : players) {
+            if (player != null) {
+                playersScores[Arrays.asList(players).indexOf(player)] = String.valueOf(player.getScore());
+            }
+        }
+        return playersScores;
+    }
+
 }

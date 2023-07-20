@@ -60,10 +60,12 @@ public class Player {
 
     public void replaceTiles(Tile[] currentTiles, Tile[] newTiles) {
         if (currentTiles.length != newTiles.length) {
+            System.out.println("The number of current tiles and new tiles must be the same.");
             throw new IllegalArgumentException("The number of current tiles and new tiles must be the same.");
         }
 
         if (!hasTiles(currentTiles)) {
+            System.out.println("You don't have the tiles you try to replace.");
             throw new IllegalArgumentException("You don't have the tiles you try to replace.");
         }
 
@@ -87,7 +89,22 @@ public class Player {
     }
 
     public void notifyIllegalWord(Word word) {
-        System.out.println("Illegal word");
+        System.out.println("Illegal word notify");
+        String[] words = word.getWordAsString().split(",");
+        String message = String.format("Illegal: Illegal word: %s", words[0]);
+        sendToPlayer.accept(message);
+    }
+
+    public void notifyIllegalBoard() {
+        System.out.println("Illegal board");
+        String message = String.format("Illegal: Illegal Board disposition");
+        sendToPlayer.accept(message);
+    }
+
+    public void notifyIllegalGame() {
+        System.out.println("Illegal game");
+        String message = String.format("Illegal:No Such Game");
+        sendToPlayer.accept(message);
     }
 
     public void sendBoard(Board board) {
@@ -96,29 +113,12 @@ public class Player {
         sendToPlayer.accept(boardString);
     }
 
-    public void sendPlayerTiles(){
+    public void sendPlayerTiles() {
         StringBuilder playerTilesString = new StringBuilder("PlayerTiles:");
-        for (Tile tile: this.tiles){
-            playerTilesString.append(tile.letterToString());
-            playerTilesString.append(tile.score);
-        }
-        playerTilesString.append(":");
-        for (Tile tile: this.tiles){
+        for (Tile tile : this.tiles) {
             playerTilesString.append(tile.letterToString());
         }
-
         sendToPlayer.accept(playerTilesString.toString());
-    }
-
-
-    public String serializeObject(Object o) throws IOException {
-        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        ObjectOutputStream objectOut = new ObjectOutputStream(byteOut);
-        objectOut.writeObject(o);
-        objectOut.flush();
-
-        byte[] bytes = byteOut.toByteArray();
-        return Base64.getEncoder().encodeToString(bytes);
     }
 
     public static String boardToString(String[][] array) {
@@ -158,6 +158,7 @@ public class Player {
         String message = "GameName:" + name;
         sendToPlayer.accept(message);
     }
+
     public void sendScore() {
         String message = "PlayerScore:" + this.score;
         sendToPlayer.accept(message);
@@ -171,6 +172,22 @@ public class Player {
 
     public void sendGameStart() {
         String message = "GameStarted:";
+        sendToPlayer.accept(message);
+    }
+
+    public void sendGameEnd(String name, String score) {
+        String message = "GameEnded:";
+        sendToPlayer.accept(message + name + "," + score);
+    }
+
+    public void sendScoreBoard(String[] playersScores) {
+        String message = "ScoreBoard:";
+        String joinedString = String.join(",", playersScores);
+        sendToPlayer.accept(message + joinedString);
+    }
+
+    public void sendMaxRounds(int maxRounds) {
+        String message = "MaxRounds:" + maxRounds;
         sendToPlayer.accept(message);
     }
 }

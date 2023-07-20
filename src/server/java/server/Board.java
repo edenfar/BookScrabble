@@ -1,5 +1,8 @@
 package server;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -228,14 +231,20 @@ public class Board {
 
         int sum = 0;
         if (boardLegal(test)) {
+            System.out.println("Board legal");
             ArrayList<Word> newWords = getWords(test);
             for (Word nw : newWords) {
-                if (dictionaryLegal(nw))
+//                if(inFile(w)){
+                if (dictionaryLegal(nw)) {
+                    System.out.println("Dictionary legal");
                     sum += getScore(nw);
-                else
+                } else {
+                    System.out.println("Dictionary illegal");
                     return 0;
+                }
             }
-        }
+        } else return -1;
+
 
         // the placement
         row = w.getRow();

@@ -1,19 +1,12 @@
 package model;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.StringProperty;
 import server.Board;
-import server.Game;
-import server.Player;
 import server.Tile;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Base64;
-import java.util.Objects;
+import java.util.Arrays;
 import java.util.Observable;
 import java.util.Scanner;
 
@@ -23,16 +16,17 @@ public class Model extends Observable {
     private PrintWriter outToServer;
     private Scanner inFromServer;
     private Thread serverListener;
-    private String playerTiles;
     private String playerTilesLetters;
-    private Board board;
-
-    private Tile[][] boardTiles;
     private String[][] boardData;
     private int round = 1;
     private String[] playersArray;
     private String currPlayerName;
     private String playerScore;
+    private String maxRounds;
+    private String[] scoreBoard;
+    private String illegal;
+    private String winner;
+    private boolean end = false;
 
     public void connect(String host, int port) {
         try {
@@ -53,44 +47,48 @@ public class Model extends Observable {
 
     public void listen() {
         String response = inFromServer.nextLine();
-        while (!Objects.equals(response, "end")) {
+        while (!end) {
             if (response.startsWith("Board:")) {
                 String boardString = response.substring("Board:".length());
                 this.boardData = stringToArray(boardString);
-            }
-
-            if (response.startsWith("Round:")) {
+            } else if (response.startsWith("Round:")) {
                 String roundString = response.substring("Round:".length());
                 this.round = Integer.parseInt(roundString);
-            }
-
-            if (response.startsWith("Players:")) {
+            } else if (response.startsWith("Players:")) {
                 String temp = response.substring("Players:".length());
-                this.playersArray = temp.split(","); //Will need to be change depending on how we use this data in the game
-            }
-
-            if (response.startsWith("CurrPlayer:")) {
+                this.playersArray = temp.split(",");
+                this.scoreBoard = new String[this.playersArray.length];
+                Arrays.fill(this.scoreBoard, "0");
+            } else if (response.startsWith("CurrPlayer:")) {
                 this.currPlayerName = response.substring("CurrPlayer:".length());
-            }
-
-            if (response.startsWith("GameName:")) {
+            } else if (response.startsWith("GameName:")) {
                 this.gameName = response.substring("GameName:".length());
-            }
-            if (response.startsWith("PlayerTiles:")) {
+            } else if (response.startsWith("PlayerTiles:")) {
                 String temp = response.substring("PlayerTiles:".length());
-                String[] tempArray = temp.split(":");
-                this.playerTiles = tempArray[0];
-                this.playerTilesLetters = tempArray[1];
-            }
-            if (response.startsWith("PlayerScore:")) {
+                this.playerTilesLetters = temp;
+            } else if (response.startsWith("PlayerScore:")) {
                 this.playerScore = response.substring("PlayerScore:".length());
+            } else if (response.startsWith("Illegal:")) {
+                this.illegal = response.substring("Illegal:".length());
+            } else if (response.startsWith("ScoreBoard:")) {
+                String temp = response.substring("ScoreBoard:".length());
+                this.scoreBoard = temp.split(",");
+            } else if (response.startsWith("MaxRounds:")) {
+                String temp = response.substring("MaxRounds:".length());
+                this.maxRounds = temp;
+            } else if (response.startsWith("GameEnded:")) {
+                String temp = response.substring("GameEnded:".length());
+                this.winner = temp;
+                this.end = true;
+            } else {
+                System.out.println("Unknown : " + response);
             }
-
-
             while (this.hasChanged()) ;
             this.setChanged();
             this.notifyObservers(response.split(":")[0]);
-            response = inFromServer.nextLine();
+            if (!response.startsWith("GameEnded:")) {
+                response = inFromServer.nextLine();
+            }
         }
         inFromServer.close();
         outToServer.close();
@@ -101,18 +99,19 @@ public class Model extends Observable {
         }
     }
 
-    public void playTurn(String word, int row, int col, boolean vertical) {
-        String concatenatedString = word + "," + row + "," + col + "," + vertical;
+    public void playTurn(String word, int row, int col, boolean vertical, String wordToReplace) {
+        String concatenatedString = word + "," + row + "," + col + "," + vertical + "," + wordToReplace;
+        System.out.println("Model: " + concatenatedString);
         this.sendMessage(concatenatedString);
 
     }
 
-    public Board getBoard() {
-        return board;
-    }
-
     public int getRound() {
         return round;
+    }
+
+    public String getIllegal() {
+        return illegal;
     }
 
     public String[] getPlayersArray() {
@@ -127,10 +126,6 @@ public class Model extends Observable {
         return gameName;
     }
 
-    public String getPlayerTiles() {
-        return playerTiles;
-    }
-
     public String getPlayerTilesLetters() {
         return playerTilesLetters;
     }
@@ -139,8 +134,8 @@ public class Model extends Observable {
         return playerScore;
     }
 
-    public Tile[][] getBoardTiles() {
-        return boardTiles;
+    public String[] getPlayersScoreArray() {
+        return scoreBoard;
     }
 
     public String[][] getBoardData() {
@@ -154,5 +149,14 @@ public class Model extends Observable {
             array[i] = rows[i].split(",");
         }
         return array;
+    }
+
+
+    public String getMaxRounds() {
+        return maxRounds;
+    }
+
+    public String getWinner() {
+        return winner;
     }
 }

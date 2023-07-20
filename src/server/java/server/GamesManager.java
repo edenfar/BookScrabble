@@ -8,7 +8,7 @@ public class GamesManager {
 
     private Map<String, Game> games;
     private static GamesManager manager;
-    public static final int ROUNDS = 30;
+    public static final int ROUNDS = 5;
 
     private GamesManager() {
         this.games = new HashMap<>();
@@ -36,8 +36,10 @@ public class GamesManager {
 
     public Game getGame(String gameName) {
         Game game = games.get(gameName);
-        if (game == null)
-            throw new RuntimeException("Game is not found: " + gameName);
+        if (game == null) {
+            System.out.println("Game is not found");
+            return null;
+        }
         return game;
     }
 
