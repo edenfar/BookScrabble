@@ -2,11 +2,14 @@ package server;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.StringJoiner;
 
 
 public class Board {
@@ -141,18 +144,23 @@ public class Board {
         if (!isEmpty && !crossTile(w))
             return false;
 
-
         return !changesTile(w);
     }
 
-    public boolean dictionaryLegal(Word w) {
+    public boolean dictionaryLegal(Word w,String[] fileNames) {
         String wordAsString = w.getWordAsString();
         List<String> queryArgs = new ArrayList<>(Arrays.asList(fileNames));
         queryArgs.add(wordAsString);
 
         try {
             // Prepare the request URL for the query
-            String requestUrl = "http://localhost:8000/query?word=" + wordAsString;
+            StringJoiner fileNamesJoiner = new StringJoiner("&files=");
+            for (String fileName : queryArgs) {
+                fileNamesJoiner.add(URLEncoder.encode(fileName, StandardCharsets.UTF_8));
+            }
+
+            String requestUrl = "http://localhost:8000/query?word=" + URLEncoder.encode(wordAsString, StandardCharsets.UTF_8)
+                    + "&files=" + fileNamesJoiner.toString();
 
             // Send the request to the HTTP server
             URL url = new URL(requestUrl);
@@ -172,7 +180,13 @@ public class Board {
 
             // Process the response from the HTTP server
             if (responseCode == 200) {
-                boolean result = Boolean.parseBoolean(response.toString());
+                boolean result;
+                if (response.toString().contains("Word found in dictionary")) {
+                    result = true;
+                    return result;
+                }
+                result = false;
+
                 return result;
             } else {
                 System.out.println("Failed to send query request. Response code: " + responseCode);
@@ -289,7 +303,7 @@ public class Board {
         if (boardLegal(test)) {
             ArrayList<Word> newWords = getWords(test);
             for (Word nw : newWords) {
-                if (dictionaryLegal(nw)) {
+                if (dictionaryLegal(nw,this.fileNames)) {
                     sum += getScore(nw);
                 } else {
                     return 0;

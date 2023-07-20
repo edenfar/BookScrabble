@@ -8,6 +8,11 @@ import server.DictionaryManager;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
 public class MyHttpServer {
 
     public static void main(String[] args) throws IOException {
@@ -31,16 +36,29 @@ public class MyHttpServer {
             String query = exchange.getRequestURI().getQuery();
             String[] queryParams = query.split("&");
             String word = "";
+            List<String> fileNames = new ArrayList<>();
+
             for (String param : queryParams) {
                 if (param.startsWith("word=")) {
-                    word = param.substring(5); // Extract the value of "word" parameter
-                    break;
+                    word = param.split("word=")[1];; // Extract the value of "word" parameter
+                } else if (param.startsWith("files=")) {
+                    String filesParam = param.split("files=")[1]; // Extract the value of "files" parameter
+                    String[] filesArray = filesParam.split(",");
+                    for (String file : filesArray) {
+                        fileNames.add(URLDecoder.decode(file, StandardCharsets.UTF_8));
+                    }
                 }
             }
 
-            System.out.println("Query received. Word: " + word);
+            System.out.println("Query received. Word: " + word + ", Files: " + fileNames);
+
+            // Merge the word and file names into a single array
+            String[] args = new String[fileNames.size() + 1];
+            fileNames.toArray(args);
+            args[args.length - 1] = word;
+
             // Invoke the query method of the DictionaryManager
-            boolean result = DictionaryManager.get().query(word);
+            boolean result = DictionaryManager.get().query(args);
 
             // Set the response based on the result
             String response = result ? "Word found in dictionary" : "Word not found in dictionary";
@@ -53,6 +71,7 @@ public class MyHttpServer {
             outputStream.write(response.getBytes());
             outputStream.close();
         }
+
     }
 
     static class ChallengeHandler implements HttpHandler {
