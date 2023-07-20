@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+    <class name="server.Board" table="BOARDS">
+        <id name="id" type="java.lang.Integer" column="id" access="field">
+            <generator class="increment"/>
+        </id>
+        <array name="fileNames" access="field">
+            <key/>
+            <index/>
+            <element type="string"/>
+        </array>
+        <property name="isEmpty" type="java.lang.Boolean" column="isEmpty" access="field"/>
+        <property name="tiles" type="java.io.Serializable" column="tiles" access="field" length="10000"/>
+    </class>
+</hibernate-mapping>

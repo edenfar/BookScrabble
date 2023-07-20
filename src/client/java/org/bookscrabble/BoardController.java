@@ -33,6 +33,8 @@ public class BoardController extends Observable implements Observer, Initializab
     @FXML
     Button doneButton;
     @FXML
+    Button saveGameButton;
+    @FXML
     Button scoreBoardButton;
     @FXML
     Button closeButton;
@@ -247,6 +249,8 @@ public class BoardController extends Observable implements Observer, Initializab
         }
         doneButton.setVisible(showEndButton);
         scoreBoardButton.setOnAction(this::scoreBoard);
+        saveGameButton.setVisible(vm.isHost);
+        saveGameButton.setOnMouseClicked(mouseEvent -> vm.saveGame());
     }
 
 

@@ -32,14 +32,33 @@ public class Board {
             {tw, 0, 0, dl, 0, 0, 0, tw, 0, 0, 0, dl, 0, 0, tw}
     };
 
+    int id;
     Tile[][] tiles;
     boolean isEmpty;
     String[] fileNames;
+
+    public Board() {
+        tiles = new Tile[][]{};
+        isEmpty = true;
+        fileNames = new String[]{};
+    }
 
     public Board(String[] fileNames) {
         tiles = new Tile[15][15];
         isEmpty = true;
         this.fileNames = fileNames;
+    }
+
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Board board)) return false;
+        return board.id == this.id
+                && Arrays.deepEquals(board.tiles, this.tiles)
+                && board.isEmpty == this.isEmpty
+                && Arrays.equals(board.fileNames, this.fileNames);
+    }
+
+    public String[] getFileNames() {
+        return fileNames.clone();
     }
 
     public Tile[][] getTiles() {
@@ -280,11 +299,20 @@ public class Board {
             for (int j = 0; j < tiles[i].length; j++) {
                 Tile t = tiles[i][j];
                 if (t != null)
-                    board[i][j] = t.letterToString();
+                    board[i][j] = String.valueOf(t.letter);
                 else
                     board[i][j] = "_";
             }
         }
         return board;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (String[] row : this.getBoardsLetters()) {
+            sb.append(String.join(",", row)).append("|");
+        }
+        return sb.toString();
     }
 }

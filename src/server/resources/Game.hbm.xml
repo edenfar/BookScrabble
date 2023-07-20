@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+    <class name="server.Game" table="GAMES">
+        <id name="id" type="java.lang.Integer" column="id" access="field">
+            <generator class="increment"/>
+        </id>
+        <property name="name"  type="java.lang.String" column="name" access="field"/>
+        <many-to-one
+                name="bag" class="server.Tile$Bag" column="bagId" access="field"
+                unique="true" not-null="true" cascade="all"
+        />
+        <many-to-one
+                name="board" class="server.Board" column="boardId" access="field"
+                unique="true" not-null="true" cascade="all"
+        />
+        <list name="players" access="field" cascade="all">
+            <key column="gameId"/>
+            <list-index column="idx"/>
+            <one-to-many class="server.Player"/>
+        </list>
+        <property name="numOfPlayers" type="java.lang.Integer" column="numOfPlayers" access="field"/>
+        <many-to-one
+                name="currentPlayer" class="server.Player" column="currentPlayer" access="field"
+                unique="true" not-null="false" cascade="all"
+        />
+        <property name="rounds" type="java.lang.Integer" column="rounds" access="field"/>
+        <property name="currentRound" type="java.lang.Integer" column="currentRound" access="field"/>
+    </class>
+</hibernate-mapping>

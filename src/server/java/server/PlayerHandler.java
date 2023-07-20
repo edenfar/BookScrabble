@@ -67,7 +67,7 @@ public class PlayerHandler implements ClientHandler {
 
             if (request instanceof HostRequest hostRequest) {
                 name = hostRequest.name;
-                player = getPlayer(name, sendToPlayer);
+                player = createPlayer(name, sendToPlayer);
                 game = createGame(hostRequest, player);
 
                 player.sendGameName(game.name);
@@ -80,7 +80,7 @@ public class PlayerHandler implements ClientHandler {
                 game.setup();
             } else if (request instanceof GuestRequest guestRequest) {
                 name = guestRequest.name;
-                player = getPlayer(name, sendToPlayer);
+                player = createPlayer(name, sendToPlayer);
                 game = connectToGame(guestRequest);
                 if (game == null) {
                     player.notifyIllegalGame();
@@ -95,7 +95,9 @@ public class PlayerHandler implements ClientHandler {
             }
 
             String move = in.nextLine();
-            if (move.startsWith(","))//No word played
+            if (move.equals("save"))
+                saveGame(game);
+            else if (move.startsWith(","))//No word played
                 game.playNullTurn();
             else {
                 //The tiles to replace can be different from the tiles in the word
@@ -116,7 +118,12 @@ public class PlayerHandler implements ClientHandler {
                 game.playTurn(player, word, wordToReplaceW);
             }
         }
-        out.flush();
+    }
+
+    private static void saveGame(Game game) {
+        GamesManager gamesManager = GamesManager.get();
+        gamesManager.saveGame(game.name);
+        System.out.printf("Game %s saved%n", game.name);
     }
 
     public record HostRequest(String name, String[] fileNames) {
@@ -132,7 +139,6 @@ public class PlayerHandler implements ClientHandler {
         int row = Integer.parseInt(substrings[1]);
         int col = Integer.parseInt(substrings[2]);
         boolean vertical = Boolean.parseBoolean(substrings[3]);
-
 
         Tile[] tiles = new Tile[wordString.length()];
         int i = 0;
@@ -157,7 +163,7 @@ public class PlayerHandler implements ClientHandler {
         return substrings;
     }
 
-    private void receiveStartGameSignal(Scanner in) {
+    private static void receiveStartGameSignal(Scanner in) {
         String request = in.nextLine();
         //TODO: to change
         if (!Objects.equals(request, "start"))
@@ -179,16 +185,16 @@ public class PlayerHandler implements ClientHandler {
         throw new UnsupportedOperationException("Invalid request received: " + request);
     }
 
-    public Game createGame(HostRequest request, Player p) {
+    public static Game createGame(HostRequest request, Player p) {
         GamesManager gamesManager = GamesManager.get();
         return gamesManager.createGame(request.fileNames, p);
     }
 
-    public Player getPlayer(String name, Consumer<String> sendToPlayer) {
+    public static Player createPlayer(String name, Consumer<String> sendToPlayer) {
         return new Player(name, sendToPlayer);
     }
 
-    public Game connectToGame(GuestRequest request) {
+    public static Game connectToGame(GuestRequest request) {
         Game game = null;
         GamesManager gamesManager = GamesManager.get();
         game = gamesManager.getGame(request.gameName);
