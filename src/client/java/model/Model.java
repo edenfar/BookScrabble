@@ -1,13 +1,9 @@
 package model;
 
-import server.Board;
-import server.Tile;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Observable;
 import java.util.Scanner;
 
@@ -23,7 +19,7 @@ public class Model extends Observable {
     private String[] playersArray;
     private String currPlayerName;
     private String playerScore;
-    private String maxRounds;
+    private String rounds;
     private String[] scoreBoard;
     private String illegal;
     private String winner;
@@ -74,9 +70,9 @@ public class Model extends Observable {
             } else if (response.startsWith("ScoreBoard:")) {
                 String temp = response.substring("ScoreBoard:".length());
                 this.scoreBoard = temp.split(",");
-            } else if (response.startsWith("MaxRounds:")) {
-                String temp = response.substring("MaxRounds:".length());
-                this.maxRounds = temp;
+            } else if (response.startsWith("Rounds:")) {
+                String temp = response.substring("Rounds:".length());
+                this.rounds = temp;
             } else if (response.startsWith("GameEnded:")) {
                 String temp = response.substring("GameEnded:".length());
                 this.winner = temp;
@@ -102,7 +98,6 @@ public class Model extends Observable {
 
     public void playTurn(String word, int row, int col, boolean vertical, String wordToReplace) {
         String concatenatedString = word + "," + row + "," + col + "," + vertical + "," + wordToReplace;
-        System.out.println("Model: " + concatenatedString);
         this.sendMessage(concatenatedString);
 
     }
@@ -153,8 +148,8 @@ public class Model extends Observable {
     }
 
 
-    public String getMaxRounds() {
-        return maxRounds;
+    public String getrounds() {
+        return rounds;
     }
 
     public String getWinner() {

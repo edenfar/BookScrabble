@@ -73,7 +73,7 @@ public class PlayerHandler implements ClientHandler {
                 player.sendGameName(game.name);
                 player.sendPlayers(game.players);
                 player.sendBoard(game.board);
-                player.sendMaxRounds(game.maxRounds);
+                player.sendRounds(game.rounds);
                 player.sendScore();
 
                 this.receiveStartGameSignal(in);
@@ -175,13 +175,11 @@ public class PlayerHandler implements ClientHandler {
         host,<player name>,<file names separated by commas>
         guest,<player name>,<game name>
          */
-        System.out.println("received request: " + request);
         String[] params = request.split(",");
         if (Objects.equals(params[0], "guest"))
             return new GuestRequest(params[1], params[2]);
         if (Objects.equals(params[0], "host"))
             return new HostRequest(params[1], Arrays.copyOfRange(params, 2, params.length));
-        System.out.println("Invalid request received: " + request);
         throw new UnsupportedOperationException("Invalid request received: " + request);
     }
 

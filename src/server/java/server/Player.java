@@ -70,12 +70,10 @@ public class Player {
 
     public void replaceTiles(Tile[] currentTiles, Tile[] newTiles) {
         if (currentTiles.length != newTiles.length) {
-            System.out.println("The number of current tiles and new tiles must be the same.");
             throw new IllegalArgumentException("The number of current tiles and new tiles must be the same.");
         }
 
         if (!hasTiles(currentTiles)) {
-            System.out.println("You don't have the tiles you try to replace.");
             throw new IllegalArgumentException("You don't have the tiles you try to replace.");
         }
 
@@ -99,20 +97,17 @@ public class Player {
     }
 
     public void notifyIllegalWord(Word word) {
-        System.out.println("Illegal word notify");
         String[] words = word.getWordAsString().split(",");
         String message = String.format("Illegal: Illegal word: %s", words[0]);
         sendToPlayer.accept(message);
     }
 
     public void notifyIllegalBoard() {
-        System.out.println("Illegal board");
         String message = String.format("Illegal: Illegal Board disposition");
         sendToPlayer.accept(message);
     }
 
     public void notifyIllegalGame() {
-        System.out.println("Illegal game");
         String message = String.format("Illegal:No Such Game");
         sendToPlayer.accept(message);
     }
@@ -146,7 +141,6 @@ public class Player {
                 stringBuilder.append(",");
             }
         }
-
         // Get the final string representation
         String playerDataString = stringBuilder.toString();
         sendToPlayer.accept(playerDataString);
@@ -193,8 +187,8 @@ public class Player {
         sendToPlayer.accept(message + joinedString);
     }
 
-    public void sendMaxRounds(int maxRounds) {
-        String message = "MaxRounds:" + maxRounds;
+    public void sendRounds(int rounds) {
+        String message = "Rounds:" + rounds;
         sendToPlayer.accept(message);
     }
 }

@@ -72,7 +72,6 @@ public class GamesManager {
     public Game getGame(String gameName) {
         Game game = games.get(gameName);
         if (game == null) {
-            System.out.println("Game is not found");
             return null;
         }
         return game;

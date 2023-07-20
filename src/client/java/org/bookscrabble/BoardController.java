@@ -69,7 +69,6 @@ public class BoardController extends Observable implements Observer, Initializab
     public BoardController(ViewModel vm) {
         this.currentPlayerName = new Text();
         this.playerName = new Text();
-//        this.playerTilesArray = new Text();
         this.playerTilesLetters = new Text();
         this.playerScore = new Text();
         this.playerNameContainer = new VBox();
@@ -103,11 +102,6 @@ public class BoardController extends Observable implements Observer, Initializab
         String wordToReplace = word;
         if (word.length() != 0)
             checkWord();
-        System.out.println("checkBoard");
-        System.out.println(word);
-        System.out.println(r);
-        System.out.println(c);
-        System.out.println(vertical);
         vm.playTurn(word, r, c, vertical, wordToReplace);
         c = -1;
         r = -1;
@@ -123,7 +117,7 @@ public class BoardController extends Observable implements Observer, Initializab
         playerName.textProperty().bind(this.vm.playerName);
         playerScore.textProperty().bind(this.vm.playerScore);
         playerTilesLetters.textProperty().bind(this.vm.playerTilesLetters);
-        roundsText.setText(vm.round + " / " + vm.maxRounds);
+        roundsText.setText(vm.round + " / " + vm.rounds);
 
         letterArray = new String[playerTilesLetters.getText().length()];
 
@@ -158,7 +152,6 @@ public class BoardController extends Observable implements Observer, Initializab
                     int row = (int) (mouseEvent.getY() / cellHeight);
                     int column = (int) (mouseEvent.getX() / cellWidth);
 
-                    System.out.println("Clicked on row: " + row + ", column: " + column);
                     //delete letter from board by clicking on it only if it was put in same round
                     if (letterclicked == "" && boardDataRound[row][column] == vm.round) {
                         //add tile back to letter deck
@@ -227,7 +220,6 @@ public class BoardController extends Observable implements Observer, Initializab
                     // Calculate the index based on the mouse position and cell width
                     int index = (int) (mouseX / cellWidth);
 
-                    System.out.println("Clicked on letter at index: " + index);
 
                     letterclicked = letterArray[index];
                     letterArray[index] = "";

@@ -1,8 +1,5 @@
 package server;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -253,7 +250,6 @@ public class Board {
             System.out.println("Board legal");
             ArrayList<Word> newWords = getWords(test);
             for (Word nw : newWords) {
-//                if(inFile(w)){
                 if (dictionaryLegal(nw)) {
                     System.out.println("Dictionary legal");
                     sum += getScore(nw);

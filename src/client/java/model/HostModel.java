@@ -6,7 +6,6 @@ public class HostModel extends Model {
     }
 
     public void startGame() {
-        System.out.println("Starting game");
         this.sendMessage("start");
     }
 

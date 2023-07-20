@@ -44,7 +44,6 @@ public class BoardDisplayer extends Canvas {
 
             GraphicsContext gc = getGraphicsContext2D();
 
-            System.out.println("boardData.length: " + boardData.length);
             for (int i = 0; i < boardData.length; i++) {
                 for (int j = 0; j < boardData[i].length; j++) {
                     if (!boardData[i][j].equals("_")) {

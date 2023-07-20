@@ -19,20 +19,18 @@ public class Game {
     int numOfPlayers;
     Player currentPlayer;
 
-    int maxRounds;
+    int rounds;
     int currentRound;
 
     public Game() {
         this.players = new ArrayList<>(MAX_PLAYERS);
     }
 
-    public Game(String name, String[] fileNames, Player host, int maxRounds) {
+    public Game(String name, String[] fileNames, Player host, int rounds) {
         this.name = name;
         this.board = new Board(fileNames);
         this.bag = new Bag();
-        this.players = new ArrayList<>(MAX_PLAYERS);
-        this.players.set(0, host);
-        this.maxRounds = maxRounds;
+        this.rounds = rounds;
         this.players = new ArrayList<>(MAX_PLAYERS);
         this.players.add(host);
         this.numOfPlayers = 1;
@@ -43,7 +41,7 @@ public class Game {
         if (!(obj instanceof Game game)) return false;
         return game.id == this.id
                 && Objects.equals(game.name, this.name)
-                && game.maxRounds == this.maxRounds
+                && game.rounds == this.rounds
                 && game.numOfPlayers == this.numOfPlayers
                 && ((game.currentPlayer == null && this.currentPlayer == null)
                 || game.currentPlayer.equals(this.currentPlayer))
@@ -59,7 +57,6 @@ public class Game {
         } else if (Character.isLowerCase(letter)) {
             return letter - 'a' + 1;
         } else {
-            System.out.println("Invalid letter: " + letter);
             throw new IllegalArgumentException("Invalid letter: " + letter);
         }
     }
@@ -134,7 +131,7 @@ public class Game {
     }
 
     public boolean isOver() {
-        return currentRound > maxRounds;
+        return currentRound > rounds;
     }
 
     public void addPlayer(Player player) {
@@ -143,13 +140,13 @@ public class Game {
         }
         players.add(player);
         numOfPlayers++;
-        sendMaxRounds(player);
+        sendRounds(player);
         sendGameToPlayer(player);
         sendPlayersToPlayers(player);
     }
 
-    private void sendMaxRounds(Player player) {
-        player.sendMaxRounds(maxRounds);
+    private void sendRounds(Player player) {
+        player.sendRounds(rounds);
     }
 
     public void playTurn(Player player, Word word, Word wordToReplaceW) {
@@ -234,7 +231,6 @@ public class Game {
     }
 
     public void endGame() {
-        System.out.println("Game ended");
         int winnerIndex = findIndexOfHighestValue(getPlayersScores());
         String winnerName = players.get(winnerIndex).getName();
         String winnerScore = String.valueOf(players.get(winnerIndex).getScore());

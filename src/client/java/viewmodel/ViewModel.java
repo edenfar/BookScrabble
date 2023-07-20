@@ -13,7 +13,7 @@ import java.util.Observer;
 
 public class ViewModel extends Observable implements Observer {
 
-    public String maxRounds;
+    public String rounds;
     public String winnerName;
     public String winnerScore;
     Model m;
@@ -39,7 +39,7 @@ public class ViewModel extends Observable implements Observer {
         currPlayerName = new SimpleStringProperty();
         playerScore = new SimpleStringProperty();
         boardData = new String[15][15];
-        maxRounds = "";
+        rounds = "";
     }
 
     public void setModel(Model m) {
@@ -106,7 +106,6 @@ public class ViewModel extends Observable implements Observer {
 
     public void onNewGame(String gameName) {
         this.gameName.setValue(gameName);
-        System.out.println(this.gameName.getValue());
     }
 
     public void playTurn(String word, int r, int c, boolean vertical, String wordToReplace) {
@@ -157,13 +156,12 @@ public class ViewModel extends Observable implements Observer {
                     this.boardData[i] = m.getBoardData()[i].clone();
                 }
             }
-            if (Objects.equals(type, "MaxRounds")) {
-                this.maxRounds = m.getMaxRounds();
+            if (Objects.equals(type, "Rounds")) {
+                this.rounds = m.getrounds();
                 this.setChanged();
-                this.notifyObservers("MaxRounds");
+                this.notifyObservers("Rounds");
             }
             if (Objects.equals(type, "Illegal")) {
-                System.out.println("Illegal VM");
                 this.illegal = m.getIllegal();
                 this.setChanged();
                 this.notifyObservers("Illegal");

@@ -11,7 +11,7 @@
 <?import org.bookscrabble.BoardDisplayer?>
 <?import org.bookscrabble.LettersDisplayer?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="475.0" prefWidth="551.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <top>
         <AnchorPane prefHeight="40.0" prefWidth="555.0" translateX="3.0" BorderPane.alignment="CENTER">
             <BorderPane.margin>
@@ -58,23 +58,24 @@
                 <Insets bottom="-2.0" right="9.0" />
             </BorderPane.margin>
             <children>
-                <Text text="Current Player: " AnchorPane.bottomAnchor="350.0" AnchorPane.rightAnchor="25.0">
+                <Text layoutX="37.0" layoutY="67.0" text="Current Player: " AnchorPane.bottomAnchor="511.8212890625" AnchorPane.rightAnchor="26.96337890625">
                     <font>
                         <Font name="Arial" size="15.0" />
                     </font>
                 </Text>
-                <Text fx:id="currentPlayerName" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="38.0" AnchorPane.bottomAnchor="325.0" AnchorPane.rightAnchor="65.0" />
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Round: " AnchorPane.bottomAnchor="280.0" AnchorPane.rightAnchor="55.0">
+                <Text fx:id="currentPlayerName" layoutX="67.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="38.0" AnchorPane.bottomAnchor="489.2578125" AnchorPane.rightAnchor="64.0" />
+                <Text layoutX="57.0" layoutY="151.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Round: " AnchorPane.bottomAnchor="427.8212890625" AnchorPane.rightAnchor="55.3544921875">
                     <font>
                         <Font name="Arial Bold" size="15.0" />
                     </font>
                 </Text>
-                <Text fx:id="roundsText" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.bottomAnchor="265.0" AnchorPane.rightAnchor="80.0" />
-                <Button fx:id="scoreBoardButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="114.0" style="-fx-background-color: FFCE54;" text="SCORE BOARD" textFill="#0a0a0a" AnchorPane.bottomAnchor="191.0" AnchorPane.rightAnchor="21.0" />
-                <Button fx:id="doneButton" alignment="CENTER" layoutX="8.0" layoutY="314.0" prefHeight="51.0" prefWidth="121.0" style="-fx-background-color: #ED5565;" text="End Turn" translateX="-25.0" AnchorPane.bottomAnchor="58.0" AnchorPane.rightAnchor="4.0">
+                <Text fx:id="roundsText" layoutX="90.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.bottomAnchor="400.0" AnchorPane.rightAnchor="79.0" />
+                <Button fx:id="scoreBoardButton" layoutX="33.0" layoutY="342.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="114.0" style="-fx-background-color: FFCE54;" text="SCORE BOARD" textFill="#0a0a0a" AnchorPane.bottomAnchor="326.0" AnchorPane.rightAnchor="22.0" />
+                <Button fx:id="doneButton" alignment="CENTER" layoutX="51.0" layoutY="485.0" prefHeight="51.0" prefWidth="121.0" style="-fx-background-color: #ED5565;" text="End Turn" translateX="-25.0" AnchorPane.bottomAnchor="162.0" AnchorPane.rightAnchor="-3.0">
                <font>
                   <Font name="Arial Bold" size="15.0" />
                </font></Button>
+            <Button fx:id="saveGameButton" layoutX="44.0" layoutY="621.0" mnemonicParsing="false" style="-fx-background-color: #8067B7;" text="Save Game" AnchorPane.bottomAnchor="52.0" AnchorPane.rightAnchor="44.0" />
             </children>
         </AnchorPane>
     </right>
