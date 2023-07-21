@@ -5,6 +5,7 @@ import javafx.beans.property.StringProperty;
 import model.GuestModel;
 import model.HostModel;
 import model.Model;
+import server.GamesManager;
 
 
 import java.util.Objects;
@@ -100,8 +101,16 @@ public class ViewModel extends Observable implements Observer {
         this.isHost = false;
         GuestModel guestModel = new GuestModel();
         this.setModel(guestModel);
-        guestModel.connect("localhost", 6123);
-        guestModel.join(playerName.getValue(), gameName.getValue());
+
+        GamesManager gamesManager = GamesManager.get();
+        if (gamesManager.getGame(gameName.getValue()) != null) {
+            guestModel.connect("localhost", 6123);
+            guestModel.join(playerName.getValue(), gameName.getValue());
+        } else {
+            this.illegal = "No Such Game";
+            this.setChanged();
+            this.notifyObservers("Illegal");
+        }
     }
 
     public void onNewGame(String gameName) {

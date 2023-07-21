@@ -97,8 +97,7 @@ public class Player {
     }
 
     public void notifyIllegalWord(Word word) {
-        String[] words = word.getWordAsString().split(",");
-        String message = String.format("Illegal: Illegal word: %s", words[0]);
+        String message = String.format("Illegal: Illegal word: %s", word.getWordAsString());
         sendToPlayer.accept(message);
     }
 
@@ -122,14 +121,6 @@ public class Player {
             playerTilesString.append(tile.letterToString());
         }
         sendToPlayer.accept(playerTilesString.toString());
-    }
-
-    public static String boardToString(String[][] array) {
-        StringBuilder sb = new StringBuilder();
-        for (String[] row : array) {
-            sb.append(String.join(",", row)).append("|");
-        }
-        return sb.toString();
     }
 
     public void sendPlayers(List<Player> players) {

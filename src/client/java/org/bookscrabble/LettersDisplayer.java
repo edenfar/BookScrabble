@@ -4,6 +4,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 public class LettersDisplayer extends Canvas {
     private String[] letters;
@@ -33,20 +34,22 @@ public class LettersDisplayer extends Canvas {
 
         GraphicsContext gc = getGraphicsContext2D();
         gc.clearRect(0, 0, width, height);
-
         for (int i = 0; i < letters.length; i++) {
-            int row = i / columns;
             int col = i % columns;
-
-            double rectX = col * cellSize;
-            double rectY = row * cellSize;
+            double rectX = (col * cellSize * (1.5));
+            double rectY = 0;
+            Font boldFont = Font.font("Arial", FontWeight.BOLD, 30);
 
             gc.setFill(Color.LIGHTGRAY);
-            gc.fillRect(rectX, rectY, cellSize, cellSize);
-
+            gc.fillRect(rectX, rectY, cellSize * (1.5), cellSize * (1.5));
+            gc.setStroke(Color.BLACK);
+            gc.setLineWidth(2);
+            gc.strokeRect(rectX, rectY, cellSize * (1.5), cellSize * (1.5));
             gc.setFill(Color.BLACK);
-            gc.setFont(new Font(14));
-            gc.fillText(letters[i], rectX + 5, rectY + cellSize - 5);
+            gc.setFont(boldFont);
+            gc.fillText(letters[i], rectX + cellSize * 0.36, rectY + cellSize);
+
         }
+
     }
 }

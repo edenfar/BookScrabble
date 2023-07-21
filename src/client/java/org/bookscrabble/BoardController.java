@@ -99,10 +99,10 @@ public class BoardController extends Observable implements Observer, Initializab
     }
 
     public void checkBoard() {
-        String wordToReplace = word;
+        String tilesToReplace = word;
         if (word.length() != 0)
             checkWord();
-        vm.playTurn(word, r, c, vertical, wordToReplace);
+        vm.playTurn(word, r, c, vertical, tilesToReplace);
         c = -1;
         r = -1;
         word = "";
@@ -213,7 +213,7 @@ public class BoardController extends Observable implements Observer, Initializab
                 public void handle(MouseEvent mouseEvent) {
 
                     // Calculate the actual cell width based on the available width and number of letters
-                    double cellWidth = lettersDisplayer.cellSize;
+                    double cellWidth = lettersDisplayer.cellSize * (1.5);
 
                     double mouseX = mouseEvent.getX();
 

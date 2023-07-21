@@ -70,11 +70,7 @@ public class GamesManager {
     }
 
     public Game getGame(String gameName) {
-        Game game = games.get(gameName);
-        if (game == null) {
-            return null;
-        }
-        return game;
+        return games.get(gameName);
     }
 
     private static String getNewRandomName() {

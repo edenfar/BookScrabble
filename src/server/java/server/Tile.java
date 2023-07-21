@@ -14,7 +14,7 @@ public class Tile implements Serializable {
         this.score = 0;
     }
 
-    Tile(char letter, int score) {
+    private Tile(char letter, int score) {
         super();
         this.letter = letter;
         this.score = score;

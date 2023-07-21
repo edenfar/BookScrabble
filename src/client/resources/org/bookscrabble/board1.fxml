@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-
 <?import org.bookscrabble.BoardDisplayer?>
 <?import org.bookscrabble.LettersDisplayer?>
 
@@ -24,13 +23,13 @@
                         -fx-fill: black;
                     </style>
                     <font>
-                        <Font name="Arial Bold" size="16.0" />
+                        <Font name="Arial Bold" size="20.0" />
                     </font>
                 </Text>
                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Score" AnchorPane.bottomAnchor="37.2578125" AnchorPane.rightAnchor="439.0" />
                 <Text fx:id="playerScore" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="455.0">
                     <font>
-                        <Font name="Arial Bold" size="16.0" />
+                        <Font name="Arial Bold" size="20.0" />
                     </font>
                 </Text>
                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lets Play!" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="100.0">
@@ -46,10 +45,10 @@
     </top>
 
     <center>
-        <BoardDisplayer fx:id="boardDisplayer" height="430" width="430" BorderPane.alignment="CENTER"/>
+        <BoardDisplayer fx:id="boardDisplayer" height="430" width="430" BorderPane.alignment="CENTER" />
     </center>
     <bottom>
-        <LettersDisplayer fx:id="lettersDisplayer" height="85.0" width="458.0" BorderPane.alignment="CENTER"/>
+        <LettersDisplayer fx:id="lettersDisplayer" height="61.0" layoutX="300" layoutY="300" translateX="-73.0" translateY="-46.0" width="333.0" BorderPane.alignment="CENTER" />
     </bottom>
 
     <right>

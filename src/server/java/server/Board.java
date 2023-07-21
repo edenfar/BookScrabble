@@ -311,4 +311,15 @@ public class Board {
         }
         return sb.toString();
     }
+
+    public Tile getTile(char c) {
+        for (Tile[] ts : tiles) {
+            for (Tile t : ts) {
+                if (t != null && t.letter == c)
+                    return t;
+            }
+        }
+        return null;
+    }
+
 }

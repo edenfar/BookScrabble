@@ -14,43 +14,15 @@ public class PlayerHandler implements ClientHandler {
      */
     List<PrintWriter> outList = new ArrayList<>();
     List<Scanner> inList = new ArrayList<>();
-
-    public Tile[] tilesArr = {
-            new Tile('A', 1),
-            new Tile('B', 3),
-            new Tile('C', 3),
-            new Tile('D', 2),
-            new Tile('E', 1),
-            new Tile('F', 4),
-            new Tile('G', 2),
-            new Tile('H', 4),
-            new Tile('I', 1),
-            new Tile('J', 8),
-            new Tile('K', 5),
-            new Tile('L', 1),
-            new Tile('M', 3),
-            new Tile('N', 1),
-            new Tile('O', 1),
-            new Tile('P', 3),
-            new Tile('Q', 10),
-            new Tile('R', 1),
-            new Tile('S', 1),
-            new Tile('T', 1),
-            new Tile('U', 1),
-            new Tile('V', 4),
-            new Tile('W', 4),
-            new Tile('X', 8),
-            new Tile('Y', 4),
-            new Tile('Z', 10)
-    };
+    Board board = new Board();
 
     @Override
     public void handleClient(InputStream inFromClient, OutputStream outToClient) {
         PrintWriter out;
         Scanner in;
         Consumer<String> sendToPlayer;
-        Player player = null;
-        Game game = null;
+        Player player;
+        Game game;
         String name;
 
         out = new PrintWriter(outToClient);
@@ -61,63 +33,66 @@ public class PlayerHandler implements ClientHandler {
             out.println(message);
             out.flush();
         };
+        String request = in.nextLine();
+        Object parsedRequest = parseRequest(request);
+        if (parsedRequest instanceof HostRequest hostRequest) {
+            name = hostRequest.name;
+            player = createPlayer(name, sendToPlayer);
+            game = createGame(hostRequest, player);
 
-        while (game == null) {
-            Object request = parseRequest(in.nextLine());
+            player.sendGameName(game.name);
+            player.sendPlayers(game.players);
+            player.sendBoard(game.board);
+            player.sendRounds(game.rounds);
+            player.sendScore();
 
-            if (request instanceof HostRequest hostRequest) {
-                name = hostRequest.name;
-                player = createPlayer(name, sendToPlayer);
-                game = createGame(hostRequest, player);
-
-                player.sendGameName(game.name);
-                player.sendPlayers(game.players);
-                player.sendBoard(game.board);
-                player.sendRounds(game.rounds);
-                player.sendScore();
-
-                this.receiveStartGameSignal(in);
-                game.setup();
-            } else if (request instanceof GuestRequest guestRequest) {
-                name = guestRequest.name;
-                player = createPlayer(name, sendToPlayer);
-                game = connectToGame(guestRequest);
-                if (game == null) {
-                    player.notifyIllegalGame();
-                } else
-                    game.addPlayer(player);
-            }
+            this.receiveStartGameSignal(in);
+            game.setup();
+        } else if (parsedRequest instanceof GuestRequest guestRequest) {
+            name = guestRequest.name;
+            player = createPlayer(name, sendToPlayer);
+            game = connectToGame(guestRequest);
+            if (game == null) {
+                player.notifyIllegalGame();
+                return;
+            } else
+                game.addPlayer(player);
+        } else {
+            sendToPlayer.accept("Invalid request accepted: " + request);
+            return;
         }
-        while (true) {
-            if (game.isOver()) {
-                game.endGame();
-                break;
-            }
-
-            String move = in.nextLine();
-            if (move.equals("save"))
+        while (!game.isOver()) {
+            request = in.nextLine();
+            if (request.equals("save"))
                 saveGame(game);
-            else if (move.startsWith(","))//No word played
+            else if (request.startsWith(","))//No word played
                 game.playNullTurn();
             else {
                 //The tiles to replace can be different from the tiles in the word
-                int lastCommaIndex = move.lastIndexOf(",");
-                String wordToReplace = move.substring(lastCommaIndex + 1).trim();
-                move = move.substring(0, lastCommaIndex).trim();
-
-                String[] words = move.split(",");
-                StringBuilder temp = new StringBuilder();
-                for (String word : words) {
-                    if (!Objects.equals(word, words[0]))
-                        temp.append(",").append(word);
-                }
-                wordToReplace = wordToReplace + temp;
-
-                Word wordToReplaceW = this.parseMove(wordToReplace);
-                Word word = this.parseMove(move);
-                game.playTurn(player, word, wordToReplaceW);
+                int lastCommaIndex = request.lastIndexOf(",");
+                String tilesToReplace = request.substring(lastCommaIndex + 1).trim();
+                request = request.substring(0, lastCommaIndex).trim();
+                Word word = this.parseMove(request, player);
+                game.playTurn(player, word, stringToTile(tilesToReplace, player));
             }
         }
+        game.endGame();
+    }
+
+    private Tile[] stringToTile(String s, Player p) {
+        Tile[] tiles = new Tile[s.length()];
+        int i = 0;
+        for (char c : s.toCharArray()) {
+            for (Tile t : p.getTiles()) {
+                if (t.letter == c) {
+                    tiles[i] = p.getTile(c);
+                    break;
+                } else
+                    tiles[i] = board.getTile(c);
+            }
+            i++;
+        }
+        return tiles;
     }
 
     private static void saveGame(Game game) {
@@ -132,8 +107,8 @@ public class PlayerHandler implements ClientHandler {
     public record GuestRequest(String name, String gameName) {
     }
 
-    private Word parseMove(String move) {
-        String[] substrings = extractSubstrings(move);
+    private Word parseMove(String move, Player p) {
+        String[] substrings = move.split(",");
         // Accessing each substring
         String wordString = substrings[0];
         int row = Integer.parseInt(substrings[1]);
@@ -144,23 +119,18 @@ public class PlayerHandler implements ClientHandler {
         int i = 0;
 
         for (char c : wordString.toCharArray()) {
-            for (Tile t : tilesArr) {
+            for (Tile t : p.getTiles()) {
                 if (t.letter == c) {
-                    tiles[i] = tilesArr[Arrays.asList(tilesArr).indexOf(t)];
+                    tiles[i] = p.getTile(c);
                     break;
-                }
+                } else
+                    tiles[i] = board.getTile(c);
             }
             i++;
         }
-
         Word word = new Word(tiles, row, col, vertical);
         System.out.println(move);
         return word;
-    }
-
-    public static String[] extractSubstrings(String input) {
-        String[] substrings = input.split(",");
-        return substrings;
     }
 
     private static void receiveStartGameSignal(Scanner in) {
@@ -193,10 +163,8 @@ public class PlayerHandler implements ClientHandler {
     }
 
     public static Game connectToGame(GuestRequest request) {
-        Game game = null;
         GamesManager gamesManager = GamesManager.get();
-        game = gamesManager.getGame(request.gameName);
-        return game;
+        return gamesManager.getGame(request.gameName);
     }
 
     @Override

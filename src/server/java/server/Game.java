@@ -149,16 +149,16 @@ public class Game {
         player.sendRounds(rounds);
     }
 
-    public void playTurn(Player player, Word word, Word wordToReplaceW) {
+    public void playTurn(Player player, Word word, Tile[] tilesToReplace) {
         if (player != currentPlayer) {
             player.sendToPlayer.accept("Player " + player.getName() + " is not the current player");
             return;
         }
-        playCurrentTurn(word, wordToReplaceW);
+        playCurrentTurn(word, tilesToReplace);
     }
 
-    private void playCurrentTurn(Word word, Word wordToReplaceW) {
-        if (!currentPlayer.hasTiles(wordToReplaceW.getTiles())) {
+    private void playCurrentTurn(Word word, Tile[] tilesToReplace) {
+        if (!currentPlayer.hasTiles(tilesToReplace)) {
             currentPlayer.notifyMissingTilesForWord(word);
             return;
         }
@@ -173,8 +173,8 @@ public class Game {
         }
         this.sendBoard();
         currentPlayer.addScore(wordScore);
-        int wordTilesCount = wordToReplaceW.getTiles().length;
-        currentPlayer.replaceTiles(wordToReplaceW.getTiles(), bag.getRandomTiles(wordTilesCount));
+        int wordTilesCount = tilesToReplace.length;
+        currentPlayer.replaceTiles(tilesToReplace, bag.getRandomTiles(wordTilesCount));
         this.advanceCurrentPlayer();
         currentRound += 1;
         this.sendGameToPlayers();

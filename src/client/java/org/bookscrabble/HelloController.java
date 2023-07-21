@@ -52,7 +52,7 @@ public class HelloController extends Observable implements Observer {
     public VBox stringContainer;
     private ViewModel vm;
     private Stage stage;
-    private Scene scene, scene3;
+    private Scene scene, scene2;
     final int VBOX_HEIGHT = 8;
     final int DIALOG_WIDTH = 300;
 
@@ -235,6 +235,10 @@ public class HelloController extends Observable implements Observer {
             if (Objects.equals(type, "Illegal")) {
                 Platform.runLater(() -> {
                     Stage popupStage = new Stage();
+
+                    if (vm.illegal.equals("No Such Game"))
+                        stage.close();
+
                     popupStage.initOwner(stage);
                     popupStage.initModality(Modality.APPLICATION_MODAL);
                     popupStage.initStyle(StageStyle.UTILITY);
@@ -276,9 +280,9 @@ public class HelloController extends Observable implements Observer {
                         fxmlLoader.setController(controller);
                         Parent root = fxmlLoader.load();
                         controller.setWinner(winnerName.getText(), winnerScore.getText());
-                        scene3 = new Scene(root, 600, 500);
+                        scene2 = new Scene(root, 600, 500);
                         newStage.setTitle("Game Ended");
-                        newStage.setScene(scene3);
+                        newStage.setScene(scene2);
                         controller.closeButton.setOnAction(e -> newStage.close());
                         newStage.show();
                     } catch (IOException e) {
