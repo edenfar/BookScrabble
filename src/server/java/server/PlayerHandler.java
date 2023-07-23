@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.util.*;
 import java.util.function.Consumer;
 
+
 public class PlayerHandler implements ClientHandler {
     /*
     All the communication with the player should happen here, and not in Player class
@@ -33,7 +34,6 @@ public class PlayerHandler implements ClientHandler {
         };
         String request = in.nextLine();
         Object parsedRequest = parseRequest(request);
-
         if (parsedRequest instanceof HostRequest hostRequest) {
             name = hostRequest.name;
             player = createPlayer(name, sendToPlayer);
@@ -42,15 +42,20 @@ public class PlayerHandler implements ClientHandler {
             player.sendGameName(game.name);
             player.sendPlayers(game.players);
             player.sendBoard(game.board);
+            player.sendRounds(game.rounds);
             player.sendScore();
 
-            receiveStartGameSignal(in);
+            this.receiveStartGameSignal(in);
             game.setup();
         } else if (parsedRequest instanceof GuestRequest guestRequest) {
             name = guestRequest.name;
             player = createPlayer(name, sendToPlayer);
             game = connectToGame(guestRequest);
-            game.addPlayer(player);
+            if (game == null) {
+                player.notifyIllegalGame();
+                return;
+            } else
+                game.addPlayer(player);
         } else {
             sendToPlayer.accept("Invalid request accepted: " + request);
             return;
@@ -59,13 +64,34 @@ public class PlayerHandler implements ClientHandler {
             request = in.nextLine();
             if (request.equals("save"))
                 saveGame(game);
-            else if (request.startsWith(",")) // No word played
+            else if (request.startsWith(","))//No word played
                 game.playNullTurn();
             else {
-                Word word = parseMove(request, player);
-                game.playTurn(player, word);
+                //The tiles to replace can be different from the tiles in the word
+                int lastCommaIndex = request.lastIndexOf(",");
+                String tilesToReplace = request.substring(lastCommaIndex + 1).trim();
+                request = request.substring(0, lastCommaIndex).trim();
+                Word word = this.parseMove(request, player, game);
+                game.playTurn(player, word, stringToTile(tilesToReplace, player, game));
             }
         }
+        game.endGame();
+    }
+
+    private Tile[] stringToTile(String s, Player p, Game g) {
+        Tile[] tiles = new Tile[s.length()];
+        int i = 0;
+        for (char c : s.toCharArray()) {
+            for (Tile t : p.getTiles()) {
+                if (t.letter == c) {
+                    tiles[i] = p.getTile(c);
+                    break;
+                } else
+                    tiles[i] = g.getBoard().getTile(c);
+            }
+            i++;
+        }
+        return tiles;
     }
 
     private static void saveGame(Game game) {
@@ -80,31 +106,26 @@ public class PlayerHandler implements ClientHandler {
     public record GuestRequest(String name, String gameName) {
     }
 
-    private static Word parseMove(String move, Player player) {
+    private Word parseMove(String move, Player p, Game g) {
         String[] substrings = move.split(",");
-
         // Accessing each substring
         String wordString = substrings[0];
         int row = Integer.parseInt(substrings[1]);
         int col = Integer.parseInt(substrings[2]);
         boolean vertical = Boolean.parseBoolean(substrings[3]);
 
-        Tile[] tiles = new Tile[wordString.length()];
-        int i = 0;
-        for (char c : wordString.toCharArray()) {
-            if (player.getTile(c) == null)
-                throw new IllegalArgumentException("Player does not have tile " + c);
-            tiles[i] = player.getTile(c);
-            i++;
-        }
+        Tile[] tiles;
+
+       tiles = stringToTile(wordString, p, g);
         return new Word(tiles, row, col, vertical);
     }
 
     private static void receiveStartGameSignal(Scanner in) {
         String request = in.nextLine();
         //TODO: to change
-        if (!Objects.equals(request, "start"))
+        if (!Objects.equals(request, "start")) {
             throw new UnsupportedOperationException("Invalid request received: " + request);
+        }
     }
 
     private static Object parseRequest(String request) {
@@ -112,7 +133,6 @@ public class PlayerHandler implements ClientHandler {
         host,<player name>,<file names separated by commas>
         guest,<player name>,<game name>
          */
-        System.out.println("received request: " + request);
         String[] params = request.split(",");
         if (Objects.equals(params[0], "guest"))
             return new GuestRequest(params[1], params[2]);

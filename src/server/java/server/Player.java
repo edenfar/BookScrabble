@@ -97,7 +97,18 @@ public class Player {
     }
 
     public void notifyIllegalWord(Word word) {
-        System.out.println("Illegal word");
+        String message = String.format("Illegal: Illegal word: %s", word.getWordAsString());
+        sendToPlayer.accept(message);
+    }
+
+    public void notifyIllegalBoard() {
+        String message = String.format("Illegal: Illegal Board disposition");
+        sendToPlayer.accept(message);
+    }
+
+    public void notifyIllegalGame() {
+        String message = String.format("Illegal:No Such Game");
+        sendToPlayer.accept(message);
     }
 
     public void sendBoard(Board board) {
@@ -107,14 +118,12 @@ public class Player {
     public void sendPlayerTiles() {
         StringBuilder playerTilesString = new StringBuilder("PlayerTiles:");
         for (Tile tile : this.tiles) {
-            playerTilesString.append(tile.letter);
-            playerTilesString.append(tile.score);
+            playerTilesString.append(tile.letterToString());
         }
-        playerTilesString.append(":");
+        playerTilesString.append(",");
         for (Tile tile : this.tiles) {
-            playerTilesString.append(tile.letter);
+            playerTilesString.append(tile.scoreToString());
         }
-
         sendToPlayer.accept(playerTilesString.toString());
     }
 
@@ -127,7 +136,6 @@ public class Player {
                 stringBuilder.append(",");
             }
         }
-
         // Get the final string representation
         String playerDataString = stringBuilder.toString();
         sendToPlayer.accept(playerDataString);
@@ -160,6 +168,22 @@ public class Player {
 
     public void sendGameStart() {
         String message = "GameStarted:";
+        sendToPlayer.accept(message);
+    }
+
+    public void sendGameEnd(String name, String score) {
+        String message = "GameEnded:";
+        sendToPlayer.accept(message + name + "," + score);
+    }
+
+    public void sendScoreBoard(String[] playersScores) {
+        String message = "ScoreBoard:";
+        String joinedString = String.join(",", playersScores);
+        sendToPlayer.accept(message + joinedString);
+    }
+
+    public void sendRounds(int rounds) {
+        String message = "Rounds:" + rounds;
         sendToPlayer.accept(message);
     }
 }

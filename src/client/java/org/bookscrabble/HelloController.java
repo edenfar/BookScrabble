@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,6 +19,11 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.StageStyle;
 import viewmodel.ViewModel;
 
 import java.util.Observable;
@@ -33,16 +39,18 @@ public class HelloController extends Observable implements Observer {
 
     @FXML
     public Button startButton;
+    public Button closeButton;
+    @FXML
+    private Text winnerName;
+    @FXML
+    private Text winnerScore;
     @FXML
     private TextField playerName, gameName;
     @FXML
     private Label gameNameLabel;
     @FXML
     public VBox stringContainer;
-
     private ViewModel vm;
-
-
     private Stage stage;
     private Scene scene, scene2;
     final int VBOX_HEIGHT = 8;
@@ -90,20 +98,20 @@ public class HelloController extends Observable implements Observer {
             return null;
         });
 
-
-        dialog.showAndWait().ifPresent((GuestData guestData) -> {
+        Optional<GuestData> result = dialog.showAndWait();
+        if (result.isPresent()) {
             vm.connectToGame();
-        });
-
+        }
 
     }
+
     @FXML
     private void rectangleClicked(ActionEvent event) {
         Rectangle rectangle = (Rectangle) event.getSource();
         int row = GridPane.getRowIndex(rectangle);
         int column = GridPane.getColumnIndex(rectangle);
-        System.out.println("Clicked Rectangle at row: " + row + ", column: " + column);
     }
+
     public void createNewGame(ActionEvent actionEvent) {
         stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         Dialog<HostData> dialog = new Dialog<>();
@@ -124,9 +132,10 @@ public class HelloController extends Observable implements Observer {
             return null;
         });
 
-        dialog.showAndWait().ifPresent((HostData guestData) -> {
+        Optional<HostData> result = dialog.showAndWait();
+        if (result.isPresent()) {
             vm.createGame(fileNames.getText().split(","));
-        });
+        }
     }
 
     private Button getStartButton() {
@@ -137,6 +146,7 @@ public class HelloController extends Observable implements Observer {
         stringContainer.getChildren().clear();
         for (String str : strings) {
             Label label = new Label(str);
+            label.setFont(Font.font("Arial", FontWeight.BOLD, 25)); // Set font and size
             stringContainer.getChildren().add(label);
         }
     }
@@ -200,28 +210,87 @@ public class HelloController extends Observable implements Observer {
             if ((Objects.equals(type, "GameStarted")) || (Objects.equals(type, "NewTurn"))) {
                 Platform.runLater(() -> {
                     FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("board1.fxml"));
-                    Parent root;
-
                     BoardController mwc = new BoardController(vm);
                     fxmlLoader.setController(mwc);
-
                     try {
-                        root = fxmlLoader.load();
+                        Parent root = fxmlLoader.load();
+                        mwc.setBoardAndDisplay();
+                        Scene scene2 = new Scene(root, 700, 750);
+                        stage.setTitle("Board");
+                        stage.setScene(scene2);
+                        stage.show();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    mwc.setBoardAndDisplay();
+                });
 
-                    scene2 = new Scene(root,700, 700);
-                    stage.setTitle("Board");
-                    stage.setScene(scene2);
 
-                    stage.show();
+            }
+            if (Objects.equals(type, "Illegal")) {
+                Platform.runLater(() -> {
+                    Stage popupStage = new Stage();
 
+                    if (vm.illegal.equals("No Such Game")) {
+                        stage.close();
+                    }
+
+                    popupStage.initOwner(stage);
+                    popupStage.initModality(Modality.APPLICATION_MODAL);
+                    popupStage.initStyle(StageStyle.UTILITY);
+
+                    // Create a label with the message
+                    Label messageLabel = new Label(vm.illegal);
+
+                    // Create an OK button
+                    Button okButton = new Button("OK");
+                    okButton.setOnAction(e -> popupStage.close());
+
+                    // Create a layout pane and add the label and button
+                    VBox root = new VBox(10);
+                    root.setAlignment(Pos.CENTER);
+                    root.getChildren().addAll(messageLabel, okButton);
+
+                    // Create the scene and set it in the stage
+                    Scene scene = new Scene(root, 200, 150);
+                    popupStage.setScene(scene);
+
+                    // Show the popup stage
+                    popupStage.showAndWait();
+                });
+            }
+            if (Objects.equals(type, "GameEnded")) {
+                Platform.runLater(() -> {
+                    stage.close();
+                    winnerName = new Text();
+                    winnerName.setText(vm.winnerName);
+                    winnerScore = new Text();
+                    winnerScore.setText(vm.winnerScore);
+
+                    Stage newStage = new Stage();
+                    try {
+
+                        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("end-game-screen.fxml"));
+                        HelloController controller = new HelloController();
+                        fxmlLoader.setController(controller);
+                        Parent root = fxmlLoader.load();
+                        controller.setWinner(winnerName.getText(), winnerScore.getText());
+                        scene2 = new Scene(root, 600, 500);
+                        newStage.setTitle("Game Ended");
+                        newStage.setScene(scene2);
+                        controller.closeButton.setOnAction(e -> newStage.close());
+                        newStage.show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 });
             }
         }
 
+    }
+
+    private void setWinner(String name, String score) {
+        winnerName.setText(name);
+        winnerScore.setText(score);
     }
 }
 

@@ -1,5 +1,8 @@
 package server;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -136,6 +139,7 @@ public class Board {
         if (!isEmpty && !crossTile(w))
             return false;
 
+
         return !changesTile(w);
     }
 
@@ -249,12 +253,14 @@ public class Board {
         if (boardLegal(test)) {
             ArrayList<Word> newWords = getWords(test);
             for (Word nw : newWords) {
-                if (dictionaryLegal(nw))
+                if (dictionaryLegal(nw)) {
                     sum += getScore(nw);
-                else
+                } else {
                     return 0;
+                }
             }
-        }
+        } else return -1;
+
 
         // the placement
         row = w.getRow();
@@ -284,6 +290,7 @@ public class Board {
         }
     }
 
+
     public String[][] getBoardsLetters() {
         String[][] board = new String[15][15];
         for (int i = 0; i < tiles.length; i++) {
@@ -306,4 +313,15 @@ public class Board {
         }
         return sb.toString();
     }
+
+    public Tile getTile(char c) {
+        for (Tile[] ts : tiles) {
+            for (Tile t : ts) {
+                if (t != null && t.letter == c)
+                    return t;
+            }
+        }
+        return null;
+    }
+
 }

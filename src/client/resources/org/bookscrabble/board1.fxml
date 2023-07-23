@@ -3,85 +3,80 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Point3D?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-
 <?import org.bookscrabble.BoardDisplayer?>
 <?import org.bookscrabble.LettersDisplayer?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <top>
-      <HBox alignment="CENTER" prefHeight="50.0" prefWidth="177.0" BorderPane.alignment="CENTER">
-         <children>
-            <Text fx:id="playerName" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="62.21630859375">
-               <HBox.margin>
-                  <Insets right="68.0" />
-               </HBox.margin>
-                <style>
-                    -fx-font-weight: bold;
-                    -fx-fill: black;
-                </style>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <top>
+        <AnchorPane prefHeight="40.0" prefWidth="555.0" translateX="3.0" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets />
+            </BorderPane.margin>
+            <children>
+                <Text fx:id="playerName" layoutX="73.865234375" layoutY="43.10546875" strokeType="OUTSIDE" strokeWidth="0.0" text="Noam" wrappingWidth="62.21630859375" AnchorPane.rightAnchor="471.91845703125" AnchorPane.topAnchor="25.0">
+                    <style>
+                        -fx-font-weight: bold;
+                        -fx-fill: black;
+                    </style>
+                    <font>
+                        <Font name="Arial Bold" size="20.0" />
+                    </font>
+                </Text>
+                <Text layoutX="138.15625" layoutY="18.7421875" strokeType="OUTSIDE" strokeWidth="0.0" text="Score" AnchorPane.bottomAnchor="34.2578125" AnchorPane.rightAnchor="438.0546875" />
+                <Text fx:id="playerScore" layoutX="142.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="26" AnchorPane.bottomAnchor="10.76171875" AnchorPane.rightAnchor="443.75390625" AnchorPane.topAnchor="23.89453125">
+                    <font>
+                        <Font name="Arial Bold" size="20.0" />
+                    </font>
+                </Text>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lets Play!" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="100.0">
+                    <font>
+                        <Font size="30.0" />
+                    </font>
+                </Text>
+            </children>
+            <rotationAxis>
+                <Point3D />
+            </rotationAxis>
+        </AnchorPane>
+    </top>
+
+    <center>
+        <BoardDisplayer fx:id="boardDisplayer" height="430" width="430" BorderPane.alignment="CENTER" />
+    </center>
+    <bottom>
+        <LettersDisplayer fx:id="lettersDisplayer" height="61.0" layoutX="300" layoutY="300" translateX="-73.0" translateY="-46.0" width="333.0" BorderPane.alignment="CENTER" />
+    </bottom>
+
+    <right>
+        <AnchorPane prefHeight="437.0" prefWidth="169.0" BorderPane.alignment="CENTER_RIGHT">
+            <BorderPane.margin>
+                <Insets bottom="-2.0" right="9.0" />
+            </BorderPane.margin>
+            <children>
+                <Text layoutX="37.0" layoutY="67.0" text="Current Player: " AnchorPane.bottomAnchor="511.8212890625" AnchorPane.rightAnchor="26.96337890625">
+                    <font>
+                        <Font name="Arial" size="15.0" />
+                    </font>
+                </Text>
+                <Text fx:id="currentPlayerName" layoutX="67.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="38.0" AnchorPane.bottomAnchor="489.2578125" AnchorPane.rightAnchor="64.0" />
+                <Text layoutX="57.0" layoutY="151.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Round: " AnchorPane.bottomAnchor="427.8212890625" AnchorPane.rightAnchor="55.3544921875">
+                    <font>
+                        <Font name="Arial Bold" size="15.0" />
+                    </font>
+                </Text>
+                <Text fx:id="roundsText" layoutX="90.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.bottomAnchor="400.0" AnchorPane.rightAnchor="79.0" />
+                <Button fx:id="scoreBoardButton" layoutX="33.0" layoutY="342.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="114.0" style="-fx-background-color: FFCE54;" text="SCORE BOARD" textFill="#0a0a0a" AnchorPane.bottomAnchor="326.0" AnchorPane.rightAnchor="22.0" />
+                <Button fx:id="doneButton" alignment="CENTER" layoutX="51.0" layoutY="485.0" prefHeight="51.0" prefWidth="121.0" style="-fx-background-color: #ED5565;" text="End Turn" translateX="-25.0" AnchorPane.bottomAnchor="162.0" AnchorPane.rightAnchor="-3.0">
                <font>
-                  <Font name="Arial Bold" size="16.0" />
-               </font>
-            </Text>
-            <Text fx:id="playerScore" strokeType="OUTSIDE" strokeWidth="0.0">
-               <HBox.margin>
-                  <Insets left="-30.0" right="89.0" />
-               </HBox.margin>
-               <font>
-                  <Font name="Arial Bold" size="16.0" />
-               </font>
-            </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lets Play!">
-               <font>
-                  <Font size="30.0" />
-               </font>
-            </Text>
-         </children>
-         <BorderPane.margin>
-            <Insets right="105.0" />
-         </BorderPane.margin>
-      </HBox>
-   </top>
-
-   <center>
-      <BoardDisplayer fx:id="boardDisplayer" height="430" width="430" BorderPane.alignment="CENTER"/>
-   </center>
-   <bottom>
-      <LettersDisplayer fx:id="lettersDisplayer" height="85.0" width="458.0" BorderPane.alignment="CENTER"/>
-   </bottom>
-
-
-
-
-   <right>
-      <VBox alignment="BASELINE_RIGHT" spacing="10.0">
-         <Button fx:id="saveGameButton" alignment="TOP_RIGHT" text="Save Game" />
-         <HBox alignment="CENTER_RIGHT">
-            <Text text="Current Player: ">
-               <HBox.margin>
-                  <Insets bottom="200.0" />
-               </HBox.margin></Text>
-            <Text fx:id="currentPlayerName" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="38.0">
-               <HBox.margin>
-                  <Insets bottom="170.0" />
-               </HBox.margin>
-               <rotationAxis>
-                  <Point3D />
-               </rotationAxis></Text>
-            <VBox.margin>
-               <Insets bottom="18.0" />
-            </VBox.margin>
-         </HBox>
-         <Button fx:id="doneButton" alignment="CENTER" text="End Turn" />
-         <BorderPane.margin>
-            <Insets bottom="-2.0" right="9.0" />
-         </BorderPane.margin>
-      </VBox>
-   </right>
+                  <Font name="Arial Bold" size="15.0" />
+               </font></Button>
+            <Button fx:id="saveGameButton" layoutX="44.0" layoutY="621.0" mnemonicParsing="false" style="-fx-background-color: #8067B7;" text="Save Game" AnchorPane.bottomAnchor="52.0" AnchorPane.rightAnchor="44.0" />
+            </children>
+        </AnchorPane>
+    </right>
 
 </BorderPane>

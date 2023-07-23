@@ -15,7 +15,7 @@ public class GamesManager {
 
     private Map<String, Game> games;
     private static GamesManager manager;
-    public static final int ROUNDS = 30;
+    public static final int ROUNDS = 5;
     private Session session;
 
     private GamesManager() {
@@ -70,10 +70,7 @@ public class GamesManager {
     }
 
     public Game getGame(String gameName) {
-        Game game = games.get(gameName);
-        if (game == null)
-            throw new RuntimeException("Game is not found: " + gameName);
-        return game;
+        return games.get(gameName);
     }
 
     private static String getNewRandomName() {

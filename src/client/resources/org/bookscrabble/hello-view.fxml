@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="100.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bookscrabble.HelloController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bookscrabble.HelloController">
    <top>
-      <Label prefHeight="25.0" prefWidth="251.0" style="-fx-font-size: 24px;" text="Welcome to BookScrabble" BorderPane.alignment="CENTER" />
+      <Label prefHeight="47.0" prefWidth="277.0" style="-fx-font-size: 24px;" text="Welcome to BookScrabble" BorderPane.alignment="CENTER" />
    </top>
-    <left>
-        <Button onAction="#joinExistingGame" style="-fx-background-color: blue;" text="Join Existing Game" />
-    </left>
-    <right>
-        <Button onAction="#createNewGame" style="-fx-background-color: green;" text="Create New Game" />
-    </right>
+   <center>
+      <AnchorPane prefHeight="300.0" prefWidth="300.0" BorderPane.alignment="CENTER">
+         <children>
+              <Button layoutX="180.0" layoutY="185.0" onAction="#joinExistingGame" prefHeight="60.0" prefWidth="140.0" style="-fx-background-color: #5D9CEC;" text="Join Existing Game" AnchorPane.bottomAnchor="60.0" AnchorPane.rightAnchor="80.0" />
+              <Button layoutX="178.0" layoutY="61.0" onAction="#createNewGame" prefHeight="60.0" prefWidth="140.0" style="-fx-background-color: #A0D468;" text="Create New Game" AnchorPane.bottomAnchor="150.0" AnchorPane.rightAnchor="80.0" />
+         </children>
+      </AnchorPane>
+   </center>
 </BorderPane>

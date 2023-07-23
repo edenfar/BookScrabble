@@ -13,19 +13,24 @@ import java.util.Observer;
 
 public class ViewModel extends Observable implements Observer {
 
+    public String rounds;
+    public String winnerName;
+    public String winnerScore;
     Model m;
     public StringProperty playerName, gameName, playerScore;
     public StringProperty[] playersArray;
+    public StringProperty[] scoreBoard;
 
     public String[][] boardData;
-    public StringProperty playerTiles;
     public StringProperty playerTilesLetters;
+    public StringProperty playerTilesScore;
     public StringProperty currPlayerName;
     public boolean isHost = false;
     public boolean isGameStarted = false;
 
     public boolean firstRound = true;
 
+    public String illegal;
     public int round = 1;
 
     public ViewModel() {
@@ -35,6 +40,7 @@ public class ViewModel extends Observable implements Observer {
         currPlayerName = new SimpleStringProperty();
         playerScore = new SimpleStringProperty();
         boardData = new String[15][15];
+        rounds = "";
     }
 
     public void setModel(Model m) {
@@ -53,6 +59,15 @@ public class ViewModel extends Observable implements Observer {
             this.playersArray[i] = new SimpleStringProperty(stringPlayers[i]);
         }
         return this.playersArray;
+    }
+
+    public StringProperty[] getPlayersScores() {
+        String[] playersScoreArray = m.getPlayersScoreArray();
+        this.scoreBoard = new StringProperty[playersScoreArray.length];
+        for (int i = 0; i < playersScoreArray.length; i++) {
+            this.scoreBoard[i] = new SimpleStringProperty(playersScoreArray[i]);
+        }
+        return this.scoreBoard;
     }
 
     public void createGame(String[] fileNames) {
@@ -92,11 +107,10 @@ public class ViewModel extends Observable implements Observer {
 
     public void onNewGame(String gameName) {
         this.gameName.setValue(gameName);
-        System.out.println(this.gameName.getValue());
     }
 
-    public void playTurn(String word, int r, int c, boolean vertical) {
-        m.playTurn(word, r, c, vertical);
+    public void playTurn(String word, int r, int c, boolean vertical, String tilesToReplace) {
+        m.playTurn(word, r, c, vertical, tilesToReplace);
     }
 
     @Override
@@ -125,8 +139,8 @@ public class ViewModel extends Observable implements Observer {
                 this.notifyObservers("CurrentPlayer");
             }
             if (Objects.equals(type, "PlayerTiles")) {
-                this.playerTiles = new SimpleStringProperty(m.getPlayerTiles());
                 this.playerTilesLetters = new SimpleStringProperty(m.getPlayerTilesLetters());
+                this.playerTilesScore = new SimpleStringProperty(m.getPlayerTilesScore());
                 this.setChanged();
                 this.notifyObservers("PlayerTiles");
             }
@@ -136,7 +150,6 @@ public class ViewModel extends Observable implements Observer {
             }
             if (Objects.equals(type, "PlayerScore")) {
                 this.playerScore = new SimpleStringProperty(m.getPlayerScore());
-                System.out.println("VM Player score: " + m.getPlayerScore());
                 this.setChanged();
                 this.notifyObservers("PlayerScore");
             }
@@ -144,6 +157,27 @@ public class ViewModel extends Observable implements Observer {
                 for (int i = 0; i < m.getBoardData().length; i++) {
                     this.boardData[i] = m.getBoardData()[i].clone();
                 }
+            }
+            if (Objects.equals(type, "Rounds")) {
+                this.rounds = m.getrounds();
+                this.setChanged();
+                this.notifyObservers("Rounds");
+            }
+            if (Objects.equals(type, "Illegal")) {
+                this.illegal = m.getIllegal();
+                this.setChanged();
+                this.notifyObservers("Illegal");
+            }
+            if (Objects.equals(type, "GameEnded")) {
+                String[] temp = m.getWinner().split(",");
+                this.winnerName = temp[0];
+                this.winnerScore = temp[1];
+                this.setChanged();
+                this.notifyObservers("GameEnded");
+            }
+            if (Objects.equals(type, "ScoreBoard")) {
+                this.setChanged();
+                this.notifyObservers("ScoreBoard");
             }
 
         }

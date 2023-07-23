@@ -18,6 +18,7 @@ public class Game {
     List<Player> players;
     int numOfPlayers;
     Player currentPlayer;
+
     int rounds;
     int currentRound;
 
@@ -29,9 +30,9 @@ public class Game {
         this.name = name;
         this.board = new Board(fileNames);
         this.bag = new Bag();
+        this.rounds = rounds;
         this.players = new ArrayList<>(MAX_PLAYERS);
         this.players.add(host);
-        this.rounds = rounds;
         this.numOfPlayers = 1;
     }
 
@@ -43,7 +44,7 @@ public class Game {
                 && game.rounds == this.rounds
                 && game.numOfPlayers == this.numOfPlayers
                 && ((game.currentPlayer == null && this.currentPlayer == null)
-                    || game.currentPlayer.equals(this.currentPlayer))
+                || game.currentPlayer.equals(this.currentPlayer))
                 && game.players.equals(this.players)
                 && game.bag.equals(this.bag)
                 && game.board.equals(this.board);
@@ -130,7 +131,7 @@ public class Game {
     }
 
     public boolean isOver() {
-        return currentRound == rounds;
+        return currentRound > rounds;
     }
 
     public void addPlayer(Player player) {
@@ -139,20 +140,25 @@ public class Game {
         }
         players.add(player);
         numOfPlayers++;
+        sendRounds(player);
         sendGameToPlayer(player);
         sendPlayersToPlayers(player);
     }
 
-    public void playTurn(Player player, Word word) {
+    private void sendRounds(Player player) {
+        player.sendRounds(rounds);
+    }
+
+    public void playTurn(Player player, Word word, Tile[] tilesToReplace) {
         if (player != currentPlayer) {
             player.sendToPlayer.accept("Player " + player.getName() + " is not the current player");
             return;
         }
-        playCurrentTurn(word);
+        playCurrentTurn(word, tilesToReplace);
     }
 
-    private void playCurrentTurn(Word word) {
-        if (!currentPlayer.hasTiles(word.getTiles())) {
+    private void playCurrentTurn(Word word, Tile[] tilesToReplace) {
+        if (!currentPlayer.hasTiles(tilesToReplace)) {
             currentPlayer.notifyMissingTilesForWord(word);
             return;
         }
@@ -161,10 +167,14 @@ public class Game {
             currentPlayer.notifyIllegalWord(word);
             return;
         }
+        if (wordScore == -1) {
+            currentPlayer.notifyIllegalBoard();
+            return;
+        }
         this.sendBoard();
         currentPlayer.addScore(wordScore);
-        int wordTilesCount = word.getTiles().length;
-        currentPlayer.replaceTiles(word.getTiles(), bag.getRandomTiles(wordTilesCount));
+        int wordTilesCount = tilesToReplace.length;
+        currentPlayer.replaceTiles(tilesToReplace, bag.getRandomTiles(wordTilesCount));
         this.advanceCurrentPlayer();
         currentRound += 1;
         this.sendGameToPlayers();
@@ -177,6 +187,7 @@ public class Game {
             }
         }
     }
+
     public void playNullTurn() {
         this.advanceCurrentPlayer();
         currentRound += 1;
@@ -201,6 +212,7 @@ public class Game {
                 player.sendPlayerTiles();
                 player.sendNewTurn();
                 player.sendScore();
+                player.sendScoreBoard(getPlayersScores());
             }
         }
     }
@@ -217,4 +229,46 @@ public class Game {
         currentPlayerIndex = (currentPlayerIndex + 1) % numOfPlayers;
         currentPlayer = players.get(currentPlayerIndex);
     }
+
+    public void endGame() {
+        int winnerIndex = findIndexOfHighestValue(getPlayersScores());
+        String winnerName = players.get(winnerIndex).getName();
+        String winnerScore = String.valueOf(players.get(winnerIndex).getScore());
+        for (Player player : players) {
+            if (player != null) {
+                player.sendGameEnd(winnerName, winnerScore);
+            }
+        }
+    }
+
+    public int findIndexOfHighestValue(String[] numbers) {
+        int highestIndex = 0;
+        int highestValue = Integer.parseInt(numbers[0]);
+
+        for (int i = 1; i < numbers.length; i++) {
+            int currentValue = Integer.parseInt(numbers[i]);
+            if (currentValue > highestValue) {
+                highestValue = currentValue;
+                highestIndex = i;
+            }
+        }
+
+        return highestIndex;
+    }
+
+
+    public String[] getPlayersScores() {
+        String playersScores[] = new String[numOfPlayers];
+        for (Player player : players) {
+            if (player != null) {
+                playersScores[players.indexOf(player)] = String.valueOf(player.getScore());
+            }
+        }
+        return playersScores;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
 }
