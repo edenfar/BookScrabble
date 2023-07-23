@@ -10,10 +10,11 @@
       <Label prefHeight="47.0" prefWidth="277.0" style="-fx-font-size: 24px;" text="Welcome to BookScrabble" BorderPane.alignment="CENTER" />
    </top>
    <center>
-      <AnchorPane prefHeight="300.0" prefWidth="300.0" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="400.0" prefWidth="300.0" BorderPane.alignment="CENTER">
          <children>
               <Button layoutX="180.0" layoutY="185.0" onAction="#joinExistingGame" prefHeight="60.0" prefWidth="140.0" style="-fx-background-color: #5D9CEC;" text="Join Existing Game" AnchorPane.bottomAnchor="60.0" AnchorPane.rightAnchor="80.0" />
-              <Button layoutX="178.0" layoutY="61.0" onAction="#createNewGame" prefHeight="60.0" prefWidth="140.0" style="-fx-background-color: #A0D468;" text="Create New Game" AnchorPane.bottomAnchor="150.0" AnchorPane.rightAnchor="80.0" />
+              <Button layoutX="178.0" layoutY="61.0" onAction="#createNewGame" prefHeight="60.0" prefWidth="140.0" style="-fx-background-color: #A0D468;" text="Create New Game" AnchorPane.bottomAnchor="135.0" AnchorPane.rightAnchor="80.0" />
+              <Button layoutX="178.0" layoutY="61.0" onAction="#loadExistingGame" prefHeight="60.0" prefWidth="140.0" style="-fx-background-color: purple;" text="Load Existing Game" AnchorPane.bottomAnchor="210.0" AnchorPane.rightAnchor="80.0" />
          </children>
       </AnchorPane>
    </center>

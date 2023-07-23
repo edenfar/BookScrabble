@@ -116,14 +116,26 @@ public class Game {
     }
 
     public void setup() {
+        this.setupData();
+        this.sendOnStart();
+    }
+
+    public void setupData() {
         this.orderPlayers();
         currentPlayer = players.get(0);
-        sendCurrentPlayer();
         currentRound = 1;
-        sendCurrentRound();
         for (Player player : players) {
             if (player != null) {
                 player.setTiles(bag.getRandomTiles(7));
+            }
+        }
+    }
+
+    public void sendOnStart() {
+        sendCurrentPlayer();
+        sendCurrentRound();
+        for (Player player : players) {
+            if (player != null) {
                 player.sendPlayerTiles();
                 player.sendGameStart();
             }
@@ -138,11 +150,19 @@ public class Game {
         if (numOfPlayers >= MAX_PLAYERS) {
             throw new UnsupportedOperationException("Maximum number of players reached.");
         }
-        players.add(player);
-        numOfPlayers++;
-        sendRounds(player);
-        sendGameToPlayer(player);
-        sendPlayersToPlayers(player);
+        Player existingPlayer = players.stream().filter(p -> p.getName().equals(player.getName())).findAny().orElse(null);
+        if (existingPlayer != null) {
+            if (existingPlayer.getSendToPlayer() != null)
+                throw new UnsupportedOperationException("Player named " + existingPlayer.getName() + " already connected");
+            existingPlayer.setSendToPlayer(player.getSendToPlayer());
+        } else {
+            players.add(player);
+            numOfPlayers++;
+        }
+        Player newPlayer = existingPlayer != null ? existingPlayer : player;
+        sendRounds(newPlayer);
+        sendGameToPlayer(newPlayer);
+        sendPlayersToPlayers(newPlayer);
     }
 
     private void sendRounds(Player player) {
@@ -151,7 +171,7 @@ public class Game {
 
     public void playTurn(Player player, Word word, Tile[] tilesToReplace) {
         if (player != currentPlayer) {
-            player.sendToPlayer.accept("Player " + player.getName() + " is not the current player");
+            player.getSendToPlayer().accept("Player " + player.getName() + " is not the current player");
             return;
         }
         playCurrentTurn(word, tilesToReplace);
@@ -217,7 +237,7 @@ public class Game {
         }
     }
 
-    private void sendGameToPlayer(Player p) {
+    public void sendGameToPlayer(Player p) {
         p.sendBoard(board);
         p.sendPlayers(players);
         p.sendCurrentRound(currentRound);

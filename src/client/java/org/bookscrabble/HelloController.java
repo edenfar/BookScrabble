@@ -69,6 +69,14 @@ public class HelloController extends Observable implements Observer {
         this.vm.gameName.bind(gameName.textProperty());
     }
 
+    public void loadExistingGame(ActionEvent actionEvent) {
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        Dialog<GuestData> dialog = createDialogForExistingGame();
+        dialog.showAndWait().ifPresent((GuestData guestData) -> {
+            vm.loadExistingGame();
+        });
+    }
+
     public record GuestData(String playerName, String gameName) {
     }
 
@@ -78,7 +86,13 @@ public class HelloController extends Observable implements Observer {
     public void joinExistingGame(ActionEvent actionEvent) {
         //Get main stage
         stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        Dialog<GuestData> dialog = createDialogForExistingGame();
+        dialog.showAndWait().ifPresent((GuestData guestData) -> {
+            vm.connectToGame();
+        });
+    }
 
+    private Dialog<GuestData> createDialogForExistingGame() {
         Dialog<GuestData> dialog = new Dialog<>();
         dialog.setTitle("Enter Game & Your Name");
 
@@ -98,11 +112,7 @@ public class HelloController extends Observable implements Observer {
             return null;
         });
 
-        Optional<GuestData> result = dialog.showAndWait();
-        if (result.isPresent()) {
-            vm.connectToGame();
-        }
-
+        return dialog;
     }
 
     @FXML
@@ -200,6 +210,7 @@ public class HelloController extends Observable implements Observer {
 
                     boolean showStartButton = vm.isHost;
                     controller.getStartButton().setVisible(showStartButton);
+                    controller.startButton.setDisable(!vm.getAllPlayersConnected());
 
                     controller.startButton.setOnAction(event -> {
                         vm.startGame();

@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import java.util.*;
 import java.util.function.Consumer;
 
-
 public class PlayerHandler implements ClientHandler {
     /*
     All the communication with the player should happen here, and not in Player class
@@ -45,17 +44,31 @@ public class PlayerHandler implements ClientHandler {
             player.sendRounds(game.rounds);
             player.sendScore();
 
-            this.receiveStartGameSignal(in);
+            receiveStartGameSignal(in);
             game.setup();
         } else if (parsedRequest instanceof GuestRequest guestRequest) {
             name = guestRequest.name;
             player = createPlayer(name, sendToPlayer);
-            game = connectToGame(guestRequest);
+            game = connectToGame(guestRequest.gameName);
             if (game == null) {
                 player.notifyIllegalGame();
                 return;
             } else
                 game.addPlayer(player);
+        } else if (parsedRequest instanceof LoadRequest loadRequest) {
+            name = loadRequest.name;
+            String gameName = loadRequest.gameName;
+            game = loadGame(gameName);
+            player = game.players.stream().filter(p -> p.getName().equals(name)).findAny().orElse(null);
+            if (player == null) {
+                sendToPlayer.accept("Player " + name + " not found on game " + gameName);
+                return;
+            }
+            player.setSendToPlayer(sendToPlayer);
+            game.sendGameToPlayer(player);
+
+            receiveStartGameSignal(in);
+            game.sendOnStart();
         } else {
             sendToPlayer.accept("Invalid request accepted: " + request);
             return;
@@ -106,6 +119,9 @@ public class PlayerHandler implements ClientHandler {
     public record GuestRequest(String name, String gameName) {
     }
 
+    public record LoadRequest(String name, String gameName) {
+    }
+
     private Word parseMove(String move, Player p, Game g) {
         String[] substrings = move.split(",");
         // Accessing each substring
@@ -116,7 +132,7 @@ public class PlayerHandler implements ClientHandler {
 
         Tile[] tiles;
 
-       tiles = stringToTile(wordString, p, g);
+        tiles = stringToTile(wordString, p, g);
         return new Word(tiles, row, col, vertical);
     }
 
@@ -132,12 +148,15 @@ public class PlayerHandler implements ClientHandler {
         /* Request structure:
         host,<player name>,<file names separated by commas>
         guest,<player name>,<game name>
+        load,<player name>,<game name>
          */
         String[] params = request.split(",");
         if (Objects.equals(params[0], "guest"))
             return new GuestRequest(params[1], params[2]);
         if (Objects.equals(params[0], "host"))
             return new HostRequest(params[1], Arrays.copyOfRange(params, 2, params.length));
+        if (Objects.equals(params[0], "load"))
+            return new LoadRequest(params[1], params[2]);
         throw new UnsupportedOperationException("Invalid request received: " + request);
     }
 
@@ -150,9 +169,14 @@ public class PlayerHandler implements ClientHandler {
         return new Player(name, sendToPlayer);
     }
 
-    public static Game connectToGame(GuestRequest request) {
+    public static Game connectToGame(String gameName) {
         GamesManager gamesManager = GamesManager.get();
-        return gamesManager.getGame(request.gameName);
+        return gamesManager.getGame(gameName);
+    }
+
+    private static Game loadGame(String gameName) {
+        GamesManager gamesManager = GamesManager.get();
+        return gamesManager.loadGame(gameName);
     }
 
     @Override

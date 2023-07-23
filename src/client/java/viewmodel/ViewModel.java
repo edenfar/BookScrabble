@@ -2,10 +2,7 @@ package viewmodel;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import model.GuestModel;
-import model.HostModel;
-import model.Model;
-
+import model.*;
 
 import java.util.Objects;
 import java.util.Observable;
@@ -61,6 +58,10 @@ public class ViewModel extends Observable implements Observer {
         return this.playersArray;
     }
 
+    public boolean getAllPlayersConnected() {
+        return m.getAllPlayersConnected();
+    }
+
     public StringProperty[] getPlayersScores() {
         String[] playersScoreArray = m.getPlayersScoreArray();
         this.scoreBoard = new StringProperty[playersScoreArray.length];
@@ -73,16 +74,16 @@ public class ViewModel extends Observable implements Observer {
     public void createGame(String[] fileNames) {
         this.isHost = true;
         this.currPlayerName.setValue(playerName.getValue());
-        HostModel hostModel = new HostModel();
-        this.setModel(hostModel);
+        CreatorHostModel creatorHostModel = new CreatorHostModel();
+        this.setModel(creatorHostModel);
         // TODO: Request server details from client
-        hostModel.connect("localhost", 6123);
-        hostModel.createGame(playerName.getValue(), fileNames);
+        creatorHostModel.connect("localhost", 6123);
+        creatorHostModel.createGame(playerName.getValue(), fileNames);
     }
 
     public void startGame() {
-        if (this.m instanceof HostModel hostModel) {
-            hostModel.startGame();
+        if (isHost) {
+            ((HostModel) m).startGame();
             isGameStarted = true;
         } else {
             throw new RuntimeException("Cannot start game as guest");
@@ -103,6 +104,14 @@ public class ViewModel extends Observable implements Observer {
         this.setModel(guestModel);
         guestModel.connect("localhost", 6123);
         guestModel.join(playerName.getValue(), gameName.getValue());
+    }
+
+    public void loadExistingGame() {
+        this.isHost = true;
+        LoaderHostModel loaderHostModel = new LoaderHostModel();
+        this.setModel(loaderHostModel);
+        loaderHostModel.connect("localhost", 6123);
+        loaderHostModel.load(playerName.getValue(), gameName.getValue());
     }
 
     public void onNewGame(String gameName) {
