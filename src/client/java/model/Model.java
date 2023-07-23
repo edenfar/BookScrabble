@@ -20,6 +20,7 @@ public class Model extends Observable {
     private String[] playersArray;
     private String currPlayerName;
     private String playerScore;
+    private boolean allPlayersConnected;
     private String rounds;
     private String[] scoreBoard;
     private String illegal = "";
@@ -57,6 +58,8 @@ public class Model extends Observable {
                 this.playersArray = temp.split(",");
                 this.scoreBoard = new String[this.playersArray.length];
                 Arrays.fill(this.scoreBoard, "0");
+            } else if (response.startsWith("AllPlayersConnected:")) {
+                this.allPlayersConnected = Boolean.parseBoolean(response.substring("AllPlayersConnected:".length()));
             } else if (response.startsWith("CurrPlayer:")) {
                 this.currPlayerName = response.substring("CurrPlayer:".length());
             } else if (response.startsWith("GameName:")) {
@@ -154,6 +157,10 @@ public class Model extends Observable {
             array[i] = rows[i].split(",");
         }
         return array;
+    }
+
+    public boolean getAllPlayersConnected() {
+        return allPlayersConnected;
     }
 
 

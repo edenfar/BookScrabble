@@ -8,10 +8,9 @@ public class Player {
     private String name;
     private int score;
     private Tile[] tiles;
-    Consumer<String> sendToPlayer;
+    private Consumer<String> sendToPlayer;
 
     public Player() {
-        this.score = 0;
         this.tiles = new Tile[]{};
     }
 
@@ -29,6 +28,14 @@ public class Player {
         this.score = 0;
         this.tiles = new Tile[]{};
         this.sendToPlayer = sendToPlayer;
+    }
+
+    public void setSendToPlayer(Consumer<String> sendToPlayer) {
+        this.sendToPlayer = sendToPlayer;
+    }
+
+    public Consumer<String> getSendToPlayer() {
+        return sendToPlayer;
     }
 
     public String getName() {
@@ -130,15 +137,20 @@ public class Player {
     public void sendPlayers(List<Player> players) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Players:");
+        boolean allPlayersConnected = true;
         for (Player player : players) {
             if (player != null) {
-                stringBuilder.append(player.getName()).append(":").append(player.getScore());
+                boolean isPlayerConnected = player.getSendToPlayer() != null;
+                allPlayersConnected = isPlayerConnected && allPlayersConnected;
+                String playerDisplayName = player.getName() + (isPlayerConnected ? "" : " - not connected");
+                stringBuilder.append(playerDisplayName).append(":").append(player.getScore());
                 stringBuilder.append(",");
             }
         }
         // Get the final string representation
         String playerDataString = stringBuilder.toString();
         sendToPlayer.accept(playerDataString);
+        sendToPlayer.accept("AllPlayersConnected:" + allPlayersConnected);
     }
 
     public void sendCurrentPlayer(String name) {
