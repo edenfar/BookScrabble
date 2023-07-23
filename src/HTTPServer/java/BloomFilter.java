@@ -1,4 +1,4 @@
-package server;
+package HTTPServer;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;

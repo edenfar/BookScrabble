@@ -1,5 +1,6 @@
-package server;
+package HTTPServer;
 
+import HTTPServer.CacheReplacementPolicy;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 

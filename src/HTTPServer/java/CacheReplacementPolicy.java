@@ -1,4 +1,4 @@
-package server;
+package HTTPServer;
 
 public interface CacheReplacementPolicy {
     void add(String word);
