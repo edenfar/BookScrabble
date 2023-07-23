@@ -87,7 +87,7 @@ public class PlayerHandler implements ClientHandler {
                     tiles[i] = p.getTile(c);
                     break;
                 } else
-                    tiles[i] = g.getGameBoard().getTile(c);
+                    tiles[i] = g.getBoard().getTile(c);
             }
             i++;
         }
@@ -114,21 +114,10 @@ public class PlayerHandler implements ClientHandler {
         int col = Integer.parseInt(substrings[2]);
         boolean vertical = Boolean.parseBoolean(substrings[3]);
 
-        Tile[] tiles = new Tile[wordString.length()];
-        int i = 0;
+        Tile[] tiles;
 
-        for (char c : wordString.toCharArray()) {
-            for (Tile t : p.getTiles()) {
-                if (t.letter == c) {
-                    tiles[i] = p.getTile(c);
-                    break;
-                } else
-                    tiles[i] = g.getGameBoard().getTile(c);
-            }
-            i++;
-        }
-        Word word = new Word(tiles, row, col, vertical);
-        return word;
+       tiles = stringToTile(wordString, p, g);
+        return new Word(tiles, row, col, vertical);
     }
 
     private static void receiveStartGameSignal(Scanner in) {

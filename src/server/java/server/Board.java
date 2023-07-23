@@ -278,6 +278,19 @@ public class Board {
         return sum;
     }
 
+    public void print() {
+        for (Tile[] ts : tiles) {
+            for (Tile t : ts) {
+                if (t != null)
+                    System.out.print(t.letter);
+                else
+                    System.out.print("_");
+            }
+            System.out.println();
+        }
+    }
+
+
     public String[][] getBoardsLetters() {
         String[][] board = new String[15][15];
         for (int i = 0; i < tiles.length; i++) {
