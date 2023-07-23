@@ -3,7 +3,7 @@ package HTTPServer; // Update the package declaration to match your directory st
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import server.DictionaryManager;
+import HTTPServer.DictionaryManager;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -40,7 +40,7 @@ public class MyHttpServer {
 
             for (String param : queryParams) {
                 if (param.startsWith("word=")) {
-                    word = param.split("word=")[1];; // Extract the value of "word" parameter
+                    word = param.split("word=")[1]; // Extract the value of "word" parameter
                 } else if (param.startsWith("files=")) {
                     String filesParam = param.split("files=")[1]; // Extract the value of "files" parameter
                     String[] filesArray = filesParam.split(",");
@@ -61,7 +61,7 @@ public class MyHttpServer {
             boolean result = DictionaryManager.get().query(args);
 
             // Set the response based on the result
-            String response = result ? "Word found in dictionary" : "Word not found in dictionary";
+            String response = result ? "True" : "False";
 
             System.out.println("Sending query response: " + response);
 
@@ -83,7 +83,7 @@ public class MyHttpServer {
             String word = "";
             for (String param : queryParams) {
                 if (param.startsWith("word=")) {
-                    word = param.substring(5); // Extract the value of "word" parameter
+                    word = param.split("word=")[1]; // Extract the value of "word" parameter
                     break;
                 }
             }
@@ -93,7 +93,7 @@ public class MyHttpServer {
             boolean result = DictionaryManager.get().challenge(word);
 
             // Set the response based on the result
-            String response = result ? "Word is a challenge" : "Word is not a challenge";
+            String response = result ? "True" : "False";
 
             System.out.println("Sending challenge response: " + response);
             // Send the response back to the client

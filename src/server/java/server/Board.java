@@ -181,7 +181,7 @@ public class Board {
             // Process the response from the HTTP server
             if (responseCode == 200) {
                 boolean result;
-                if (response.toString().contains("Word found in dictionary")) {
+                if (response.toString().contains("True")) {
                     result = true;
                     return result;
                 }
