@@ -267,4 +267,8 @@ public class Game {
         return playersScores;
     }
 
+    public Board getGameBoard() {
+        return board;
+    }
+
 }

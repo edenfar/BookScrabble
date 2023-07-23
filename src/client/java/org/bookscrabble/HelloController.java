@@ -101,10 +101,7 @@ public class HelloController extends Observable implements Observer {
         Optional<GuestData> result = dialog.showAndWait();
         if (result.isPresent()) {
             vm.connectToGame();
-        } else {    //Cancel button pressed
-            System.out.println("Cancel button pressed");
         }
-
 
     }
 
@@ -113,7 +110,6 @@ public class HelloController extends Observable implements Observer {
         Rectangle rectangle = (Rectangle) event.getSource();
         int row = GridPane.getRowIndex(rectangle);
         int column = GridPane.getColumnIndex(rectangle);
-        System.out.println("Clicked Rectangle at row: " + row + ", column: " + column);
     }
 
     public void createNewGame(ActionEvent actionEvent) {
@@ -139,8 +135,6 @@ public class HelloController extends Observable implements Observer {
         Optional<HostData> result = dialog.showAndWait();
         if (result.isPresent()) {
             vm.createGame(fileNames.getText().split(","));
-        } else {    //Cancel button pressed
-            System.out.println("Cancel button pressed");
         }
     }
 
@@ -236,8 +230,9 @@ public class HelloController extends Observable implements Observer {
                 Platform.runLater(() -> {
                     Stage popupStage = new Stage();
 
-                    if (vm.illegal.equals("No Such Game"))
+                    if (vm.illegal.equals("No Such Game")) {
                         stage.close();
+                    }
 
                     popupStage.initOwner(stage);
                     popupStage.initModality(Modality.APPLICATION_MODAL);
@@ -271,7 +266,6 @@ public class HelloController extends Observable implements Observer {
                     winnerScore = new Text();
                     winnerScore.setText(vm.winnerScore);
 
-                    System.out.println("The winner is " + winnerName.getText() + " with score " + winnerScore.getText() + " points");
                     Stage newStage = new Stage();
                     try {
 

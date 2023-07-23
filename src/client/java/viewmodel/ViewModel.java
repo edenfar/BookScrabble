@@ -5,7 +5,6 @@ import javafx.beans.property.StringProperty;
 import model.GuestModel;
 import model.HostModel;
 import model.Model;
-import server.GamesManager;
 
 
 import java.util.Objects;
@@ -24,6 +23,7 @@ public class ViewModel extends Observable implements Observer {
 
     public String[][] boardData;
     public StringProperty playerTilesLetters;
+    public StringProperty playerTilesScore;
     public StringProperty currPlayerName;
     public boolean isHost = false;
     public boolean isGameStarted = false;
@@ -101,24 +101,16 @@ public class ViewModel extends Observable implements Observer {
         this.isHost = false;
         GuestModel guestModel = new GuestModel();
         this.setModel(guestModel);
-
-        GamesManager gamesManager = GamesManager.get();
-        if (gamesManager.getGame(gameName.getValue()) != null) {
-            guestModel.connect("localhost", 6123);
-            guestModel.join(playerName.getValue(), gameName.getValue());
-        } else {
-            this.illegal = "No Such Game";
-            this.setChanged();
-            this.notifyObservers("Illegal");
-        }
+        guestModel.connect("localhost", 6123);
+        guestModel.join(playerName.getValue(), gameName.getValue());
     }
 
     public void onNewGame(String gameName) {
         this.gameName.setValue(gameName);
     }
 
-    public void playTurn(String word, int r, int c, boolean vertical, String wordToReplace) {
-        m.playTurn(word, r, c, vertical, wordToReplace);
+    public void playTurn(String word, int r, int c, boolean vertical, String tilesToReplace) {
+        m.playTurn(word, r, c, vertical, tilesToReplace);
     }
 
     @Override
@@ -148,6 +140,7 @@ public class ViewModel extends Observable implements Observer {
             }
             if (Objects.equals(type, "PlayerTiles")) {
                 this.playerTilesLetters = new SimpleStringProperty(m.getPlayerTilesLetters());
+                this.playerTilesScore = new SimpleStringProperty(m.getPlayerTilesScore());
                 this.setChanged();
                 this.notifyObservers("PlayerTiles");
             }

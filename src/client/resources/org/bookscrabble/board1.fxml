@@ -17,7 +17,7 @@
                 <Insets />
             </BorderPane.margin>
             <children>
-                <Text fx:id="playerName" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="62.21630859375" AnchorPane.rightAnchor="470.0" AnchorPane.topAnchor="22.0">
+                <Text fx:id="playerName" layoutX="73.865234375" layoutY="43.10546875" strokeType="OUTSIDE" strokeWidth="0.0" text="Noam" wrappingWidth="62.21630859375" AnchorPane.rightAnchor="471.91845703125" AnchorPane.topAnchor="25.0">
                     <style>
                         -fx-font-weight: bold;
                         -fx-fill: black;
@@ -26,8 +26,8 @@
                         <Font name="Arial Bold" size="20.0" />
                     </font>
                 </Text>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Score" AnchorPane.bottomAnchor="37.2578125" AnchorPane.rightAnchor="439.0" />
-                <Text fx:id="playerScore" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="455.0">
+                <Text layoutX="138.15625" layoutY="18.7421875" strokeType="OUTSIDE" strokeWidth="0.0" text="Score" AnchorPane.bottomAnchor="34.2578125" AnchorPane.rightAnchor="438.0546875" />
+                <Text fx:id="playerScore" layoutX="142.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="26" AnchorPane.bottomAnchor="10.76171875" AnchorPane.rightAnchor="443.75390625" AnchorPane.topAnchor="23.89453125">
                     <font>
                         <Font name="Arial Bold" size="20.0" />
                     </font>

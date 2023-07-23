@@ -70,16 +70,17 @@ public class MyServer {
         } finally {
             try {
                 client.close();
+                System.out.println("Client disconnected: " + client);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            clientHandler.close();
         }
     }
 
     public void close() {
         stop = true;
         try {
+            clientHandler.close();
             threadPoolClient.shutdown();
             server.close();
         } catch (IOException e) {

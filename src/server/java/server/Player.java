@@ -120,6 +120,10 @@ public class Player {
         for (Tile tile : this.tiles) {
             playerTilesString.append(tile.letterToString());
         }
+        playerTilesString.append(",");
+        for (Tile tile : this.tiles) {
+            playerTilesString.append(tile.scoreToString());
+        }
         sendToPlayer.accept(playerTilesString.toString());
     }
 

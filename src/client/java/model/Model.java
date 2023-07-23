@@ -14,6 +14,7 @@ public class Model extends Observable {
     private Scanner inFromServer;
     private Thread serverListener;
     private String playerTilesLetters;
+    private String playerTilesScore;
     private String[][] boardData;
     private int round = 1;
     private String[] playersArray;
@@ -21,7 +22,7 @@ public class Model extends Observable {
     private String playerScore;
     private String rounds;
     private String[] scoreBoard;
-    private String illegal;
+    private String illegal = "";
     private String winner;
     private boolean end = false;
 
@@ -62,11 +63,17 @@ public class Model extends Observable {
                 this.gameName = response.substring("GameName:".length());
             } else if (response.startsWith("PlayerTiles:")) {
                 String temp = response.substring("PlayerTiles:".length());
-                this.playerTilesLetters = temp;
+                this.playerTilesLetters = temp.split(",")[0];
+                this.playerTilesScore = temp.split(",")[1];
             } else if (response.startsWith("PlayerScore:")) {
                 this.playerScore = response.substring("PlayerScore:".length());
             } else if (response.startsWith("Illegal:")) {
                 this.illegal = response.substring("Illegal:".length());
+                if (this.illegal.equals("No Such Game")) {
+                    this.setChanged();
+                    this.notifyObservers("Illegal");
+                    return;
+                }
             } else if (response.startsWith("ScoreBoard:")) {
                 String temp = response.substring("ScoreBoard:".length());
                 this.scoreBoard = temp.split(",");
@@ -77,8 +84,6 @@ public class Model extends Observable {
                 String temp = response.substring("GameEnded:".length());
                 this.winner = temp;
                 this.end = true;
-            } else {
-                System.out.println("Unknown : " + response);
             }
             while (this.hasChanged()) ;
             this.setChanged();
@@ -96,8 +101,8 @@ public class Model extends Observable {
         }
     }
 
-    public void playTurn(String word, int row, int col, boolean vertical, String wordToReplace) {
-        String concatenatedString = word + "," + row + "," + col + "," + vertical + "," + wordToReplace;
+    public void playTurn(String word, int row, int col, boolean vertical, String tilesToReplace) {
+        String concatenatedString = word + "," + row + "," + col + "," + vertical + "," + tilesToReplace;
         this.sendMessage(concatenatedString);
 
     }
@@ -124,6 +129,10 @@ public class Model extends Observable {
 
     public String getPlayerTilesLetters() {
         return playerTilesLetters;
+    }
+
+    public String getPlayerTilesScore() {
+        return playerTilesScore;
     }
 
     public String getPlayerScore() {

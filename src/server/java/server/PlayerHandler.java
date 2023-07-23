@@ -14,7 +14,6 @@ public class PlayerHandler implements ClientHandler {
      */
     List<PrintWriter> outList = new ArrayList<>();
     List<Scanner> inList = new ArrayList<>();
-    Board board = new Board();
 
     @Override
     public void handleClient(InputStream inFromClient, OutputStream outToClient) {
@@ -72,14 +71,14 @@ public class PlayerHandler implements ClientHandler {
                 int lastCommaIndex = request.lastIndexOf(",");
                 String tilesToReplace = request.substring(lastCommaIndex + 1).trim();
                 request = request.substring(0, lastCommaIndex).trim();
-                Word word = this.parseMove(request, player);
-                game.playTurn(player, word, stringToTile(tilesToReplace, player));
+                Word word = this.parseMove(request, player, game);
+                game.playTurn(player, word, stringToTile(tilesToReplace, player, game));
             }
         }
         game.endGame();
     }
 
-    private Tile[] stringToTile(String s, Player p) {
+    private Tile[] stringToTile(String s, Player p, Game g) {
         Tile[] tiles = new Tile[s.length()];
         int i = 0;
         for (char c : s.toCharArray()) {
@@ -88,7 +87,7 @@ public class PlayerHandler implements ClientHandler {
                     tiles[i] = p.getTile(c);
                     break;
                 } else
-                    tiles[i] = board.getTile(c);
+                    tiles[i] = g.getGameBoard().getTile(c);
             }
             i++;
         }
@@ -107,7 +106,7 @@ public class PlayerHandler implements ClientHandler {
     public record GuestRequest(String name, String gameName) {
     }
 
-    private Word parseMove(String move, Player p) {
+    private Word parseMove(String move, Player p, Game g) {
         String[] substrings = move.split(",");
         // Accessing each substring
         String wordString = substrings[0];
@@ -124,20 +123,20 @@ public class PlayerHandler implements ClientHandler {
                     tiles[i] = p.getTile(c);
                     break;
                 } else
-                    tiles[i] = board.getTile(c);
+                    tiles[i] = g.getGameBoard().getTile(c);
             }
             i++;
         }
         Word word = new Word(tiles, row, col, vertical);
-        System.out.println(move);
         return word;
     }
 
     private static void receiveStartGameSignal(Scanner in) {
         String request = in.nextLine();
         //TODO: to change
-        if (!Objects.equals(request, "start"))
+        if (!Objects.equals(request, "start")) {
             throw new UnsupportedOperationException("Invalid request received: " + request);
+        }
     }
 
     private static Object parseRequest(String request) {

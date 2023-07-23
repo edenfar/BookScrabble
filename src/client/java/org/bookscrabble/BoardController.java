@@ -56,6 +56,7 @@ public class BoardController extends Observable implements Observer, Initializab
     private String[][] boardData;
     private String[] letterArray;
     private Text playerTilesLetters;
+    private Text playerTilesScore;
     private String letterclicked;
 
     private String word;
@@ -70,6 +71,7 @@ public class BoardController extends Observable implements Observer, Initializab
         this.currentPlayerName = new Text();
         this.playerName = new Text();
         this.playerTilesLetters = new Text();
+        this.playerTilesScore = new Text();
         this.playerScore = new Text();
         this.playerNameContainer = new VBox();
         this.playerScoreContainer = new VBox();
@@ -117,6 +119,7 @@ public class BoardController extends Observable implements Observer, Initializab
         playerName.textProperty().bind(this.vm.playerName);
         playerScore.textProperty().bind(this.vm.playerScore);
         playerTilesLetters.textProperty().bind(this.vm.playerTilesLetters);
+        playerTilesScore.textProperty().bind(this.vm.playerTilesScore);
         roundsText.setText(vm.round + " / " + vm.rounds);
 
         letterArray = new String[playerTilesLetters.getText().length()];
@@ -124,7 +127,6 @@ public class BoardController extends Observable implements Observer, Initializab
         for (int i = 0; i < playerTilesLetters.getText().length(); i++) {
             char letter = playerTilesLetters.getText().charAt(i);
             String temp = String.valueOf(letter);
-
             letterArray[i] = temp;
         }
 
@@ -137,7 +139,7 @@ public class BoardController extends Observable implements Observer, Initializab
         boolean showEndButton = false;
 
         boardDisplayer.setBoardData(boardData);
-        lettersDisplayer.setLetters(playerTilesLetters.getText());
+        lettersDisplayer.setLetters(playerTilesLetters.getText(), playerTilesScore.getText());
         if (currentPlayerName.getText().equals(playerName.getText())) {
             showEndButton = true;
             boardDisplayer.addEventFilter(MouseEvent.MOUSE_CLICKED, (e) -> boardDisplayer.requestFocus());
