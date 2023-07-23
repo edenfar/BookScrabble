@@ -1,5 +1,7 @@
-package server;
+package HTTPServer;
 
+import HTTPServer.CacheManager;
+import HTTPServer.CacheManager.ParIOSearcher;
 import java.io.File;
 import java.util.Scanner;
 

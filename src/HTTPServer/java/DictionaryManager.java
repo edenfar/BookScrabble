@@ -1,4 +1,6 @@
-package server;
+package HTTPServer; // Update the package declaration to match your directory structure
+
+import HTTPServer.Dictionary;
 
 import java.util.HashMap;
 import java.util.Map;

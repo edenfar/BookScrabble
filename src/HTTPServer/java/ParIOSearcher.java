@@ -1,5 +1,6 @@
-package server;
+package HTTPServer;
 
+import HTTPServer.FileSearcher;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;

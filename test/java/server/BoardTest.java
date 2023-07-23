@@ -22,7 +22,7 @@ public class BoardTest {
         Board board = new Board(new String[]{DICTIONARY_1});
         Tile[] tiles = stringToTiles("HELLO");
         Word word = new Word(tiles, 0, 0, false);
-        Assertions.assertTrue(board.dictionaryLegal(word));
+        Assertions.assertTrue(board.dictionaryLegal(word,board.getFileNames()));
     }
 
     @Test
@@ -30,7 +30,7 @@ public class BoardTest {
         Board board = new Board(new String[]{DICTIONARY_1});
         Tile[] tiles = stringToTiles("ME");
         Word word = new Word(tiles, 0, 0, false);
-        Assertions.assertFalse(board.dictionaryLegal(word));
+        Assertions.assertFalse(board.dictionaryLegal(word,board.getFileNames()));
     }
 
     @Test
@@ -38,7 +38,7 @@ public class BoardTest {
         Board board = new Board(new String[]{DICTIONARY_1, DICTIONARY_2});
         Tile[] tiles = stringToTiles("FIRST");
         Word word = new Word(tiles, 0, 0, false);
-        Assertions.assertTrue(board.dictionaryLegal(word));
+        Assertions.assertTrue(board.dictionaryLegal(word,board.getFileNames()));
     }
 
 
